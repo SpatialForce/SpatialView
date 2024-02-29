@@ -1,16 +1,64 @@
-# 这是一个示例 Python 脚本。
+#  Copyright (c) 2024 Feng Yang
+#
+#  I am making my contributions/submissions to this project solely in my
+#  personal capacity and am not conveying any rights to any intellectual
+#  property of any third parties.
 
-# 按 ⌃R 执行或将其替换为您的代码。
-# 按 双击 ⇧ 在所有地方搜索类、文件、工具窗口、操作和设置。
+import sys
+
+# noinspection PyUnresolvedReferences
+import vtkmodules.vtkInteractionStyle
+# noinspection PyUnresolvedReferences
+import vtkmodules.vtkRenderingOpenGL2
+from PySide6.QtWidgets import QApplication, QWidget, QGridLayout, QMainWindow
+from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+from vtkmodules.vtkFiltersSources import vtkSphereSource
+from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
+    vtkRenderer
+)
 
 
-def print_hi(name):
-    # 在下面的代码行中使用断点来调试脚本。
-    print(f'Hi, {name}')  # 按 ⌘F8 切换断点。
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(603, 553)
+        self.centralWidget = QWidget(MainWindow)
+        self.gridlayout = QGridLayout(self.centralWidget)
+        self.vtkWidget = QVTKRenderWindowInteractor(self.centralWidget)
+        self.gridlayout.addWidget(self.vtkWidget, 0, 0, 1, 1)
+        MainWindow.setCentralWidget(self.centralWidget)
 
 
-# 按装订区域中的绿色按钮以运行脚本。
-if __name__ == '__main__':
-    print_hi('PyCharm')
+class SimpleView(QMainWindow):
+    def __init__(self, parent=None):
+        QMainWindow.__init__(self, parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ren = vtkRenderer()
+        self.ui.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
+        self.iren = self.ui.vtkWidget.GetRenderWindow().GetInteractor()
 
-# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
+        # Create source
+        source = vtkSphereSource()
+        source.SetCenter(0, 0, 0)
+        source.SetRadius(5.0)
+
+        # Create a mapper
+        mapper = vtkPolyDataMapper()
+        mapper.SetInputConnection(source.GetOutputPort())
+
+        # Create an actor
+        actor = vtkActor()
+        actor.SetMapper(mapper)
+
+        self.ren.AddActor(actor)
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = SimpleView()
+    window.show()
+    window.iren.Initialize()  # Need this line to actually show the render inside Qt
+    sys.exit(app.exec())
