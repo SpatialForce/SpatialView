@@ -54,6 +54,7 @@ class VtkMapperDataModel(sNode.NodeDelegateModel):
     def setInData(self, nodeData, portIndex):
         if isinstance(nodeData, VtkAlgoData):
             self._mapper.SetInputConnection(nodeData.algo())
+            self.dataUpdated.emit(0)
 
     @override
     def embeddedWidget(self):
