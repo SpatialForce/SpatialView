@@ -7,16 +7,18 @@
 from typing import override
 
 import SpatialNode as sNode
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkActor
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkActor, vtkRenderWindowInteractor
 
 from SpatialView.vtk_mapper_data import VtkMapperData
 
 
 class VtkDisplayActorModel(sNode.NodeDelegateModel):
-    def __init__(self, render: vtkRenderer):
+    def __init__(self, renderer: vtkRenderer, interactor: vtkRenderWindowInteractor):
         super().__init__()
         self._actor = vtkActor()
-        render.AddActor(self._actor)
+        self._interactor = interactor
+        self._renderer = renderer
+        renderer.AddActor(self._actor)
 
     @override
     def caption(self):
@@ -55,6 +57,9 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
             mapper = nodeData.mapper()
 
         self._actor.SetMapper(mapper)
+        if mapper is not None:
+            self._renderer.ResetCamera()
+            self._interactor.ReInitialize()
 
     @override
     def embeddedWidget(self):

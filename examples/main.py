@@ -26,8 +26,8 @@ class VtkView(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
 
-        self.setObjectName("MainWindow")
-        self.resize(603, 553)
+        self.setObjectName("VtkWindow")
+        self.setGeometry(0, 0, 800, 600)
 
         centralWidget = QWidget(self)
         gridlayout = QGridLayout(centralWidget)
@@ -39,26 +39,11 @@ class VtkView(QMainWindow):
         vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
 
-        # # Create source
-        # source = vtkSphereSource()
-        # source.SetCenter(0, 0, 0)
-        # source.SetRadius(5.0)
-        #
-        # # Create a mapper
-        # mapper = vtkPolyDataMapper()
-        # mapper.SetInputConnection(source.GetOutputPort())
-        #
-        # # Create an actor
-        # actor = vtkActor()
-        # actor.SetMapper(mapper)
-        #
-        # self.ren.AddActor(actor)
 
-
-def registerDataModels(renderer):
+def registerDataModels(renderer, interactor):
     ret = sNode.NodeDelegateModelRegistry()
     ret.registerModel(VtkSourceDataModel)
-    ret.registerModel(lambda: VtkDisplayActorModel(renderer))
+    ret.registerModel(lambda: VtkDisplayActorModel(renderer, interactor))
     return ret
 
 
@@ -69,7 +54,7 @@ if __name__ == "__main__":
     vtkWindow.show()
     vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
 
-    registry = registerDataModels(vtkWindow.ren)
+    registry = registerDataModels(vtkWindow.ren, vtkWindow.iren)
     dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
     scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
     nodeView = sNode.GraphicsView(scene)

@@ -20,7 +20,7 @@ class VtkSourceDataModel(sNode.NodeDelegateModel):
         # Create source
         source = vtkSphereSource()
         source.SetCenter(0, 0, 0)
-        source.SetRadius(5.0)
+        source.SetRadius(0.5)
 
         # Create a mapper
         self._mapper = vtkPolyDataMapper()
