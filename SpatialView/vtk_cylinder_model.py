@@ -7,36 +7,31 @@
 from typing import override
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersSources import vtkSphereSource
-from vtkmodules.vtkRenderingCore import vtkPolyDataMapper
+from vtkmodules.vtkFiltersSources import vtkCylinderSource
 
-from SpatialView.vtk_mapper_data import VtkMapperData
+from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-class VtkSourceDataModel(sNode.NodeDelegateModel):
+class VtkCylinderModel(sNode.NodeDelegateModel):
     def __init__(self):
         super().__init__()
 
         # Create source
-        source = vtkSphereSource()
-        source.SetCenter(0, 0, 0)
-        source.SetRadius(0.5)
-
-        # Create a mapper
-        self._mapper = vtkPolyDataMapper()
-        self._mapper.SetInputConnection(source.GetOutputPort())
+        self._source = vtkCylinderSource()
+        self._source.SetCenter(0, 0, 0)
+        self._source.SetRadius(0.5)
 
     @override
     def caption(self):
-        return "Vtk Source"
+        return "Vtk Cylinder Source"
 
     @override
     def captionVisible(self):
-        return False
+        return True
 
     @override
     def name(self):
-        return "VtkSourceDataModel"
+        return "VtkCylinderModel"
 
     @override
     def nPorts(self, portType):
@@ -50,11 +45,11 @@ class VtkSourceDataModel(sNode.NodeDelegateModel):
 
     @override
     def dataType(self, portType, portIndex):
-        return VtkMapperData().type()
+        return VtkAlgoData().type()
 
     @override
     def outData(self, port):
-        return VtkMapperData(self._mapper)
+        return VtkAlgoData(self._source.GetOutputPort())
 
     @override
     def setInData(self, nodeData, portIndex): ...

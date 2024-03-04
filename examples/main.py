@@ -18,8 +18,10 @@ from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkRenderer
 from PySide6.QtWidgets import QApplication, QWidget, QGridLayout, QMainWindow
 import SpatialNode as sNode
 
+from SpatialView.vtk_cylinder_model import VtkCylinderModel
 from SpatialView.vtk_display_actor_model import VtkDisplayActorModel
-from SpatialView.vtk_source_data_model import VtkSourceDataModel
+from SpatialView.vtk_sphere_model import VtkSphereModel
+from SpatialView.vtk_mapper_data_model import VtkMapperDataModel
 
 
 class VtkView(QMainWindow):
@@ -42,8 +44,10 @@ class VtkView(QMainWindow):
 
 def registerDataModels(renderer, interactor):
     ret = sNode.NodeDelegateModelRegistry()
-    ret.registerModel(VtkSourceDataModel)
-    ret.registerModel(lambda: VtkDisplayActorModel(renderer, interactor))
+    ret.registerModel(VtkSphereModel, "Sources")
+    ret.registerModel(VtkCylinderModel, "Sources")
+    ret.registerModel(VtkMapperDataModel, "Operators")
+    ret.registerModel(lambda: VtkDisplayActorModel(renderer, interactor), "Displays")
     return ret
 
 

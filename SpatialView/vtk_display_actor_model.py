@@ -26,7 +26,7 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
 
     @override
     def captionVisible(self):
-        return False
+        return True
 
     @override
     def name(self):
