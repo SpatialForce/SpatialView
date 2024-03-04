@@ -11,10 +11,15 @@ import vtkmodules.vtkInteractionStyle
 
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkRenderingOpenGL2
-from PySide6.QtWidgets import QApplication, QWidget, QGridLayout, QMainWindow
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtkmodules.vtkFiltersSources import vtkSphereSource
 from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkRenderer
+
+from PySide6.QtWidgets import QApplication, QWidget, QGridLayout, QMainWindow
+import SpatialNode as sNode
+
+from SpatialView.vtk_display_actor_model import VtkDisplayActorModel
+from SpatialView.vtk_source_data_model import VtkSourceDataModel
 
 
 class VtkView(QMainWindow):
@@ -34,25 +39,43 @@ class VtkView(QMainWindow):
         vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
 
-        # Create source
-        source = vtkSphereSource()
-        source.SetCenter(0, 0, 0)
-        source.SetRadius(5.0)
+        # # Create source
+        # source = vtkSphereSource()
+        # source.SetCenter(0, 0, 0)
+        # source.SetRadius(5.0)
+        #
+        # # Create a mapper
+        # mapper = vtkPolyDataMapper()
+        # mapper.SetInputConnection(source.GetOutputPort())
+        #
+        # # Create an actor
+        # actor = vtkActor()
+        # actor.SetMapper(mapper)
+        #
+        # self.ren.AddActor(actor)
 
-        # Create a mapper
-        mapper = vtkPolyDataMapper()
-        mapper.SetInputConnection(source.GetOutputPort())
 
-        # Create an actor
-        actor = vtkActor()
-        actor.SetMapper(mapper)
-
-        self.ren.AddActor(actor)
+def registerDataModels(renderer):
+    ret = sNode.NodeDelegateModelRegistry()
+    ret.registerModel(VtkSourceDataModel)
+    ret.registerModel(lambda: VtkDisplayActorModel(renderer))
+    return ret
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
     vtkWindow = VtkView()
     vtkWindow.show()
     vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
+
+    registry = registerDataModels(vtkWindow.ren)
+    dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
+    scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
+    nodeView = sNode.GraphicsView(scene)
+
+    nodeView.setWindowTitle("Node-based flow editor")
+    nodeView.resize(800, 600)
+    nodeView.show()
+
     sys.exit(app.exec())
