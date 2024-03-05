@@ -12,27 +12,22 @@ import vtkmodules.vtkInteractionStyle
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from vtkmodules.vtkFiltersSources import vtkSphereSource
-from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkRenderer
+from vtkmodules.vtkRenderingCore import vtkRenderer
+from PySide6 import QtWidgets
 
-from PySide6.QtWidgets import QApplication, QWidget, QGridLayout, QMainWindow
 import SpatialNode as sNode
-
-from SpatialView.vtk_cylinder_model import VtkCylinderModel
-from SpatialView.vtk_display_actor_model import VtkDisplayActorModel
-from SpatialView.vtk_sphere_model import VtkSphereModel
-from SpatialView.vtk_mapper_data_model import VtkMapperDataModel
+import SpatialView as sView
 
 
-class VtkView(QMainWindow):
+class VtkView(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
-        QMainWindow.__init__(self, parent)
+        QtWidgets.QMainWindow.__init__(self, parent)
 
         self.setObjectName("VtkWindow")
         self.setGeometry(0, 0, 800, 600)
 
-        centralWidget = QWidget(self)
-        gridlayout = QGridLayout(centralWidget)
+        centralWidget = QtWidgets.QWidget(self)
+        gridlayout = QtWidgets.QGridLayout(centralWidget)
         vtkWidget = QVTKRenderWindowInteractor(centralWidget)
         gridlayout.addWidget(vtkWidget, 0, 0, 1, 1)
         self.setCentralWidget(centralWidget)
@@ -44,27 +39,46 @@ class VtkView(QMainWindow):
 
 def registerDataModels(renderer, interactor):
     ret = sNode.NodeDelegateModelRegistry()
-    ret.registerModel(VtkSphereModel, "Sources")
-    ret.registerModel(VtkCylinderModel, "Sources")
-    ret.registerModel(VtkMapperDataModel, "Operators")
-    ret.registerModel(lambda: VtkDisplayActorModel(renderer, interactor), "Displays")
+    ret.registerModel(sView.VtkSphereModel, "Sources")
+    ret.registerModel(sView.VtkCylinderModel, "Sources")
+    ret.registerModel(sView.VtkMapperDataModel, "Operators")
+    ret.registerModel(
+        lambda: sView.VtkDisplayActorModel(renderer, interactor), "Displays"
+    )
     return ret
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
+    # vtk
     vtkWindow = VtkView()
     vtkWindow.show()
     vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
 
+    # node
+    nodeWindow = QtWidgets.QWidget()
+    nodeLayout = QtWidgets.QVBoxLayout(nodeWindow)
     registry = registerDataModels(vtkWindow.ren, vtkWindow.iren)
     dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
     scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
     nodeView = sNode.GraphicsView(scene)
+    nodeLayout.addWidget(nodeView)
+    nodeLayout.setContentsMargins(0, 0, 0, 0)
+    nodeLayout.setSpacing(0)
+    nodeWindow.setWindowTitle("Node-based flow editor")
+    nodeWindow.show()
 
-    nodeView.setWindowTitle("Node-based flow editor")
-    nodeView.resize(800, 600)
-    nodeView.show()
+    # menu
+    menuBar = QtWidgets.QMenuBar()
+    menu = menuBar.addMenu("File")
+    saveAction = menu.addAction("Save Scene")
+    saveAction.triggered.connect(scene.save)
+    loadAction = menu.addAction("Load Scene")
+    loadAction.triggered.connect(scene.load)
+    scene.sceneLoaded.connect(nodeView.centerScene)
+
+    vtkWindow.setMenuBar(menuBar)
+    nodeLayout.addWidget(menuBar)
 
     sys.exit(app.exec())
