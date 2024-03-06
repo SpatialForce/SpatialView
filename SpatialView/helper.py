@@ -10,7 +10,11 @@ from functools import partial
 
 def create_setting_panel(self, CLS):
     settings = QtWidgets.QDialog()
-    settings.setWindowTitle("VtkSphereSource Settings")
+    settings.setWindowFlags(
+        QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.Popup
+    )
+    settings.setWindowModality(QtCore.Qt.WindowModality.WindowModal)
+    settings.setWindowTitle(f"{CLS.__name__} Settings")
 
     layout_root = QtWidgets.QHBoxLayout(settings)
     layout_root.setContentsMargins(0, 0, 0, 0)
@@ -49,6 +53,7 @@ def create_setting_panel(self, CLS):
                 )
 
                 value_widget = QtWidgets.QDoubleSpinBox()
+                value_widget.setSingleStep(0.2)
                 value_widget.setMaximum(self.__getattribute__(name + "Max"))
                 value_widget.setMinimum(self.__getattribute__(name + "Min"))
                 value_widget.setValue(self.__getattribute__(name))
