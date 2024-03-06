@@ -29,16 +29,6 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
 
         self._setting: QtWidgets.QWidget | None = None
 
-        # print({name: self.__getattribute__(name) for name, obj in vars(VtkSphereSourceModel).items() if
-        #        isinstance(obj, property)})
-
-    #     for obj in vars(VtkSphereSourceModel).items():
-    #         if isinstance(obj[1], property):
-    #             if isinstance(self.__getattribute__(obj[0]), str):
-    #                 print("find str")
-    #             if isinstance(self.__getattribute__(obj[0]), int):
-    #                 print("find int")
-
     @override
     def eventFilter(self, object, event):
         if object == self._label:
@@ -89,7 +79,8 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
         return VtkAlgoData(self._source.outputPort())
 
     @override
-    def setInData(self, nodeData, portIndex): ...
+    def setInData(self, nodeData, portIndex):
+        ...
 
     @override
     def embeddedWidget(self):
