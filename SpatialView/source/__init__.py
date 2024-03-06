@@ -1,2 +1,2 @@
-from .vtk_cylinder_model import VtkCylinderModel
-from .vtk_sphere_model import VtkSphereModel
+from .vtk_cylinder_source_model import VtkCylinderSourceModel
+from .vtk_sphere_source_model import VtkSphereSourceModel

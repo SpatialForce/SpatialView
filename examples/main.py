@@ -13,7 +13,7 @@ import vtkmodules.vtkInteractionStyle
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtkmodules.vtkRenderingCore import vtkRenderer
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore
 
 import SpatialNode as sNode
 import SpatialView as sView
@@ -23,7 +23,7 @@ class VtkView(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
-        self.setObjectName("VtkWindow")
+        self.setWindowTitle("Vtk Viewer")
         self.setGeometry(0, 0, 800, 600)
 
         centralWidget = QtWidgets.QWidget(self)
@@ -39,8 +39,8 @@ class VtkView(QtWidgets.QMainWindow):
 
 def registerDataModels(renderer, interactor):
     ret = sNode.NodeDelegateModelRegistry()
-    ret.registerModel(sView.VtkSphereModel, "Sources")
-    ret.registerModel(sView.VtkCylinderModel, "Sources")
+    ret.registerModel(sView.VtkSphereSourceModel, "Sources")
+    ret.registerModel(sView.VtkCylinderSourceModel, "Sources")
     ret.registerModel(sView.VtkMapperDataModel, "Operators")
     ret.registerModel(
         lambda: sView.VtkDisplayActorModel(renderer, interactor), "Displays"

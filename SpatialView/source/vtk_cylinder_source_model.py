@@ -12,7 +12,7 @@ from vtkmodules.vtkFiltersSources import vtkCylinderSource
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-class VtkCylinderModel(sNode.NodeDelegateModel):
+class VtkCylinderSourceModel(sNode.NodeDelegateModel):
     def __init__(self):
         super().__init__()
 
@@ -31,7 +31,7 @@ class VtkCylinderModel(sNode.NodeDelegateModel):
 
     @override
     def name(self):
-        return "VtkCylinderModel"
+        return "VtkCylinderSource"
 
     @override
     def nPorts(self, portType):
