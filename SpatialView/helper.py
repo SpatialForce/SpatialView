@@ -36,6 +36,8 @@ def create_setting_panel(self, CLS):
     row = 0
     for name, obj in vars(CLS).items():
         if isinstance(obj, property):
+            if name.endswith("Max") or name.endswith("Min"):
+                continue
             if isinstance(self.__getattribute__(name), float):
                 label_widget = QtWidgets.QLabel(name)
                 label_widget.setMaximumWidth(150)
@@ -47,7 +49,8 @@ def create_setting_panel(self, CLS):
                 )
 
                 value_widget = QtWidgets.QDoubleSpinBox()
-                value_widget.setMaximum(360)
+                value_widget.setMaximum(self.__getattribute__(name + "Max"))
+                value_widget.setMinimum(self.__getattribute__(name + "Min"))
                 value_widget.setValue(self.__getattribute__(name))
                 value_widget.valueChanged.connect(partial(CLS.__setattr__, self, name))
                 grid_layout.addWidget(
@@ -64,12 +67,25 @@ def create_setting_panel(self, CLS):
                     label_widget, row, 0, QtCore.Qt.AlignmentFlag.AlignLeft
                 )
 
-                value_widget = QtWidgets.QSpinBox()
-                value_widget.setValue(self.__getattribute__(name))
-                value_widget.valueChanged.connect(partial(CLS.__setattr__, self, name))
-                grid_layout.addWidget(
-                    value_widget, row, 1, QtCore.Qt.AlignmentFlag.AlignLeft
-                )
+                if hasattr(self, name + "Max"):
+                    value_widget = QtWidgets.QSpinBox()
+                    value_widget.setValue(self.__getattribute__(name))
+
+                    value_widget.setMaximum(self.__getattribute__(name + "Max"))
+                    value_widget.setMinimum(self.__getattribute__(name + "Min"))
+                    value_widget.valueChanged.connect(
+                        partial(CLS.__setattr__, self, name)
+                    )
+                    grid_layout.addWidget(
+                        value_widget, row, 1, QtCore.Qt.AlignmentFlag.AlignLeft
+                    )
+                else:
+                    value_widget = QtWidgets.QCheckBox()
+                    value_widget.setChecked(self.__getattribute__(name))
+                    value_widget.toggled.connect(partial(CLS.__setattr__, self, name))
+                    grid_layout.addWidget(
+                        value_widget, row, 1, QtCore.Qt.AlignmentFlag.AlignLeft
+                    )
                 row += 1
 
     return settings

@@ -25,6 +25,14 @@ class VtkCylinderSource:
         self._model.dataUpdated.emit(0)
 
     @property
+    def radiusMax(self):
+        return self._source.GetRadiusMaxValue()
+
+    @property
+    def radiusMin(self):
+        return self._source.GetRadiusMinValue()
+
+    @property
     def height(self):
         return self._source.GetHeight()
 
@@ -34,6 +42,14 @@ class VtkCylinderSource:
         self._model.dataUpdated.emit(0)
 
     @property
+    def heightMax(self):
+        return self._source.GetHeightMaxValue()
+
+    @property
+    def heightMin(self):
+        return self._source.GetHeightMinValue()
+
+    @property
     def resolution(self):
         return self._source.GetResolution()
 
@@ -41,6 +57,14 @@ class VtkCylinderSource:
     def resolution(self, value):
         self._source.SetResolution(value)
         self._model.dataUpdated.emit(0)
+
+    @property
+    def resolutionMax(self):
+        return self._source.GetResolutionMaxValue()
+
+    @property
+    def resolutionMin(self):
+        return self._source.GetResolutionMinValue()
 
     @property
     def capping(self):

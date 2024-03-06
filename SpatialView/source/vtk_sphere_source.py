@@ -3,6 +3,7 @@
 #  I am making my contributions/submissions to this project solely in my
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
+
 from SpatialNode import QJsonObject
 from vtkmodules.vtkFiltersSources import vtkSphereSource
 
@@ -25,6 +26,14 @@ class VtkSphereSource:
         self._model.dataUpdated.emit(0)
 
     @property
+    def radiusMax(self):
+        return self._source.GetRadiusMaxValue()
+
+    @property
+    def radiusMin(self):
+        return self._source.GetRadiusMinValue()
+
+    @property
     def endPhi(self):
         return self._source.GetEndPhi()
 
@@ -32,6 +41,14 @@ class VtkSphereSource:
     def endPhi(self, value):
         self._source.SetEndPhi(value)
         self._model.dataUpdated.emit(0)
+
+    @property
+    def endPhiMax(self):
+        return self._source.GetEndPhiMaxValue()
+
+    @property
+    def endPhiMin(self):
+        return self._source.GetEndPhiMinValue()
 
     @property
     def endTheta(self):
@@ -43,6 +60,14 @@ class VtkSphereSource:
         self._model.dataUpdated.emit(0)
 
     @property
+    def endThetaMax(self):
+        return self._source.GetEndThetaMaxValue()
+
+    @property
+    def endThetaMin(self):
+        return self._source.GetEndThetaMinValue()
+
+    @property
     def startPhi(self):
         return self._source.GetStartPhi()
 
@@ -50,6 +75,14 @@ class VtkSphereSource:
     def startPhi(self, value):
         self._source.SetStartPhi(value)
         self._model.dataUpdated.emit(0)
+
+    @property
+    def startPhiMax(self):
+        return self._source.GetStartPhiMaxValue()
+
+    @property
+    def startPhiMin(self):
+        return self._source.GetStartPhiMinValue()
 
     @property
     def startTheta(self):
@@ -61,6 +94,14 @@ class VtkSphereSource:
         self._model.dataUpdated.emit(0)
 
     @property
+    def startThetaMax(self):
+        return self._source.GetStartThetaMaxValue()
+
+    @property
+    def startThetaMin(self):
+        return self._source.GetStartThetaMinValue()
+
+    @property
     def phiResolution(self):
         return self._source.GetPhiResolution()
 
@@ -70,6 +111,14 @@ class VtkSphereSource:
         self._model.dataUpdated.emit(0)
 
     @property
+    def phiResolutionMax(self):
+        return self._source.GetPhiResolutionMaxValue()
+
+    @property
+    def phiResolutionMin(self):
+        return self._source.GetPhiResolutionMinValue()
+
+    @property
     def thetaResolution(self):
         return self._source.GetThetaResolution()
 
@@ -77,6 +126,14 @@ class VtkSphereSource:
     def thetaResolution(self, value):
         self._source.SetThetaResolution(value)
         self._model.dataUpdated.emit(0)
+
+    @property
+    def thetaResolutionMax(self):
+        return self._source.GetThetaResolutionMaxValue()
+
+    @property
+    def thetaResolutionMin(self):
+        return self._source.GetThetaResolutionMinValue()
 
     @property
     def center(self):
