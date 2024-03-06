@@ -7,14 +7,13 @@
 from typing import override
 
 import SpatialNode as sNode
-from PySide6 import QtWidgets, QtCore
-from SpatialView.source.vtk_sphere_source import VtkSphereSource
-from SpatialView.vtk_algo_data import VtkAlgoData
+from PySide6 import QtWidgets
 
-class VtkSphereSourceModel(sNode.NodeDelegateModel):
+from SpatialView.source.vtk_cylinder_source import VtkCylinderSource
+
+class VtkCylinderSourceModel(sNode.NodeDelegateModel):
     def __init__(self):
-        super().__init__()
-        self._source: VtkSphereSource = None
+        self._source: VtkCylinderSource = None
         self._label: QtWidgets.QLabel = None
 
     @override
@@ -39,3 +38,5 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
     def setInData(self, nodeData, portIndex): ...
     @override
     def embeddedWidget(self): ...
+    def load(self, p): ...
+    def save(self): ...

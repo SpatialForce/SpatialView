@@ -19,32 +19,31 @@ import SpatialNode as sNode
 import SpatialView as sView
 
 
-class VtkView(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
-        QtWidgets.QMainWindow.__init__(self, parent)
+class VtkView(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
 
         self.setWindowTitle("Viewer")
         self.setGeometry(0, 0, 800, 600)
 
-        centralWidget = QtWidgets.QWidget(self)
-        gridlayout = QtWidgets.QGridLayout(centralWidget)
-        vtkWidget = QVTKRenderWindowInteractor(centralWidget)
-        gridlayout.addWidget(vtkWidget)
-        gridlayout.setContentsMargins(0, 0, 0, 0)
-        gridlayout.setSpacing(0)
-        self.setCentralWidget(centralWidget)
+        self.gridlayout = QtWidgets.QGridLayout(self)
 
+        # toolbar
+        toolbar = QtWidgets.QToolBar()
+        self.gridlayout.addWidget(toolbar)
+
+        # viewer
+        vtkWidget = QVTKRenderWindowInteractor(self)
+        self.gridlayout.addWidget(vtkWidget)
+        self.gridlayout.setContentsMargins(0, 0, 0, 0)
+        self.gridlayout.setSpacing(0)
         self.ren = vtkRenderer()
         vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
 
-        # toolbar
-        toolbar = QtWidgets.QToolBar()
-        self.addToolBar(toolbar)
-
         # status bar
         statusbar = QtWidgets.QStatusBar()
-        self.setStatusBar(statusbar)
+        self.gridlayout.addWidget(statusbar)
 
         # action
         action = QtGui.QAction("Reset Cam", self)
@@ -91,14 +90,11 @@ class NodeView(QtWidgets.QMainWindow):
         statusbar = QtWidgets.QStatusBar()
         self.setStatusBar(statusbar)
 
-    def menuBar(self):
-        return self._menuBar
+    def closeEvent(self, event):
+        sys.exit(0)
 
 
 def registerDataModels(renderer, interactor):
-    def VtkDisplayActorModel():
-        return (renderer, interactor)
-
     ret = sNode.NodeDelegateModelRegistry()
     sView.VtkSphereSourceModel.register(ret)
     sView.VtkCylinderSourceModel.register(ret)
@@ -121,8 +117,5 @@ if __name__ == "__main__":
     # node
     nodeWindow = NodeView(registry)
     nodeWindow.show()
-
-    # menu
-    vtkWindow.setMenuBar(nodeWindow.menuBar())
 
     sys.exit(app.exec())

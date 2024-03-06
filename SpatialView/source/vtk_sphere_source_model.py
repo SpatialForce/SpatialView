@@ -27,16 +27,12 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
             "QLabel { background-color : transparent; color : white; }"
         )
 
-        self._setting: QtWidgets.QWidget | None = None
-
     @override
     def eventFilter(self, object, event):
         if object == self._label:
             if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-                if not self._setting:
-                    self._setting = self._source.widget()
-                self._setting.raise_()
-                self._setting.show()
+                setting = self._source.dialog()
+                setting.exec()
                 return True
         return False
 
@@ -79,9 +75,19 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
         return VtkAlgoData(self._source.outputPort())
 
     @override
-    def setInData(self, nodeData, portIndex):
-        ...
+    def setInData(self, nodeData, portIndex): ...
 
     @override
     def embeddedWidget(self):
         return self._label
+
+    @override
+    def save(self):
+        modelJson = super().save()
+        modelJson["source"] = self._source.save()
+
+        return modelJson
+
+    @override
+    def load(self, p):
+        self._source.load(p)

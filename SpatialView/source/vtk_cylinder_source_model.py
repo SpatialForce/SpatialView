@@ -7,8 +7,9 @@
 from typing import override
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersSources import vtkCylinderSource
+from PySide6 import QtWidgets, QtCore
 
+from SpatialView.source.vtk_cylinder_source import VtkCylinderSource
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
@@ -17,9 +18,25 @@ class VtkCylinderSourceModel(sNode.NodeDelegateModel):
         super().__init__()
 
         # Create source
-        self._source = vtkCylinderSource()
-        self._source.SetCenter(0, 0, 0)
-        self._source.SetRadius(0.5)
+        self._source = VtkCylinderSource(self)
+        self._source.center = (0, 0, 0)
+        self._source.radius = 0.5
+
+        self._label = QtWidgets.QLabel("Settings")
+        self._label.installEventFilter(self)
+        self._label.setStyleSheet(
+            "QLabel { background-color : transparent; color : white; }"
+        )
+
+    @override
+    def eventFilter(self, object, event):
+        if object == self._label:
+            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+                # if not self._setting:
+                setting = self._source.dialog()
+                setting.exec()
+                return True
+        return False
 
     @override
     def caption(self):
@@ -57,11 +74,22 @@ class VtkCylinderSourceModel(sNode.NodeDelegateModel):
 
     @override
     def outData(self, port):
-        return VtkAlgoData(self._source.GetOutputPort())
+        return VtkAlgoData(self._source.outputPort())
 
     @override
     def setInData(self, nodeData, portIndex): ...
 
     @override
     def embeddedWidget(self):
-        return None
+        return self._label
+
+    @override
+    def save(self):
+        modelJson = super().save()
+        modelJson["source"] = self._source.save()
+
+        return modelJson
+
+    @override
+    def load(self, p):
+        self._source.load(p)
