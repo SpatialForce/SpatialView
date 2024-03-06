@@ -28,9 +28,20 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
     def captionVisible(self):
         return True
 
+    @staticmethod
     @override
-    def name(self):
+    def name():
         return "VtkDisplayActorModel"
+
+    @staticmethod
+    @override
+    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
+        renderer, interactor = args
+        registry.registerModel(
+            lambda: VtkDisplayActorModel(renderer, interactor),
+            VtkDisplayActorModel.name(),
+            "Displays",
+        )
 
     @override
     def nPorts(self, portType):

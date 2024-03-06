@@ -30,9 +30,17 @@ class VtkMapperDataModel(sNode.NodeDelegateModel):
     def captionVisible(self):
         return True
 
+    @staticmethod
     @override
-    def name(self):
+    def name():
         return "VtkMapperDataModel"
+
+    @staticmethod
+    @override
+    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
+        registry.registerModel(
+            VtkMapperDataModel, VtkMapperDataModel.name(), "Operators"
+        )
 
     @override
     def nPorts(self, portType):

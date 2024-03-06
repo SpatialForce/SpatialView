@@ -29,9 +29,17 @@ class VtkCylinderSourceModel(sNode.NodeDelegateModel):
     def captionVisible(self):
         return True
 
+    @staticmethod
     @override
-    def name(self):
+    def name():
         return "VtkCylinderSource"
+
+    @staticmethod
+    @override
+    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
+        registry.registerModel(
+            VtkCylinderSourceModel, VtkCylinderSourceModel.name(), "Sources"
+        )
 
     @override
     def nPorts(self, portType):

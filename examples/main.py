@@ -96,13 +96,14 @@ class NodeView(QtWidgets.QMainWindow):
 
 
 def registerDataModels(renderer, interactor):
+    def VtkDisplayActorModel():
+        return (renderer, interactor)
+
     ret = sNode.NodeDelegateModelRegistry()
-    ret.registerModel(sView.VtkSphereSourceModel, "Sources")
-    ret.registerModel(sView.VtkCylinderSourceModel, "Sources")
-    ret.registerModel(sView.VtkMapperDataModel, "Operators")
-    ret.registerModel(
-        lambda: sView.VtkDisplayActorModel(renderer, interactor), "Displays"
-    )
+    sView.VtkSphereSourceModel.register(ret)
+    sView.VtkCylinderSourceModel.register(ret)
+    sView.VtkMapperDataModel.register(ret)
+    sView.VtkDisplayActorModel.register(ret, renderer, interactor)
     return ret
 
 

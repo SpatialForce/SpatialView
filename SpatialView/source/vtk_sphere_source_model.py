@@ -24,9 +24,29 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
 
         self._label = QtWidgets.QLabel("Settings")
         self._label.installEventFilter(self)
-        self._label.setStyleSheet("QLabel { background-color : transparent; color : white; }")
+        self._label.setStyleSheet(
+            "QLabel { background-color : transparent; color : white; }"
+        )
 
         self._setting = self.create_settings()
+
+        # print({name: self.__getattribute__(name) for name, obj in vars(VtkSphereSourceModel).items() if
+        #        isinstance(obj, property)})
+
+    #     for obj in vars(VtkSphereSourceModel).items():
+    #         if isinstance(obj[1], property):
+    #             if isinstance(self.__getattribute__(obj[0]), str):
+    #                 print("find str")
+    #             if isinstance(self.__getattribute__(obj[0]), int):
+    #                 print("find int")
+    #
+    # @property
+    # def aaa(self):
+    #     return "sss"
+    #
+    # @property
+    # def bbb(self):
+    #     return 0
 
     def create_settings(self):
         settings = QtWidgets.QWidget()
@@ -62,9 +82,17 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
     def captionVisible(self):
         return True
 
+    @staticmethod
     @override
-    def name(self):
+    def name():
         return "VtkSphereSource"
+
+    @staticmethod
+    @override
+    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
+        registry.registerModel(
+            VtkSphereSourceModel, VtkSphereSourceModel.name(), "Sources"
+        )
 
     @override
     def nPorts(self, portType):
@@ -85,8 +113,7 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
         return VtkAlgoData(self._source.GetOutputPort())
 
     @override
-    def setInData(self, nodeData, portIndex):
-        ...
+    def setInData(self, nodeData, portIndex): ...
 
     @override
     def embeddedWidget(self):
