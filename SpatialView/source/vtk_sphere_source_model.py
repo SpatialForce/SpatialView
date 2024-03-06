@@ -42,7 +42,7 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
         return settings
 
     def setRadius(self, radius: int):
-        self._source.SetRadius(radius)
+        self._source.SetRadius(radius / 5)
         self.dataUpdated.emit(0)
 
     @override

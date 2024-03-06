@@ -13,7 +13,7 @@ import vtkmodules.vtkInteractionStyle
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtkmodules.vtkRenderingCore import vtkRenderer
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtGui
 
 import SpatialNode as sNode
 import SpatialView as sView
@@ -23,18 +23,76 @@ class VtkView(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
-        self.setWindowTitle("Vtk Viewer")
+        self.setWindowTitle("Viewer")
         self.setGeometry(0, 0, 800, 600)
 
         centralWidget = QtWidgets.QWidget(self)
         gridlayout = QtWidgets.QGridLayout(centralWidget)
         vtkWidget = QVTKRenderWindowInteractor(centralWidget)
-        gridlayout.addWidget(vtkWidget, 0, 0, 1, 1)
+        gridlayout.addWidget(vtkWidget)
+        gridlayout.setContentsMargins(0, 0, 0, 0)
+        gridlayout.setSpacing(0)
         self.setCentralWidget(centralWidget)
 
         self.ren = vtkRenderer()
         vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
+
+        # toolbar
+        toolbar = QtWidgets.QToolBar()
+        self.addToolBar(toolbar)
+
+        # status bar
+        statusbar = QtWidgets.QStatusBar()
+        self.setStatusBar(statusbar)
+
+        # action
+        action = QtGui.QAction("Reset Cam", self)
+
+        def reset():
+            self.ren.ResetCamera()
+            self.iren.ReInitialize()
+
+        action.triggered.connect(self, reset)
+        toolbar.addAction(action)
+
+
+class NodeView(QtWidgets.QMainWindow):
+    def __init__(self, registry):
+        super().__init__()
+        self.setWindowTitle("Node-based flow editor")
+        self.setGeometry(400, 300, 800, 600)
+
+        centralWidget = QtWidgets.QWidget(self)
+        nodeLayout = QtWidgets.QGridLayout(centralWidget)
+        dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
+        scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
+        nodeView = sNode.GraphicsView(scene)
+        nodeLayout.addWidget(nodeView)
+        nodeLayout.setContentsMargins(0, 0, 0, 0)
+        nodeLayout.setSpacing(0)
+        self.setCentralWidget(centralWidget)
+
+        # memu bar
+        self._menuBar = QtWidgets.QMenuBar()
+        menu = self._menuBar.addMenu("File")
+        saveAction = menu.addAction("Save Scene")
+        saveAction.triggered.connect(scene.save)
+        loadAction = menu.addAction("Load Scene")
+        loadAction.triggered.connect(scene.load)
+        scene.sceneLoaded.connect(nodeView.centerScene)
+        self.setMenuBar(self._menuBar)
+
+        # toolbar
+        toolbar = QtWidgets.QToolBar()
+        self.addToolBar(toolbar)
+
+        # status bar
+        statusbar = QtWidgets.QStatusBar()
+        self.setStatusBar(statusbar)
+
+    def menuBar(self):
+        return self._menuBar
 
 
 def registerDataModels(renderer, interactor):
@@ -56,29 +114,14 @@ if __name__ == "__main__":
     vtkWindow.show()
     vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
 
-    # node
-    nodeWindow = QtWidgets.QWidget()
-    nodeLayout = QtWidgets.QVBoxLayout(nodeWindow)
+    # registry
     registry = registerDataModels(vtkWindow.ren, vtkWindow.iren)
-    dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
-    scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
-    nodeView = sNode.GraphicsView(scene)
-    nodeLayout.addWidget(nodeView)
-    nodeLayout.setContentsMargins(0, 0, 0, 0)
-    nodeLayout.setSpacing(0)
-    nodeWindow.setWindowTitle("Node-based flow editor")
+
+    # node
+    nodeWindow = NodeView(registry)
     nodeWindow.show()
 
     # menu
-    menuBar = QtWidgets.QMenuBar()
-    menu = menuBar.addMenu("File")
-    saveAction = menu.addAction("Save Scene")
-    saveAction.triggered.connect(scene.save)
-    loadAction = menu.addAction("Load Scene")
-    loadAction.triggered.connect(scene.load)
-    scene.sceneLoaded.connect(nodeView.centerScene)
-
-    vtkWindow.setMenuBar(menuBar)
-    nodeLayout.addWidget(menuBar)
+    vtkWindow.setMenuBar(nodeWindow.menuBar())
 
     sys.exit(app.exec())

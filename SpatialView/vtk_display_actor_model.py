@@ -58,7 +58,6 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
 
         self._actor.SetMapper(mapper)
         if mapper is not None:
-            self._renderer.ResetCamera()
             self._interactor.ReInitialize()
 
     @override
