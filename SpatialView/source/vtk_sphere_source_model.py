@@ -8,8 +8,7 @@ from typing import override
 
 import SpatialNode as sNode
 from PySide6 import QtWidgets, QtCore
-from vtkmodules.vtkFiltersSources import vtkSphereSource
-
+from SpatialView.source.vtk_sphere_source import VtkSphereSource
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
@@ -18,9 +17,9 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
         super().__init__()
 
         # Create source
-        self._source = vtkSphereSource()
-        self._source.SetCenter(0, 0, 0)
-        self._source.SetRadius(0.5)
+        self._source = VtkSphereSource(self)
+        self._source.center = (0, 0, 0)
+        self._source.radius = 0.5
 
         self._label = QtWidgets.QLabel("Settings")
         self._label.installEventFilter(self)
@@ -28,7 +27,7 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
             "QLabel { background-color : transparent; color : white; }"
         )
 
-        self._setting = self.create_settings()
+        self._setting: QtWidgets.QWidget | None = None
 
         # print({name: self.__getattribute__(name) for name, obj in vars(VtkSphereSourceModel).items() if
         #        isinstance(obj, property)})
@@ -39,36 +38,13 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
     #                 print("find str")
     #             if isinstance(self.__getattribute__(obj[0]), int):
     #                 print("find int")
-    #
-    # @property
-    # def aaa(self):
-    #     return "sss"
-    #
-    # @property
-    # def bbb(self):
-    #     return 0
-
-    def create_settings(self):
-        settings = QtWidgets.QWidget()
-        settings.setWindowTitle("VtkSphereSource Settings")
-
-        layout = QtWidgets.QVBoxLayout(settings)
-        slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
-        slider.setMaximum(10)
-        slider.setMinimum(1)
-        slider.valueChanged.connect(self.setRadius)
-        layout.addWidget(slider)
-
-        return settings
-
-    def setRadius(self, radius: int):
-        self._source.SetRadius(radius / 5)
-        self.dataUpdated.emit(0)
 
     @override
     def eventFilter(self, object, event):
         if object == self._label:
             if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+                if not self._setting:
+                    self._setting = self._source.widget()
                 self._setting.raise_()
                 self._setting.show()
                 return True
@@ -110,7 +86,7 @@ class VtkSphereSourceModel(sNode.NodeDelegateModel):
 
     @override
     def outData(self, port):
-        return VtkAlgoData(self._source.GetOutputPort())
+        return VtkAlgoData(self._source.outputPort())
 
     @override
     def setInData(self, nodeData, portIndex): ...
