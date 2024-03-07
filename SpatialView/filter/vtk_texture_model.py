@@ -19,6 +19,7 @@ class VtkTextureModel(sNode.NodeDelegateModel):
 
         # Create a mapper
         self._texture = vtkTexture()
+        self._texture.SetColorModeToDirectScalars()
 
     @override
     def caption(self):
@@ -58,7 +59,8 @@ class VtkTextureModel(sNode.NodeDelegateModel):
     def setInData(self, nodeData, portIndex):
         if isinstance(nodeData, VtkAlgoData):
             self._texture.SetInputConnection(nodeData.algo())
-            self._texture.Update(0)
+            self._texture.MipmapOn()
+            self._texture.InterpolateOn()
             self.dataUpdated.emit(0)
 
     @override

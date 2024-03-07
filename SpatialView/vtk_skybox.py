@@ -11,6 +11,9 @@ from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 class VtkSkybox:
     def __init__(self):
         self.skybox = vtkOpenGLSkybox()
+        self.skybox.SetFloorRight(0, 0, 1)
+        self.skybox.SetProjection(vtkSkybox.Sphere)
+        self.skybox.GammaCorrectOn()
 
     @property
     def texture(self):

@@ -15,6 +15,11 @@ class VtkHDRReader:
         self._reader = vtkHDRReader()
         self._model = model
 
+        # default file
+        self.fileName = QtCore.QDir(os.getcwd()).absoluteFilePath(
+            "SpatialView/resources/meadow_2_1k.hdr"
+        )
+
     @property
     def extensions(self):
         return self._reader.GetFileExtensions()
@@ -48,7 +53,7 @@ class VtkHDRReader:
             None,
             "Open Flow Scene",
             QtCore.QDir.homePath(),
-            "Flow Scene Files (*.hdr *.exr)",
+            "Flow Scene Files (*.hdr *.pic)",
         )
 
         if not QtCore.QFileInfo.exists(fileName):

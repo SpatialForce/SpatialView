@@ -15,6 +15,7 @@ import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtkmodules.vtkCommonColor import vtkNamedColors
 from vtkmodules.vtkRenderingCore import vtkRenderer
+from vtkmodules.vtkInteractionStyle import *
 from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
@@ -44,6 +45,7 @@ class VtkView(QtWidgets.QWidget):
 
         vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
+        self.iren.SetInteractorStyle(vtkInteractorStyleTerrain())
 
         # status bar
         statusbar = QtWidgets.QStatusBar()
