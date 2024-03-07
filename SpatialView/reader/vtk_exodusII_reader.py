@@ -3,6 +3,7 @@
 #  I am making my contributions/submissions to this project solely in my
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
+import os
 
 from PySide6 import QtWidgets, QtCore
 from SpatialNode import QJsonObject
@@ -34,11 +35,14 @@ class VtkExodusIIReader:
 
     def load(self, p):
         source = p["source"]
-        self.fileName = source["fileName"]
+        relative = source["fileName"]
+        self.fileName = QtCore.QDir(os.getcwd()).absoluteFilePath(relative)
 
     def save(self):
         source = QJsonObject()
-        source["fileName"] = self.fileName
+
+        relative = QtCore.QDir(os.getcwd()).relativeFilePath(self.fileName)
+        source["fileName"] = relative
         return source
 
     def dialog(self):
