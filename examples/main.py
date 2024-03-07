@@ -85,6 +85,10 @@ class NodeView(QtWidgets.QMainWindow):
         # toolbar
         toolbar = QtWidgets.QToolBar()
         self.addToolBar(toolbar)
+        actions = nodeView.actions()
+        for action in actions:
+            toolbar.addAction(action)
+            nodeView.removeAction(action)
 
         # status bar
         statusbar = QtWidgets.QStatusBar()
