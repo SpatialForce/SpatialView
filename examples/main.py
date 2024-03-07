@@ -5,6 +5,7 @@
 #  property of any third parties.
 
 import sys
+from functools import partial
 
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkInteractionStyle
@@ -65,22 +66,16 @@ class NodeView(QtWidgets.QMainWindow):
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
         dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
-        scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
-        nodeView = sNode.GraphicsView(scene)
+        self.scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
+        nodeView = sNode.GraphicsView(self.scene)
         nodeLayout.addWidget(nodeView)
         nodeLayout.setContentsMargins(0, 0, 0, 0)
         nodeLayout.setSpacing(0)
         self.setCentralWidget(centralWidget)
+        self.scene.sceneLoaded.connect(nodeView.centerScene)
 
         # memu bar
-        self._menuBar = QtWidgets.QMenuBar()
-        menu = self._menuBar.addMenu("File")
-        saveAction = menu.addAction("Save Scene")
-        saveAction.triggered.connect(scene.save)
-        loadAction = menu.addAction("Load Scene")
-        loadAction.triggered.connect(scene.load)
-        scene.sceneLoaded.connect(nodeView.centerScene)
-        self.setMenuBar(self._menuBar)
+        self._createMenu()
 
         # toolbar
         toolbar = QtWidgets.QToolBar()
@@ -93,6 +88,42 @@ class NodeView(QtWidgets.QMainWindow):
         # status bar
         statusbar = QtWidgets.QStatusBar()
         self.setStatusBar(statusbar)
+
+    def _createMenu(self):
+        menuBar = QtWidgets.QMenuBar()
+        self.setMenuBar(menuBar)
+
+        # File
+        file_menu = menuBar.addMenu("&File")
+        saveAction = file_menu.addAction("Save Scene")
+        saveAction.triggered.connect(self.scene.save)
+        loadAction = file_menu.addAction("Load Scene")
+        loadAction.triggered.connect(self.scene.load)
+
+        # Help
+        help_menu = menuBar.addMenu("&Help")
+        homepage_action = help_menu.addAction("Homepage...")
+        homepage_action.triggered.connect(
+            partial(
+                QtGui.QDesktopServices.openUrl,
+                "https://github.com/SpatialForce/SpatialView",
+            )
+        )
+        issues_action = help_menu.addAction("Issues...")
+        issues_action.triggered.connect(
+            partial(
+                QtGui.QDesktopServices.openUrl,
+                "https://github.com/SpatialForce/SpatialView/issues",
+            )
+        )
+        about_action = help_menu.addAction("About")
+        about_action.triggered.connect(self._creatAbout)
+
+    def _creatAbout(self):
+        info = """
+           SpatialView
+        """
+        QtWidgets.QMessageBox.about(self, "About SpatialView", info)
 
     def closeEvent(self, event):
         sys.exit(0)
