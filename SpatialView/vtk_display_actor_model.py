@@ -7,15 +7,16 @@
 from typing import override
 
 import SpatialNode as sNode
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkActor, vtkRenderWindowInteractor
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindowInteractor
 
 from .filter.vtk_mapper_data import VtkMapperData
+from .vtk_actor import VtkActor
 
 
 class VtkDisplayActorModel(sNode.NodeDelegateModel):
     def __init__(self, renderer: vtkRenderer, interactor: vtkRenderWindowInteractor):
         super().__init__()
-        self._actor = vtkActor()
+        self._actor = VtkActor()
         self._interactor = interactor
         self._renderer = renderer
         renderer.AddActor(self._actor)
@@ -67,7 +68,7 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
         if isinstance(nodeData, VtkMapperData):
             mapper = nodeData.mapper()
 
-        self._actor.SetMapper(mapper)
+        self._actor.mapper = mapper
         if mapper is not None:
             self._interactor.ReInitialize()
 
