@@ -9,6 +9,7 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkTexture
 
+from SpatialView.filter.vtk_texture_data import VtkTextureData
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
@@ -17,7 +18,7 @@ class VtkTextureModel(sNode.NodeDelegateModel):
         super().__init__()
 
         # Create a mapper
-        self._mapper = vtkTexture()
+        self._texture = vtkTexture()
 
     @override
     def caption(self):
@@ -43,17 +44,21 @@ class VtkTextureModel(sNode.NodeDelegateModel):
 
     @override
     def dataType(self, portType, portIndex):
-        return VtkAlgoData().type()
+        match portType:
+            case sNode.PortType.In:
+                return VtkAlgoData().type()
+            case sNode.PortType.Out:
+                return VtkTextureData().type()
 
     @override
     def outData(self, port):
-        return VtkAlgoData(self._mapper.GetOutputPort(0))
+        return VtkTextureData(self._texture)
 
     @override
     def setInData(self, nodeData, portIndex):
         if isinstance(nodeData, VtkAlgoData):
-            self._mapper.SetInputConnection(nodeData.algo())
-            self._mapper.Update(0)
+            self._texture.SetInputConnection(nodeData.algo())
+            self._texture.Update(0)
             self.dataUpdated.emit(0)
 
     @override

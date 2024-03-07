@@ -9,7 +9,7 @@ from vtkmodules.vtkRenderingCore import vtkActor
 
 class VtkActor:
     def __init__(self):
-        self._actor = vtkActor()
+        self.actor = vtkActor()
 
     # ==========================================================================
     # =========== Blinn-Phong ==================================================
@@ -18,112 +18,112 @@ class VtkActor:
     # =========== Ambient ======================================================
     @property
     def ambientMax(self):
-        return self._actor.GetProperty().GetAmbientMaxValue()
+        return self.actor.GetProperty().GetAmbientMaxValue()
 
     @property
     def ambientMin(self):
-        return self._actor.GetProperty().GetAmbientMinValue()
+        return self.actor.GetProperty().GetAmbientMinValue()
 
     @property
     def ambient(self):
-        return self._actor.GetProperty().GetAmbient()
+        return self.actor.GetProperty().GetAmbient()
 
     @ambient.setter
     def ambient(self, value):
-        self._actor.GetProperty().SetAmbient(value)
+        self.actor.GetProperty().SetAmbient(value)
 
     @property
     def ambientColor(self):
-        return self._actor.GetProperty().GetAmbientColor()
+        return self.actor.GetProperty().GetAmbientColor()
 
     @ambientColor.setter
     def ambientColor(self, value):
-        self._actor.GetProperty().SetAmbientColor(value)
+        self.actor.GetProperty().SetAmbientColor(value)
 
     # =========== Diffuse ======================================================
     @property
     def diffuseMax(self):
-        return self._actor.GetProperty().GetDiffuseMaxValue()
+        return self.actor.GetProperty().GetDiffuseMaxValue()
 
     @property
     def diffuseMin(self):
-        return self._actor.GetProperty().GetDiffuseMinValue()
+        return self.actor.GetProperty().GetDiffuseMinValue()
 
     @property
     def diffuse(self):
-        return self._actor.GetProperty().GetDiffuse()
+        return self.actor.GetProperty().GetDiffuse()
 
     @diffuse.setter
     def diffuse(self, value):
-        self._actor.GetProperty().SetDiffuse(value)
+        self.actor.GetProperty().SetDiffuse(value)
 
     @property
     def diffuseColor(self):
-        return self._actor.GetProperty().GetDiffuseColor()
+        return self.actor.GetProperty().GetDiffuseColor()
 
     @diffuseColor.setter
     def diffuseColor(self, value):
-        self._actor.GetProperty().SetDiffuseColor(value)
+        self.actor.GetProperty().SetDiffuseColor(value)
 
     # =========== Specular ======================================================
     @property
     def specularMax(self):
-        return self._actor.GetProperty().GetSpecularMaxValue()
+        return self.actor.GetProperty().GetSpecularMaxValue()
 
     @property
     def specularMin(self):
-        return self._actor.GetProperty().GetSpecularMinValue()
+        return self.actor.GetProperty().GetSpecularMinValue()
 
     @property
     def specular(self):
-        return self._actor.GetProperty().GetSpecular()
+        return self.actor.GetProperty().GetSpecular()
 
     @specular.setter
     def specular(self, value):
-        self._actor.GetProperty().SetSpecular(value)
+        self.actor.GetProperty().SetSpecular(value)
 
     @property
     def specularColor(self):
-        return self._actor.GetProperty().GetSpecularColor()
+        return self.actor.GetProperty().GetSpecularColor()
 
     @specularColor.setter
     def specularColor(self, value):
-        self._actor.GetProperty().SetSpecularColor(value)
+        self.actor.GetProperty().SetSpecularColor(value)
 
     # =========== Specular Power ======================================================
     @property
     def specularPowerMax(self):
-        return self._actor.GetProperty().GetSpecularPowerMaxValue()
+        return self.actor.GetProperty().GetSpecularPowerMaxValue()
 
     @property
     def specularPowerMin(self):
-        return self._actor.GetProperty().GetSpecularPowerMinValue()
+        return self.actor.GetProperty().GetSpecularPowerMinValue()
 
     @property
     def specularPower(self):
-        return self._actor.GetProperty().GetSpecularPower()
+        return self.actor.GetProperty().GetSpecularPower()
 
     @specularPower.setter
     def specularPower(self, value):
-        self._actor.GetProperty().SetSpecularPower(value)
+        self.actor.GetProperty().SetSpecularPower(value)
 
     # =========== Color ======================================================
 
     @property
     def color(self):
-        return self._actor.GetProperty().GetColor()
+        return self.actor.GetProperty().GetColor()
 
     @color.setter
     def color(self, value):
-        self._actor.GetProperty().SetColor(value)
+        self.actor.GetProperty().SetColor(value)
 
     @property
     def baseColorTexture(self):
-        return self._actor.GetProperty().GetTexture("baseColor")
+        return self.actor.GetProperty().GetTexture("baseColor")
 
     @baseColorTexture.setter
     def baseColorTexture(self, value):
-        self._actor.GetProperty().SetBaseColorTexture(value)
+        self.actor.GetProperty().SetBaseColorTexture(value)
 
     # ============================================================================
     # =========== PBR =============================================================
@@ -132,482 +132,482 @@ class VtkActor:
     # =========== Anisotropy ======================================================
     @property
     def anisotropyMax(self):
-        return self._actor.GetProperty().GetAnisotropyMaxValue()
+        return self.actor.GetProperty().GetAnisotropyMaxValue()
 
     @property
     def anisotropyMin(self):
-        return self._actor.GetProperty().GetAnisotropyMinValue()
+        return self.actor.GetProperty().GetAnisotropyMinValue()
 
     @property
     def anisotropy(self):
-        return self._actor.GetProperty().GetAnisotropy()
+        return self.actor.GetProperty().GetAnisotropy()
 
     @anisotropy.setter
     def anisotropy(self, value):
-        self._actor.GetProperty().SetAnisotropy(value)
+        self.actor.GetProperty().SetAnisotropy(value)
 
     @property
     def anisotropyRotationMax(self):
-        return self._actor.GetProperty().GetAnisotropyRotationMaxValue()
+        return self.actor.GetProperty().GetAnisotropyRotationMaxValue()
 
     @property
     def anisotropyRotationMin(self):
-        return self._actor.GetProperty().GetAnisotropyRotationMinValue()
+        return self.actor.GetProperty().GetAnisotropyRotationMinValue()
 
     @property
     def anisotropyRotation(self):
-        return self._actor.GetProperty().GetAnisotropyRotation()
+        return self.actor.GetProperty().GetAnisotropyRotation()
 
     @anisotropyRotation.setter
     def anisotropyRotation(self, value):
-        self._actor.GetProperty().SetAnisotropyRotation(value)
+        self.actor.GetProperty().SetAnisotropyRotation(value)
 
     @property
     def anisotropyTexture(self):
         # todo
-        return self._actor.GetProperty().GetTexture("anisotropy")
+        return self.actor.GetProperty().GetTexture("anisotropy")
 
     @anisotropyTexture.setter
     def anisotropyTexture(self, value):
-        self._actor.GetProperty().SetAnisotropyTexture(value)
+        self.actor.GetProperty().SetAnisotropyTexture(value)
 
     # =========== IOR ======================================================
     @property
     def baseIORMax(self):
-        return self._actor.GetProperty().GetBaseIORMaxValue()
+        return self.actor.GetProperty().GetBaseIORMaxValue()
 
     @property
     def baseIORMin(self):
-        return self._actor.GetProperty().GetBaseIORMinValue()
+        return self.actor.GetProperty().GetBaseIORMinValue()
 
     @property
     def baseIOR(self):
-        return self._actor.GetProperty().GetBaseIOR()
+        return self.actor.GetProperty().GetBaseIOR()
 
     @baseIOR.setter
     def baseIOR(self, value):
-        self._actor.GetProperty().SetBaseIOR(value)
+        self.actor.GetProperty().SetBaseIOR(value)
 
     @property
     def coatIORMax(self):
-        return self._actor.GetProperty().GetCoatIORMaxValue()
+        return self.actor.GetProperty().GetCoatIORMaxValue()
 
     @property
     def coatIORMin(self):
-        return self._actor.GetProperty().GetCoatIORMinValue()
+        return self.actor.GetProperty().GetCoatIORMinValue()
 
     @property
     def coatIOR(self):
-        return self._actor.GetProperty().GetCoatIOR()
+        return self.actor.GetProperty().GetCoatIOR()
 
     @coatIOR.setter
     def coatIOR(self, value):
-        self._actor.GetProperty().SetCoatIOR(value)
+        self.actor.GetProperty().SetCoatIOR(value)
 
     # =========== Coat ======================================================
     @property
     def coatColor(self):
-        return self._actor.GetProperty().GetCoatColor()
+        return self.actor.GetProperty().GetCoatColor()
 
     @coatColor.setter
     def coatColor(self, value):
-        self._actor.GetProperty().SetCoatColor(value)
+        self.actor.GetProperty().SetCoatColor(value)
 
     @property
     def coatStrengthMax(self):
-        return self._actor.GetProperty().GetCoatStrengthMaxValue()
+        return self.actor.GetProperty().GetCoatStrengthMaxValue()
 
     @property
     def coatStrengthMin(self):
-        return self._actor.GetProperty().GetCoatStrengthMinValue()
+        return self.actor.GetProperty().GetCoatStrengthMinValue()
 
     @property
     def coatStrength(self):
-        return self._actor.GetProperty().GetCoatStrength()
+        return self.actor.GetProperty().GetCoatStrength()
 
     @coatStrength.setter
     def coatStrength(self, value):
-        self._actor.GetProperty().SetCoatStrength(value)
+        self.actor.GetProperty().SetCoatStrength(value)
 
     @property
     def coatNormalTexture(self):
-        return self._actor.GetProperty().GetTexture("coatNormal")
+        return self.actor.GetProperty().GetTexture("coatNormal")
 
     @coatNormalTexture.setter
     def coatNormalTexture(self, value):
-        self._actor.GetProperty().SetCoatNormalTexture(value)
+        self.actor.GetProperty().SetCoatNormalTexture(value)
 
     @property
     def coatNormalScaleMax(self):
-        return self._actor.GetProperty().GetCoatNormalScaleMaxValue()
+        return self.actor.GetProperty().GetCoatNormalScaleMaxValue()
 
     @property
     def coatNormalScaleMin(self):
-        return self._actor.GetProperty().GetCoatNormalScaleMinValue()
+        return self.actor.GetProperty().GetCoatNormalScaleMinValue()
 
     @property
     def coatNormalScale(self):
-        return self._actor.GetProperty().GetCoatNormalScale()
+        return self.actor.GetProperty().GetCoatNormalScale()
 
     @coatNormalScale.setter
     def coatNormalScale(self, value):
-        self._actor.GetProperty().SetCoatNormalScale(value)
+        self.actor.GetProperty().SetCoatNormalScale(value)
 
     @property
     def coatRoughnessMax(self):
-        return self._actor.GetProperty().GetCoatRoughnessMaxValue()
+        return self.actor.GetProperty().GetCoatRoughnessMaxValue()
 
     @property
     def coatRoughnessMin(self):
-        return self._actor.GetProperty().GetCoatRoughnessMinValue()
+        return self.actor.GetProperty().GetCoatRoughnessMinValue()
 
     @property
     def coatRoughness(self):
-        return self._actor.GetProperty().GetCoatRoughness()
+        return self.actor.GetProperty().GetCoatRoughness()
 
     @coatRoughness.setter
     def coatRoughness(self, value):
-        self._actor.GetProperty().SetCoatRoughness(value)
+        self.actor.GetProperty().SetCoatRoughness(value)
 
     # =========== Emissive ======================================================
     @property
     def emissiveFactor(self):
-        return self._actor.GetProperty().GetEmissiveFactor()
+        return self.actor.GetProperty().GetEmissiveFactor()
 
     @emissiveFactor.setter
     def emissiveFactor(self, value):
-        self._actor.GetProperty().SetEmissiveFactor(value)
+        self.actor.GetProperty().SetEmissiveFactor(value)
 
     @property
     def emissiveTexture(self):
-        return self._actor.GetProperty().GetTexture("emissiveTexture")
+        return self.actor.GetProperty().GetTexture("emissiveTexture")
 
     @emissiveTexture.setter
     def emissiveTexture(self, value):
-        self._actor.GetProperty().SetEmissiveTexture(value)
+        self.actor.GetProperty().SetEmissiveTexture(value)
 
     # =========== Normal ======================================================
     @property
     def normalScale(self):
-        return self._actor.GetProperty().GetNormalScale()
+        return self.actor.GetProperty().GetNormalScale()
 
     @normalScale.setter
     def normalScale(self, value):
-        self._actor.GetProperty().SetNormalScale(value)
+        self.actor.GetProperty().SetNormalScale(value)
 
     @property
     def normalTexture(self):
-        return self._actor.GetProperty().GetTexture("normalTexture")
+        return self.actor.GetProperty().GetTexture("normalTexture")
 
     @normalTexture.setter
     def normalTexture(self, value):
-        self._actor.GetProperty().SetNormalTexture(value)
+        self.actor.GetProperty().SetNormalTexture(value)
 
     # =========== Metallic ======================================================
     @property
     def metallicMax(self):
-        return self._actor.GetProperty().GetMetallicMaxValue()
+        return self.actor.GetProperty().GetMetallicMaxValue()
 
     @property
     def metallicMin(self):
-        return self._actor.GetProperty().GetMetallicMinValue()
+        return self.actor.GetProperty().GetMetallicMinValue()
 
     @property
     def metallic(self):
-        return self._actor.GetProperty().GetMetallic()
+        return self.actor.GetProperty().GetMetallic()
 
     @metallic.setter
     def metallic(self, value):
-        self._actor.GetProperty().SetMetallic(value)
+        self.actor.GetProperty().SetMetallic(value)
 
     # =========== Roughness ======================================================
     @property
     def roughnessMax(self):
-        return self._actor.GetProperty().GetRoughnessMaxValue()
+        return self.actor.GetProperty().GetRoughnessMaxValue()
 
     @property
     def roughnessMin(self):
-        return self._actor.GetProperty().GetRoughnessMinValue()
+        return self.actor.GetProperty().GetRoughnessMinValue()
 
     @property
     def roughness(self):
-        return self._actor.GetProperty().GetRoughness()
+        return self.actor.GetProperty().GetRoughness()
 
     @roughness.setter
     def roughness(self, value):
-        self._actor.GetProperty().SetRoughness(value)
+        self.actor.GetProperty().SetRoughness(value)
 
     # =========== OcclusionStrength ======================================================
     @property
     def occlusionStrengthMax(self):
-        return self._actor.GetProperty().GetOcclusionStrengthMaxValue()
+        return self.actor.GetProperty().GetOcclusionStrengthMaxValue()
 
     @property
     def occlusionStrengthMin(self):
-        return self._actor.GetProperty().GetOcclusionStrengthMinValue()
+        return self.actor.GetProperty().GetOcclusionStrengthMinValue()
 
     @property
     def occlusionStrength(self):
-        return self._actor.GetProperty().GetOcclusionStrength()
+        return self.actor.GetProperty().GetOcclusionStrength()
 
     @occlusionStrength.setter
     def occlusionStrength(self, value):
-        self._actor.GetProperty().SetOcclusionStrength(value)
+        self.actor.GetProperty().SetOcclusionStrength(value)
 
     # =========== Edge ======================================================
     @property
     def edgeTint(self):
-        return self._actor.GetProperty().GetEdgeTint()
+        return self.actor.GetProperty().GetEdgeTint()
 
     @edgeTint.setter
     def edgeTint(self, value):
-        self._actor.GetProperty().SetEdgeTint(value)
+        self.actor.GetProperty().SetEdgeTint(value)
 
     @property
     def edgeColor(self):
-        return self._actor.GetProperty().GetEdgeColor()
+        return self.actor.GetProperty().GetEdgeColor()
 
     @edgeColor.setter
     def edgeColor(self, value):
-        self._actor.GetProperty().SetEdgeColor(value)
+        self.actor.GetProperty().SetEdgeColor(value)
 
     @property
     def edgeOpacityMax(self):
-        return self._actor.GetProperty().GetEdgeOpacityMaxValue()
+        return self.actor.GetProperty().GetEdgeOpacityMaxValue()
 
     @property
     def edgeOpacityMin(self):
-        return self._actor.GetProperty().GetEdgeOpacityMinValue()
+        return self.actor.GetProperty().GetEdgeOpacityMinValue()
 
     @property
     def edgeOpacity(self):
-        return self._actor.GetProperty().GetEdgeOpacity()
+        return self.actor.GetProperty().GetEdgeOpacity()
 
     @edgeOpacity.setter
     def edgeOpacity(self, value):
-        self._actor.GetProperty().SetEdgeOpacity(value)
+        self.actor.GetProperty().SetEdgeOpacity(value)
 
     @property
     def edgeVisibility(self):
-        return self._actor.GetProperty().GetEdgeVisibility()
+        return self.actor.GetProperty().GetEdgeVisibility()
 
     @edgeVisibility.setter
     def edgeVisibility(self, value):
-        self._actor.GetProperty().SetEdgeVisible(value)
+        self.actor.GetProperty().SetEdgeVisible(value)
 
     # =========== Line ======================================================
     @property
     def lineWidthMax(self):
-        return self._actor.GetProperty().GetLineWidthMaxValue()
+        return self.actor.GetProperty().GetLineWidthMaxValue()
 
     @property
     def lineWidthMin(self):
-        return self._actor.GetProperty().GetLineWidthMinValue()
+        return self.actor.GetProperty().GetLineWidthMinValue()
 
     @property
     def lineWidth(self):
-        return self._actor.GetProperty().GetLineWidth()
+        return self.actor.GetProperty().GetLineWidth()
 
     @lineWidth.setter
     def lineWidth(self, value):
-        self._actor.GetProperty().SetLineWidth(value)
+        self.actor.GetProperty().SetLineWidth(value)
 
     @property
     def lineStippleRepeatFactorMax(self):
-        return self._actor.GetProperty().GetLineStippleRepeatFactorMaxValue()
+        return self.actor.GetProperty().GetLineStippleRepeatFactorMaxValue()
 
     @property
     def lineStippleRepeatFactorMin(self):
-        return self._actor.GetProperty().GetLineStippleRepeatFactorMinValue()
+        return self.actor.GetProperty().GetLineStippleRepeatFactorMinValue()
 
     @property
     def lineStippleRepeatFactor(self):
-        return self._actor.GetProperty().GetLineStippleRepeatFactor()
+        return self.actor.GetProperty().GetLineStippleRepeatFactor()
 
     @lineStippleRepeatFactor.setter
     def lineStippleRepeatFactor(self, value):
-        self._actor.GetProperty().SetLineStippleRepeatFactor(value)
+        self.actor.GetProperty().SetLineStippleRepeatFactor(value)
 
     @property
     def lineStipplePattern(self):
-        return self._actor.GetProperty().GetLineStipplePattern()
+        return self.actor.GetProperty().GetLineStipplePattern()
 
     @lineStipplePattern.setter
     def lineStipplePattern(self, value):
-        self._actor.GetProperty().SetLineStipplePattern(value)
+        self.actor.GetProperty().SetLineStipplePattern(value)
 
     # =========== Vertex ======================================================
     @property
     def vertexColor(self):
-        return self._actor.GetProperty().GetVertexColor()
+        return self.actor.GetProperty().GetVertexColor()
 
     @vertexColor.setter
     def vertexColor(self, value):
-        self._actor.GetProperty().SetVertexColor(value)
+        self.actor.GetProperty().SetVertexColor(value)
 
     @property
     def vertexVisibility(self):
-        return self._actor.GetProperty().GetVertexVisibility()
+        return self.actor.GetProperty().GetVertexVisibility()
 
     @vertexVisibility.setter
     def vertexVisibility(self, value):
-        self._actor.GetProperty().SetVertexVisibility(value)
+        self.actor.GetProperty().SetVertexVisibility(value)
 
     # =========== Point ======================================================
     @property
     def pointSizeMax(self):
-        return self._actor.GetProperty().GetPointSizeMaxValue()
+        return self.actor.GetProperty().GetPointSizeMaxValue()
 
     @property
     def pointSizeMin(self):
-        return self._actor.GetProperty().GetPointSizeMinValue()
+        return self.actor.GetProperty().GetPointSizeMinValue()
 
     @property
     def pointSize(self):
-        return self._actor.GetProperty().GetPointSize()
+        return self.actor.GetProperty().GetPointSize()
 
     @pointSize.setter
     def pointSize(self, value):
-        self._actor.GetProperty().SetPointSize(value)
+        self.actor.GetProperty().SetPointSize(value)
 
     # =========== ORM ======================================================
     @property
     def ORMTexture(self):
-        return self._actor.GetProperty().GetTexture("ORMTexture")
+        return self.actor.GetProperty().GetTexture("ORMTexture")
 
     @ORMTexture.setter
     def ORMTexture(self, value):
-        self._actor.GetProperty().SetORMTexture(value)
+        self.actor.GetProperty().SetORMTexture(value)
 
     # =========== Opacity ======================================================
     @property
     def opacityMax(self):
-        return self._actor.GetProperty().GetOpacityMaxValue()
+        return self.actor.GetProperty().GetOpacityMaxValue()
 
     @property
     def opacityMin(self):
-        return self._actor.GetProperty().GetOpacityMinValue()
+        return self.actor.GetProperty().GetOpacityMinValue()
 
     @property
     def opacity(self):
-        return self._actor.GetProperty().GetOpacity()
+        return self.actor.GetProperty().GetOpacity()
 
     @opacity.setter
     def opacity(self, value):
-        self._actor.GetProperty().SetOpacity(value)
+        self.actor.GetProperty().SetOpacity(value)
 
     # =========== Culling ======================================================
     @property
     def backFaceCulling(self):
-        return self._actor.GetProperty().GetBackfaceCulling()
+        return self.actor.GetProperty().GetBackfaceCulling()
 
     @backFaceCulling.setter
     def backFaceCulling(self, value):
-        self._actor.GetProperty().SetBackfaceCulling(value)
+        self.actor.GetProperty().SetBackfaceCulling(value)
 
     @property
     def frontFaceCulling(self):
-        return self._actor.GetProperty().GetFrontfaceCulling()
+        return self.actor.GetProperty().GetFrontfaceCulling()
 
     @frontFaceCulling.setter
     def frontFaceCulling(self, value):
-        self._actor.GetProperty().SetFrontfaceCulling(value)
+        self.actor.GetProperty().SetFrontfaceCulling(value)
 
     @property
     def showTexturesOnBackface(self):
-        return self._actor.GetProperty().GetShowTexturesOnBackface()
+        return self.actor.GetProperty().GetShowTexturesOnBackface()
 
     @showTexturesOnBackface.setter
     def showTexturesOnBackface(self, value):
-        self._actor.GetProperty().SetShowTexturesOnBackface(value)
+        self.actor.GetProperty().SetShowTexturesOnBackface(value)
 
     # =========== Interpolation ======================================================
     @property
     def interpolationMax(self):
-        return self._actor.GetProperty().GetInterpolationMaxValue()
+        return self.actor.GetProperty().GetInterpolationMaxValue()
 
     @property
     def interpolationMin(self):
-        return self._actor.GetProperty().GetInterpolationMinValue()
+        return self.actor.GetProperty().GetInterpolationMinValue()
 
     @property
     def interpolation(self):
-        return self._actor.GetProperty().GetInterpolation()
+        return self.actor.GetProperty().GetInterpolation()
 
     def interpolationString(self):
-        return self._actor.GetProperty().GetInterpolationAsString()
+        return self.actor.GetProperty().GetInterpolationAsString()
 
     @interpolation.setter
     def interpolation(self, value):
-        self._actor.GetProperty().SetInterpolation(value)
+        self.actor.GetProperty().SetInterpolation(value)
 
     # =========== Representation ======================================================
     @property
     def representationMax(self):
-        return self._actor.GetProperty().GetRepresentationMaxValue()
+        return self.actor.GetProperty().GetRepresentationMaxValue()
 
     @property
     def representationMin(self):
-        return self._actor.GetProperty().GetRepresentationMinValue()
+        return self.actor.GetProperty().GetRepresentationMinValue()
 
     @property
     def representation(self):
-        return self._actor.GetProperty().GetRepresentation()
+        return self.actor.GetProperty().GetRepresentation()
 
     def representationString(self):
-        return self._actor.GetProperty().GetRepresentationAsString()
+        return self.actor.GetProperty().GetRepresentationAsString()
 
     @representation.setter
     def representation(self, value):
-        self._actor.GetProperty().SetRepresentation(value)
+        self.actor.GetProperty().SetRepresentation(value)
 
     # =========== Render Present ======================================================
     @property
     def renderPointsAsSpheres(self):
-        return self._actor.GetProperty().GetRenderPointsAsSpheres()
+        return self.actor.GetProperty().GetRenderPointsAsSpheres()
 
     @renderPointsAsSpheres.setter
     def renderPointsAsSpheres(self, value):
-        self._actor.GetProperty().SetRenderPointsAsSpheres(value)
+        self.actor.GetProperty().SetRenderPointsAsSpheres(value)
 
     @property
     def renderLinesAsTubes(self):
-        return self._actor.GetProperty().GetRenderLinesAsTubes()
+        return self.actor.GetProperty().GetRenderLinesAsTubes()
 
     @renderLinesAsTubes.setter
     def renderLinesAsTubes(self, value):
-        self._actor.GetProperty().SetRenderLinesAsTubes(value)
+        self.actor.GetProperty().SetRenderLinesAsTubes(value)
 
     # =========== Selection ======================================================
     @property
     def selectionColor(self):
-        return self._actor.GetProperty().GetSelectionColor()
+        return self.actor.GetProperty().GetSelectionColor()
 
     @selectionColor.setter
     def selectionColor(self, value):
-        self._actor.GetProperty().SetSelectionColor(value)
+        self.actor.GetProperty().SetSelectionColor(value)
 
     @property
     def selectionLineWidth(self):
-        return self._actor.GetProperty().GetSelectionLineWidth()
+        return self.actor.GetProperty().GetSelectionLineWidth()
 
     @selectionLineWidth.setter
     def selectionLineWidth(self, value):
-        self._actor.GetProperty().SetSelectionLineWidth(value)
+        self.actor.GetProperty().SetSelectionLineWidth(value)
 
     @property
     def selectionPointSize(self):
-        return self._actor.GetProperty().GetSelectionPointSize()
+        return self.actor.GetProperty().GetSelectionPointSize()
 
     @selectionPointSize.setter
     def selectionPointSize(self, value):
-        self._actor.GetProperty().SetSelectionPointSize(value)
+        self.actor.GetProperty().SetSelectionPointSize(value)
 
     # =========== Mapper ======================================================
     @property
     def mapper(self):
-        return self._actor.GetMapper()
+        return self.actor.GetMapper()
 
     @mapper.setter
     def mapper(self, value):
-        self._actor.SetMapper(value)
+        self.actor.SetMapper(value)

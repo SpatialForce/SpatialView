@@ -3,12 +3,13 @@
 #  I am making my contributions/submissions to this project solely in my
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
+
 from vtkmodules.vtkRenderingCore import vtkMapper, vtkTexture
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
-class VtkOpenGLSkybox:
+class VtkSkybox:
     def __init__(self):
-        self._skybox: vtkOpenGLSkybox = None
+        self.skybox: vtkOpenGLSkybox = None
 
     @property
     def texture(self) -> vtkTexture: ...
@@ -36,8 +37,3 @@ class VtkOpenGLSkybox:
     def gammaCorrect(self) -> bool: ...
     @gammaCorrect.setter
     def gammaCorrect(self, value: bool): ...
-    # =========== Mapper ======================================================
-    @property
-    def mapper(self) -> vtkMapper: ...
-    @mapper.setter
-    def mapper(self, value: vtkMapper): ...

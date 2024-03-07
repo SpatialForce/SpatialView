@@ -145,6 +145,7 @@ class NodeView(QtWidgets.QMainWindow):
 def registerDataModels(renderer, interactor):
     ret = sView.registerAllDataModels()
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
+    sView.VtkSkyboxModel.register(ret, renderer, interactor)
 
     return ret
 

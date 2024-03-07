@@ -8,7 +8,7 @@ from vtkmodules.vtkRenderingCore import vtkActor, vtkTexture, vtkMapper
 
 class VtkActor:
     def __init__(self):
-        self._actor: vtkActor = None
+        self.actor: vtkActor = None
     # ==========================================================================
     # =========== Blinn-Phong ==================================================
     # ==========================================================================

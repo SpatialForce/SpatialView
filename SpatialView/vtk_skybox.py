@@ -8,17 +8,17 @@ from vtkmodules.vtkRenderingCore import vtkSkybox
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
 
-class VtkOpenGLSkybox:
+class VtkSkybox:
     def __init__(self):
-        self._skybox = vtkOpenGLSkybox()
+        self.skybox = vtkOpenGLSkybox()
 
     @property
     def texture(self):
-        return self._skybox.GetTexture()
+        return self.skybox.GetTexture()
 
     @texture.setter
     def texture(self, value):
-        self._skybox.SetTexture(value)
+        self.skybox.SetTexture(value)
 
     @staticmethod
     def projectionName(value):
@@ -42,41 +42,32 @@ class VtkOpenGLSkybox:
 
     @property
     def projection(self):
-        return self._skybox.GetProjection()
+        return self.skybox.GetProjection()
 
     @projection.setter
     def projection(self, value):
-        self._skybox.SetProjection(value)
+        self.skybox.SetProjection(value)
 
     @property
     def floorPlane(self):
-        return self._skybox.GetFloorPlane()
+        return self.skybox.GetFloorPlane()
 
     @floorPlane.setter
     def floorPlane(self, value):
-        self._skybox.SetFloorPlane(value)
+        self.skybox.SetFloorPlane(value)
 
     @property
     def floorRight(self):
-        return self._skybox.GetFloorRight()
+        return self.skybox.GetFloorRight()
 
     @floorRight.setter
     def floorRight(self, value):
-        self._skybox.SetFloorRight(value)
+        self.skybox.SetFloorRight(value)
 
     @property
     def gammaCorrect(self):
-        return self._skybox.GetGammaCorrect()
+        return self.skybox.GetGammaCorrect()
 
     @gammaCorrect.setter
     def gammaCorrect(self, value):
-        self._skybox.SetGammaCorrect(value)
-
-    # =========== Mapper ======================================================
-    @property
-    def mapper(self):
-        return self._skybox.GetMapper()
-
-    @mapper.setter
-    def mapper(self, value):
-        self._skybox.SetMapper(value)
+        self.skybox.SetGammaCorrect(value)
