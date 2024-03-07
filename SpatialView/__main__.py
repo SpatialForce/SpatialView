@@ -14,7 +14,7 @@ import vtkmodules.vtkInteractionStyle
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtkmodules.vtkRenderingCore import vtkRenderer
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
 import SpatialView as sView
@@ -58,10 +58,22 @@ class VtkView(QtWidgets.QWidget):
 
 
 class NodeView(QtWidgets.QMainWindow):
-    def __init__(self, registry):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Node-based flow editor")
         self.setGeometry(400, 300, 800, 600)
+
+        # vtk
+        self.vtkWindow = VtkView()
+        self.vtkWindow.setWindowFlags(
+            QtCore.Qt.WindowType.CustomizeWindowHint
+            | QtCore.Qt.WindowType.WindowMinMaxButtonsHint
+        )
+        self.vtkWindow.show()
+        self.vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
+
+        # registry
+        registry = registerDataModels(self.vtkWindow.ren, self.vtkWindow.iren)
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
@@ -80,10 +92,7 @@ class NodeView(QtWidgets.QMainWindow):
         # toolbar
         toolbar = QtWidgets.QToolBar()
         self.addToolBar(toolbar)
-        actions = nodeView.actions()
-        for action in actions:
-            toolbar.addAction(action)
-            nodeView.removeAction(action)
+        toolbar.addActions(nodeView.actions())
 
         # status bar
         statusbar = QtWidgets.QStatusBar()
@@ -141,16 +150,7 @@ def registerDataModels(renderer, interactor):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
-    # vtk
-    vtkWindow = VtkView()
-    vtkWindow.show()
-    vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
-
-    # registry
-    registry = registerDataModels(vtkWindow.ren, vtkWindow.iren)
-
-    # node
-    nodeWindow = NodeView(registry)
+    nodeWindow = NodeView()
     nodeWindow.show()
 
     sys.exit(app.exec())
