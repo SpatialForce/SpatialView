@@ -54,6 +54,7 @@ class VtkView(QtWidgets.QWidget):
 
         def reset():
             self.ren.ResetCamera()
+            self.ren.ResetCameraClippingRange()
             self.iren.ReInitialize()
 
         action.triggered.connect(self, reset)
@@ -142,16 +143,7 @@ class NodeView(QtWidgets.QMainWindow):
 
 
 def registerDataModels(renderer, interactor):
-    ret = sNode.NodeDelegateModelRegistry()
-    # Reader
-    sView.VtkExodusIIReaderModel.register(ret)
-    # Source
-    sView.VtkSphereSourceModel.register(ret)
-    sView.VtkCylinderSourceModel.register(ret)
-    # Filter
-    sView.VtkCompositeDataGeometryFilterModel.register(ret)
-    sView.VtkMapperDataModel.register(ret)
-    # Display
+    ret = sView.registerAllDataModels()
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
 
     return ret
