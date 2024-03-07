@@ -13,6 +13,7 @@ import vtkmodules.vtkInteractionStyle
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+from vtkmodules.vtkCommonColor import vtkNamedColors
 from vtkmodules.vtkRenderingCore import vtkRenderer
 from PySide6 import QtWidgets, QtGui, QtCore
 
@@ -39,6 +40,8 @@ class VtkView(QtWidgets.QWidget):
         self.gridlayout.setContentsMargins(0, 0, 0, 0)
         self.gridlayout.setSpacing(0)
         self.ren = vtkRenderer()
+        self.ren.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
+
         vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
 
@@ -140,10 +143,17 @@ class NodeView(QtWidgets.QMainWindow):
 
 def registerDataModels(renderer, interactor):
     ret = sNode.NodeDelegateModelRegistry()
+    # Reader
+    sView.VtkExodusIIReaderModel.register(ret)
+    # Source
     sView.VtkSphereSourceModel.register(ret)
     sView.VtkCylinderSourceModel.register(ret)
+    # Filter
+    sView.VtkCompositeDataGeometryFilterModel.register(ret)
     sView.VtkMapperDataModel.register(ret)
+    # Display
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
+
     return ret
 
 
