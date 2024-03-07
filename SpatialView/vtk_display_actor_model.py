@@ -9,7 +9,7 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkActor, vtkRenderWindowInteractor
 
-from SpatialView.vtk_mapper_data import VtkMapperData
+from .filter.vtk_mapper_data import VtkMapperData
 
 
 class VtkDisplayActorModel(sNode.NodeDelegateModel):

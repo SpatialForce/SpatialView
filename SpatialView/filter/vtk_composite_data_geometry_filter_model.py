@@ -8,23 +8,21 @@ from typing import override
 
 import SpatialNode as sNode
 from SpatialNode import PortType
-from vtkmodules.vtkFiltersSources import vtkSphereSource
-from vtkmodules.vtkRenderingCore import vtkPolyDataMapper
+from vtkmodules.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
 
 from SpatialView.vtk_algo_data import VtkAlgoData
-from SpatialView.vtk_mapper_data import VtkMapperData
 
 
-class VtkMapperDataModel(sNode.NodeDelegateModel):
+class VtkCompositeDataGeometryFilterModel(sNode.NodeDelegateModel):
     def __init__(self):
         super().__init__()
 
         # Create a mapper
-        self._mapper = vtkPolyDataMapper()
+        self._mapper = vtkCompositeDataGeometryFilter()
 
     @override
     def caption(self):
-        return "Vtk Mapper"
+        return "Vtk Composite Data Geometry Filter"
 
     @override
     def captionVisible(self):
@@ -33,13 +31,15 @@ class VtkMapperDataModel(sNode.NodeDelegateModel):
     @staticmethod
     @override
     def name():
-        return "VtkMapperDataModel"
+        return "VtkCompositeDataGeometryFilterModel"
 
     @staticmethod
     @override
     def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
         registry.registerModel(
-            VtkMapperDataModel, VtkMapperDataModel.name(), "Operators"
+            VtkCompositeDataGeometryFilterModel,
+            VtkCompositeDataGeometryFilterModel.name(),
+            "Operators",
         )
 
     @override
@@ -52,16 +52,17 @@ class VtkMapperDataModel(sNode.NodeDelegateModel):
             case PortType.In:
                 return VtkAlgoData().type()
             case PortType.Out:
-                return VtkMapperData().type()
+                return VtkAlgoData().type()
 
     @override
     def outData(self, port):
-        return VtkMapperData(self._mapper)
+        return VtkAlgoData(self._mapper.GetOutputPort(0))
 
     @override
     def setInData(self, nodeData, portIndex):
         if isinstance(nodeData, VtkAlgoData):
-            self._mapper.SetInputConnection(nodeData.algo())
+            self._mapper.SetInputConnection(0, nodeData.algo())
+            self._mapper.Update(0)
             self.dataUpdated.emit(0)
 
     @override

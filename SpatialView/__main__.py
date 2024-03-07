@@ -140,10 +140,17 @@ class NodeView(QtWidgets.QMainWindow):
 
 def registerDataModels(renderer, interactor):
     ret = sNode.NodeDelegateModelRegistry()
+    # Reader
+    sView.VtkExodusIIReaderModel.register(ret)
+    # Source
     sView.VtkSphereSourceModel.register(ret)
     sView.VtkCylinderSourceModel.register(ret)
+    # Filter
+    sView.VtkCompositeDataGeometryFilterModel.register(ret)
     sView.VtkMapperDataModel.register(ret)
+    # Display
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
+
     return ret
 
 
