@@ -534,6 +534,9 @@ class VtkActor:
     def interpolation(self):
         return self._actor.GetProperty().GetInterpolation()
 
+    def interpolationString(self):
+        return self._actor.GetProperty().GetInterpolationAsString()
+
     @interpolation.setter
     def interpolation(self, value):
         self._actor.GetProperty().SetInterpolation(value)
@@ -550,6 +553,9 @@ class VtkActor:
     @property
     def representation(self):
         return self._actor.GetProperty().GetRepresentation()
+
+    def representationString(self):
+        return self._actor.GetProperty().GetRepresentationAsString()
 
     @representation.setter
     def representation(self, value):

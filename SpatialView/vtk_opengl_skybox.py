@@ -4,6 +4,7 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
+from vtkmodules.vtkRenderingCore import vtkSkybox
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
 
@@ -18,6 +19,26 @@ class VtkOpenGLSkybox:
     @texture.setter
     def texture(self, value):
         self._skybox.SetTexture(value)
+
+    @staticmethod
+    def projectionName(value):
+        match value:
+            case 0:
+                return vtkSkybox.Cube.__repr__()
+            case 1:
+                return vtkSkybox.Sphere.__repr__()
+            case 2:
+                return vtkSkybox.Floor.__repr__()
+            case 3:
+                return vtkSkybox.StereoSphere.__repr__()
+
+    @property
+    def projectionMax(self):
+        return 3
+
+    @property
+    def projectionMin(self):
+        return 0
 
     @property
     def projection(self):
