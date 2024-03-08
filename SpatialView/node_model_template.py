@@ -80,7 +80,10 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         return portRegistry[type(self).__name__]
 
     def dialog(self):
-        self._label.setText("settings")
+        registry = self.getRegistry()
+        if len(registry) == 0:
+            return
+
         settings = QtWidgets.QDialog()
         settings.setWindowFlags(
             QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.Popup
@@ -110,7 +113,6 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         scroll_area_main_layout.addLayout(grid_layout)
 
         row = 0
-        registry = self.getRegistry()
         for name in registry:
             label_widget = QtWidgets.QLabel(name)
             label_widget.setMaximumWidth(150)
