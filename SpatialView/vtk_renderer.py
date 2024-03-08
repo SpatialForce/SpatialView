@@ -7,6 +7,7 @@
 from vtkmodules.vtkCommonColor import vtkNamedColors
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTerrain
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindowInteractor
+from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLRenderer
 
 
 class Singleton(object):
@@ -23,7 +24,7 @@ class Singleton(object):
 @Singleton
 class Renderer:
     def __init__(self):
-        self.handle = vtkRenderer()
+        self.handle = vtkOpenGLRenderer()
         self.handle.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
         self._interactor: vtkRenderWindowInteractor | None = None
 
@@ -42,10 +43,105 @@ class Renderer:
         self._interactor.ReInitialize()
 
     @property
+    def useImageBasedLighting(self):
+        return self.handle.GetUseImageBasedLighting()
+
+    @useImageBasedLighting.setter
+    def useImageBasedLighting(self, value):
+        self.handle.SetUseImageBasedLighting(value)
+
+    @property
+    def useSphericalHarmonics(self):
+        return self.handle.GetUseSphericalHarmonics()
+
+    @useSphericalHarmonics.setter
+    def useSphericalHarmonics(self, value):
+        self.handle.SetUseSphericalHarmonics(value)
+
+    @property
     def environmentTexture(self):
         return self.handle.GetEnvironmentTexture()
 
     @environmentTexture.setter
     def environmentTexture(self, value):
-        self.handle.UseSphericalHarmonicsOn()
+        self.useImageBasedLighting = True
+        self.useSphericalHarmonics = True
         self.handle.SetEnvironmentTexture(value, False)
+        irradiance = self.handle.GetEnvMapIrradiance()
+        irradiance.SetIrradianceStep(0.3)
+
+    @property
+    def useFXAA(self):
+        return self.handle.GetUseFXAA()
+
+    @useFXAA.setter
+    def useFXAA(self, value):
+        self.handle.SetUseFXAA(value)
+
+    @property
+    def useShadows(self):
+        return self.handle.GetUseShadows()
+
+    @useShadows.setter
+    def useShadows(self, value):
+        self.handle.SetUseShadows(value)
+
+    # =========== SSAO ======================================================
+
+    @property
+    def useSSAO(self):
+        return self.handle.GetUseSSAO()
+
+    @useSSAO.setter
+    def useSSAO(self, value):
+        self.handle.SetUseSSAO(value)
+
+    @property
+    def ssaoBlur(self):
+        return self.handle.GetSSAOBlur()
+
+    @ssaoBlur.setter
+    def ssaoBlur(self, value):
+        self.handle.SetSSAOBlur(value)
+
+    @property
+    def ssaoBias(self):
+        return self.handle.GetSSAOBias()
+
+    @ssaoBias.setter
+    def ssaoBias(self, value):
+        self.handle.SetSSAOBias(value)
+
+    @property
+    def ssaoRadius(self):
+        return self.handle.GetSSAORadius()
+
+    @ssaoRadius.setter
+    def ssaoRadius(self, value):
+        self.handle.SetSSAORadius(value)
+
+    @property
+    def ssaoKernelSize(self):
+        return self.handle.GetSSAOKernelSize()
+
+    @ssaoKernelSize.setter
+    def ssaoKernelSize(self, value):
+        self.handle.SetSSAOKernelSize(value)
+
+    # =========== Irradiance ======================================================
+
+    @property
+    def irradianceSize(self):
+        return self.handle.GetEnvMapIrradiance().GetIrradianceSize()
+
+    @irradianceSize.setter
+    def irradianceSize(self, value):
+        self.handle.GetEnvMapIrradiance().SetIrradianceSize(value)
+
+    @property
+    def irradianceStep(self):
+        return self.handle.GetEnvMapIrradiance().GetIrradianceStep()
+
+    @irradianceStep.setter
+    def irradianceStep(self, value):
+        self.handle.GetEnvMapIrradiance().SetIrradianceStep(value)
