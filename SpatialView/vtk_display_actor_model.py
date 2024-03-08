@@ -626,6 +626,9 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @inPort.setter
     def inPort(self, value):
         self.mapper = value.mapper()
+        if value:
+            renderer = Renderer()
+            renderer.reset()
 
     def __init__(self):
         super().__init__()

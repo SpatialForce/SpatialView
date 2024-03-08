@@ -4,7 +4,9 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from vtkmodules.vtkRenderingCore import vtkRenderer
+from vtkmodules.vtkCommonColor import vtkNamedColors
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTerrain
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindowInteractor
 
 
 class Singleton(object):
@@ -22,3 +24,19 @@ class Singleton(object):
 class Renderer:
     def __init__(self):
         self.handle = vtkRenderer()
+        self.handle.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
+        self._interactor: vtkRenderWindowInteractor | None = None
+
+    @property
+    def interactor(self) -> vtkRenderWindowInteractor:
+        return self._interactor
+
+    @interactor.setter
+    def interactor(self, value: vtkRenderWindowInteractor):
+        self._interactor = value
+        self._interactor.SetInteractorStyle(vtkInteractorStyleTerrain())
+
+    def reset(self):
+        self.handle.ResetCamera()
+        self.handle.ResetCameraClippingRange()
+        self._interactor.ReInitialize()

@@ -38,6 +38,9 @@ class VtkSkyboxModel(NodeModelTemplate):
     @inPort.setter
     def inPort(self, value):
         self.texture = value.texture()
+        if value:
+            renderer = Renderer()
+            renderer.reset()
 
     @staticmethod
     def projectionName(value):
