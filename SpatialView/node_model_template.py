@@ -13,32 +13,24 @@ from PySide6 import QtWidgets, QtCore
 from SpatialView.ui.abstract_widget_type import AbstractWidgetType
 
 
-def makeRegistrar():
-    registry: defaultdict[str, defaultdict[str, AbstractWidgetType]] = defaultdict(
-        defaultdict
-    )
-
-    def registerParam(type: AbstractWidgetType):
-        def registrar(func):
-            className = func.fget.__qualname__.split(".")
-            type.property = func.fget.__name__
-            registry[className[0]][func.fget.__name__] = type
-            return func  # normally a decorator returns a wrapped function,
-            # but here we return func unmodified, after registering it
-
-        return registrar
-
-    registerParam.all = registry
-    return registerParam
+registry: defaultdict[str, defaultdict[str, AbstractWidgetType]] = defaultdict(
+    defaultdict
+)
 
 
-withProperty = makeRegistrar()
+def withProperty(widgetType: AbstractWidgetType):
+    def registrar(func):
+        className = func.fget.__qualname__.split(".")
+        widgetType.property = func.fget.__name__
+        registry[className[0]][func.fget.__name__] = widgetType
+        return func
+
+    return registrar
 
 
 class NodeModelTemplate(sNode.NodeDelegateModel):
-
     def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
-        return withProperty.all[type(self).__name__]
+        return registry[type(self).__name__]
 
     def dialog(self):
         settings = QtWidgets.QDialog()
