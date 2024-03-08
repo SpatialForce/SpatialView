@@ -18,7 +18,6 @@ from PySide6 import QtWidgets, QtGui, QtCore
 import SpatialNode as sNode
 import SpatialView as sView
 from SpatialView.node_model_template import ret
-from SpatialView.vtk_renderer import Renderer
 
 
 class VtkView(QtWidgets.QWidget):
@@ -29,7 +28,7 @@ class VtkView(QtWidgets.QWidget):
         self.setWindowTitle("Viewer")
         self.setGeometry(0, 0, 800, 600)
 
-        renderer = Renderer()
+        renderer = sView.Renderer()
         self.gridlayout = QtWidgets.QGridLayout(self)
 
         # toolbar
@@ -68,7 +67,7 @@ class NodeView(QtWidgets.QMainWindow):
             | QtCore.Qt.WindowType.WindowMinMaxButtonsHint
         )
         self.vtkWindow.show()
-        Renderer().interactor.Initialize()  # Need this line to actually show the render inside Qt
+        sView.Renderer().interactor.Initialize()  # Need this line to actually show the render inside Qt
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)

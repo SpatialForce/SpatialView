@@ -8,9 +8,14 @@ import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkActor
 
 from SpatialView.node_data.vtk_mapper_data import VtkMapperData
-from .node_model_template import NodeModelTemplate, withModel, withPort, withProperty
-from .ui import DoubleSpinBox, CheckBox
-from .ui.combo_box import ComboBox
+from SpatialView.node_model_template import (
+    NodeModelTemplate,
+    withModel,
+    withPort,
+    withProperty,
+)
+from SpatialView.ui import DoubleSpinBox, CheckBox
+from SpatialView.ui.combo_box import ComboBox
 from .vtk_renderer import Renderer
 
 

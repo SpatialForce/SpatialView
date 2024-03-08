@@ -11,10 +11,15 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
 from SpatialView.node_data.vtk_texture_data import VtkTextureData
-from .node_model_template import withModel, NodeModelTemplate, withProperty, withPort
+from SpatialView.node_model_template import (
+    withModel,
+    NodeModelTemplate,
+    withProperty,
+    withPort,
+)
 from .vtk_renderer import Renderer
-from .ui import CheckBox
-from .ui.combo_box import ComboBox
+from SpatialView.ui import CheckBox
+from SpatialView.ui.combo_box import ComboBox
 
 
 @withModel(

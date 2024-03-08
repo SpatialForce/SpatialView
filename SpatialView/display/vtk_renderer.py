@@ -6,7 +6,7 @@
 
 from vtkmodules.vtkCommonColor import vtkNamedColors
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTerrain
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindowInteractor
+from vtkmodules.vtkRenderingCore import vtkRenderWindowInteractor
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLRenderer
 
 
@@ -67,8 +67,6 @@ class Renderer:
         self.useImageBasedLighting = True
         self.useSphericalHarmonics = True
         self.handle.SetEnvironmentTexture(value, False)
-        irradiance = self.handle.GetEnvMapIrradiance()
-        irradiance.SetIrradianceStep(0.3)
 
     @property
     def useFXAA(self):
