@@ -4,6 +4,7 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
+from collections import defaultdict
 from typing import override
 
 import SpatialNode as sNode
@@ -12,24 +13,32 @@ from PySide6 import QtWidgets, QtCore
 from SpatialView.ui.abstract_widget_type import AbstractWidgetType
 
 
+def makeRegistrar():
+    registry: defaultdict[str, defaultdict[str, AbstractWidgetType]] = defaultdict(
+        defaultdict
+    )
+
+    def registerParam(type: AbstractWidgetType):
+        def registrar(func):
+            className = func.fget.__qualname__.split(".")
+            type.property = func.fget.__name__
+            registry[className[0]][func.fget.__name__] = type
+            return func  # normally a decorator returns a wrapped function,
+            # but here we return func unmodified, after registering it
+
+        return registrar
+
+    registerParam.all = registry
+    return registerParam
+
+
+withProperty = makeRegistrar()
+
+
 class NodeModelTemplate(sNode.NodeDelegateModel):
-    @staticmethod
-    def makeRegistrar():
-        registry: dict[str, AbstractWidgetType] = {}
 
-        def registerParam(type: AbstractWidgetType):
-            def registrar(func):
-                type.property = func.fget.__name__
-                registry[func.fget.__name__] = type
-                return func  # normally a decorator returns a wrapped function,
-                # but here we return func unmodified, after registering it
-
-            return registrar
-
-        registerParam.all = registry
-        return registerParam
-
-    withProperty = makeRegistrar()
+    def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
+        return withProperty.all[type(self).__name__]
 
     def dialog(self):
         settings = QtWidgets.QDialog()
@@ -61,7 +70,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         scroll_area_main_layout.addLayout(grid_layout)
 
         row = 0
-        registry: dict[str, AbstractWidgetType] = self.withProperty.all
+        registry = self.getRegistry()
         for name in registry:
             label_widget = QtWidgets.QLabel(name)
             label_widget.setMaximumWidth(150)
@@ -105,7 +114,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         modelJson = super().save()
 
         source = sNode.QJsonObject()
-        registry: dict[str, AbstractWidgetType] = self.withProperty.all
+        registry = self.getRegistry()
         for name in registry:
             registry[name].save(source, self)
         modelJson["source"] = source
@@ -114,6 +123,6 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
 
     def load(self, p):
         source = p["source"]
-        registry: dict[str, AbstractWidgetType] = self.withProperty.all
+        registry = self.getRegistry()
         for name in registry:
             registry[name].load(source, self)

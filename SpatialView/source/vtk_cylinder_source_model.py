@@ -9,17 +9,13 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkCylinderSource
 
-from SpatialView.node_model_template import NodeModelTemplate
+from SpatialView.node_model_template import NodeModelTemplate, withProperty
 from SpatialView.ui import DoubleSpinBox, CheckBox
 from SpatialView.ui.spin_box import SpinBox
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
 class VtkCylinderSourceModel(NodeModelTemplate):
-    @property
-    def radius(self):
-        return self._source.GetRadius()
-
     @property
     def radiusMax(self):
         return self._source.GetRadiusMaxValue()
@@ -28,15 +24,15 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def radiusMin(self):
         return self._source.GetRadiusMinValue()
 
-    @NodeModelTemplate.withProperty(DoubleSpinBox("radiusMin", "radiusMax", 0.1))
+    @property
+    def radius(self):
+        return self._source.GetRadius()
+
+    @withProperty(DoubleSpinBox("radiusMin", "radiusMax", 0.1))
     @radius.setter
     def radius(self, value):
         self._source.SetRadius(value)
         self.dataUpdated.emit(0)
-
-    @property
-    def height(self):
-        return self._source.GetHeight()
 
     @property
     def heightMax(self):
@@ -46,15 +42,15 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def heightMin(self):
         return self._source.GetHeightMinValue()
 
-    @NodeModelTemplate.withProperty(DoubleSpinBox("heightMin", "heightMax", 0.1))
+    @property
+    def height(self):
+        return self._source.GetHeight()
+
+    @withProperty(DoubleSpinBox("heightMin", "heightMax", 0.1))
     @height.setter
     def height(self, height):
         self._source.SetHeight(height)
         self.dataUpdated.emit(0)
-
-    @property
-    def resolution(self):
-        return self._source.GetResolution()
 
     @property
     def resolutionMax(self):
@@ -64,7 +60,11 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def resolutionMin(self):
         return self._source.GetResolutionMinValue()
 
-    @NodeModelTemplate.withProperty(SpinBox("resolutionMin", "resolutionMax"))
+    @property
+    def resolution(self):
+        return self._source.GetResolution()
+
+    @withProperty(SpinBox("resolutionMin", "resolutionMax"))
     @resolution.setter
     def resolution(self, value):
         self._source.SetResolution(value)
@@ -74,7 +74,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def capping(self):
         return self._source.GetCapping()
 
-    @NodeModelTemplate.withProperty(CheckBox())
+    @withProperty(CheckBox())
     @capping.setter
     def capping(self, value):
         self._source.SetCapping(value)
@@ -84,7 +84,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def capsuleCap(self):
         return self._source.GetCapsuleCap()
 
-    @NodeModelTemplate.withProperty(CheckBox())
+    @withProperty(CheckBox())
     @capsuleCap.setter
     def capsuleCap(self, value):
         self._source.SetCapsuleCap(value)
