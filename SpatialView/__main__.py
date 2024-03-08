@@ -14,24 +14,24 @@ import vtkmodules.vtkInteractionStyle
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkRenderingCore import vtkRenderer
 from vtkmodules.vtkInteractionStyle import *
 from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
 import SpatialView as sView
 from SpatialView.node_model_template import ret
-
-renderer = vtkRenderer()
+from SpatialView.vtk_renderer import Renderer
 
 
 class VtkView(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Viewer")
         self.setGeometry(0, 0, 800, 600)
 
+        renderer = Renderer()
         self.gridlayout = QtWidgets.QGridLayout(self)
 
         # toolbar
@@ -43,9 +43,9 @@ class VtkView(QtWidgets.QWidget):
         self.gridlayout.addWidget(vtkWidget)
         self.gridlayout.setContentsMargins(0, 0, 0, 0)
         self.gridlayout.setSpacing(0)
-        renderer.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
+        renderer.handle.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
 
-        vtkWidget.GetRenderWindow().AddRenderer(renderer)
+        vtkWidget.GetRenderWindow().AddRenderer(renderer.handle)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
         self.iren.SetInteractorStyle(vtkInteractorStyleTerrain())
 
@@ -57,8 +57,8 @@ class VtkView(QtWidgets.QWidget):
         action = QtGui.QAction("Reset Cam", self)
 
         def reset():
-            renderer.ResetCamera()
-            renderer.ResetCameraClippingRange()
+            renderer.handle.ResetCamera()
+            renderer.handle.ResetCameraClippingRange()
             self.iren.ReInitialize()
 
         action.triggered.connect(self, reset)
@@ -147,7 +147,7 @@ class NodeView(QtWidgets.QMainWindow):
 
 
 def registerDataModels(interactor):
-    sView.VtkDisplayActorModel.register(ret, renderer, interactor)
+    sView.VtkDisplayActorModel.register(ret, interactor)
 
 
 if __name__ == "__main__":

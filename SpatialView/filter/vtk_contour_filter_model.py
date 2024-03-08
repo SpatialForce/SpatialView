@@ -8,7 +8,7 @@ import SpatialNode as sNode
 from vtkmodules.vtkFiltersCore import vtkContourFilter
 
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
-from SpatialView.vtk_algo_data import VtkAlgoData
+from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(

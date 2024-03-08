@@ -7,9 +7,9 @@
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkTexture
 
-from SpatialView.filter.vtk_texture_data import VtkTextureData
+from SpatialView.node_data.vtk_texture_data import VtkTextureData
 from SpatialView.node_model_template import NodeModelTemplate, withPort, withModel
-from SpatialView.vtk_algo_data import VtkAlgoData
+from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
