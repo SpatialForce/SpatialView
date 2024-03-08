@@ -40,3 +40,12 @@ class Renderer:
         self.handle.ResetCamera()
         self.handle.ResetCameraClippingRange()
         self._interactor.ReInitialize()
+
+    @property
+    def environmentTexture(self):
+        return self.handle.GetEnvironmentTexture()
+
+    @environmentTexture.setter
+    def environmentTexture(self, value):
+        self.handle.UseSphericalHarmonicsOn()
+        self.handle.SetEnvironmentTexture(value, False)

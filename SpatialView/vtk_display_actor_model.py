@@ -8,7 +8,9 @@ import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkActor
 
 from SpatialView.node_data.vtk_mapper_data import VtkMapperData
-from .node_model_template import NodeModelTemplate, withModel, withPort
+from .node_model_template import NodeModelTemplate, withModel, withPort, withProperty
+from .ui import DoubleSpinBox, CheckBox
+from .ui.combo_box import ComboBox
 from .vtk_renderer import Renderer
 
 
@@ -17,6 +19,68 @@ from .vtk_renderer import Renderer
     category="Displays",
 )
 class VtkDisplayActorModel(NodeModelTemplate):
+    # =========== Interpolation ======================================================
+    @property
+    def interpolationMax(self):
+        return self._actor.GetProperty().GetInterpolationMaxValue()
+
+    @property
+    def interpolationMin(self):
+        return self._actor.GetProperty().GetInterpolationMinValue()
+
+    @property
+    def interpolation(self):
+        return self._actor.GetProperty().GetInterpolation()
+
+    @staticmethod
+    def interpolationName(value):
+        match value:
+            case 0:
+                return "Flat"
+            case 1:
+                return "Gouraud"
+            case 2:
+                return "Phong"
+            case 3:
+                return "PBR"
+
+    @withProperty(ComboBox("interpolationMin", "interpolationMax", interpolationName))
+    @interpolation.setter
+    def interpolation(self, value):
+        self._actor.GetProperty().SetInterpolation(value)
+        self.dataUpdated.emit(0)
+
+    # =========== Representation ======================================================
+    @property
+    def representationMax(self):
+        return self._actor.GetProperty().GetRepresentationMaxValue()
+
+    @property
+    def representationMin(self):
+        return self._actor.GetProperty().GetRepresentationMinValue()
+
+    @property
+    def representation(self):
+        return self._actor.GetProperty().GetRepresentation()
+
+    @staticmethod
+    def representationName(value):
+        match value:
+            case 0:
+                return "Points"
+            case 1:
+                return "Wireframe"
+            case 2:
+                return "Surface"
+
+    @withProperty(
+        ComboBox("representationMin", "representationMax", representationName)
+    )
+    @representation.setter
+    def representation(self, value):
+        self._actor.GetProperty().SetRepresentation(value)
+        self.dataUpdated.emit(0)
+
     # ==========================================================================
     # =========== Blinn-Phong ==================================================
     # ==========================================================================
@@ -34,6 +98,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def ambient(self):
         return self._actor.GetProperty().GetAmbient()
 
+    @withProperty(DoubleSpinBox("ambientMin", "ambientMax", 0.1))
     @ambient.setter
     def ambient(self, value):
         self._actor.GetProperty().SetAmbient(value)
@@ -59,6 +124,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def diffuse(self):
         return self._actor.GetProperty().GetDiffuse()
 
+    @withProperty(DoubleSpinBox("diffuseMin", "diffuseMax", 0.1))
     @diffuse.setter
     def diffuse(self, value):
         self._actor.GetProperty().SetDiffuse(value)
@@ -84,6 +150,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def specular(self):
         return self._actor.GetProperty().GetSpecular()
 
+    @withProperty(DoubleSpinBox("specularMin", "specularMax", 0.1))
     @specular.setter
     def specular(self, value):
         self._actor.GetProperty().SetSpecular(value)
@@ -109,6 +176,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def specularPower(self):
         return self._actor.GetProperty().GetSpecularPower()
 
+    @withProperty(DoubleSpinBox("specularPowerMin", "specularPowerMax", 0.1))
     @specularPower.setter
     def specularPower(self, value):
         self._actor.GetProperty().SetSpecularPower(value)
@@ -148,6 +216,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def anisotropy(self):
         return self._actor.GetProperty().GetAnisotropy()
 
+    @withProperty(DoubleSpinBox("anisotropyMin", "anisotropyMax", 0.1))
     @anisotropy.setter
     def anisotropy(self, value):
         self._actor.GetProperty().SetAnisotropy(value)
@@ -164,13 +233,13 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def anisotropyRotation(self):
         return self._actor.GetProperty().GetAnisotropyRotation()
 
+    @withProperty(DoubleSpinBox("anisotropyRotationMin", "anisotropyRotationMax", 0.1))
     @anisotropyRotation.setter
     def anisotropyRotation(self, value):
         self._actor.GetProperty().SetAnisotropyRotation(value)
 
     @property
     def anisotropyTexture(self):
-        # todo
         return self._actor.GetProperty().GetTexture("anisotropy")
 
     @anisotropyTexture.setter
@@ -190,6 +259,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def baseIOR(self):
         return self._actor.GetProperty().GetBaseIOR()
 
+    @withProperty(DoubleSpinBox("baseIORMin", "baseIORMax", 0.1))
     @baseIOR.setter
     def baseIOR(self, value):
         self._actor.GetProperty().SetBaseIOR(value)
@@ -206,6 +276,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def coatIOR(self):
         return self._actor.GetProperty().GetCoatIOR()
 
+    @withProperty(DoubleSpinBox("coatIORMin", "coatIORMax", 0.1))
     @coatIOR.setter
     def coatIOR(self, value):
         self._actor.GetProperty().SetCoatIOR(value)
@@ -231,6 +302,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def coatStrength(self):
         return self._actor.GetProperty().GetCoatStrength()
 
+    @withProperty(DoubleSpinBox("coatStrengthMin", "coatStrengthMax", 0.1))
     @coatStrength.setter
     def coatStrength(self, value):
         self._actor.GetProperty().SetCoatStrength(value)
@@ -255,6 +327,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def coatNormalScale(self):
         return self._actor.GetProperty().GetCoatNormalScale()
 
+    @withProperty(DoubleSpinBox("coatNormalScaleMin", "coatNormalScaleMax", 0.1))
     @coatNormalScale.setter
     def coatNormalScale(self, value):
         self._actor.GetProperty().SetCoatNormalScale(value)
@@ -271,6 +344,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def coatRoughness(self):
         return self._actor.GetProperty().GetCoatRoughness()
 
+    @withProperty(DoubleSpinBox("coatRoughnessMin", "coatRoughnessMax", 0.1))
     @coatRoughness.setter
     def coatRoughness(self, value):
         self._actor.GetProperty().SetCoatRoughness(value)
@@ -322,6 +396,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def metallic(self):
         return self._actor.GetProperty().GetMetallic()
 
+    @withProperty(DoubleSpinBox("metallicMin", "metallicMax", 0.1))
     @metallic.setter
     def metallic(self, value):
         self._actor.GetProperty().SetMetallic(value)
@@ -339,6 +414,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def roughness(self):
         return self._actor.GetProperty().GetRoughness()
 
+    @withProperty(DoubleSpinBox("roughnessMin", "roughnessMax", 0.1))
     @roughness.setter
     def roughness(self, value):
         self._actor.GetProperty().SetRoughness(value)
@@ -356,6 +432,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def occlusionStrength(self):
         return self._actor.GetProperty().GetOcclusionStrength()
 
+    @withProperty(DoubleSpinBox("occlusionStrengthMin", "occlusionStrengthMax", 0.1))
     @occlusionStrength.setter
     def occlusionStrength(self, value):
         self._actor.GetProperty().SetOcclusionStrength(value)
@@ -389,6 +466,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def edgeOpacity(self):
         return self._actor.GetProperty().GetEdgeOpacity()
 
+    @withProperty(DoubleSpinBox("edgeOpacityMin", "edgeOpacityMax", 0.1))
     @edgeOpacity.setter
     def edgeOpacity(self, value):
         self._actor.GetProperty().SetEdgeOpacity(value)
@@ -414,6 +492,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def lineWidth(self):
         return self._actor.GetProperty().GetLineWidth()
 
+    @withProperty(DoubleSpinBox("lineWidthMin", "lineWidthMax", 0.1))
     @lineWidth.setter
     def lineWidth(self, value):
         self._actor.GetProperty().SetLineWidth(value)
@@ -430,6 +509,9 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def lineStippleRepeatFactor(self):
         return self._actor.GetProperty().GetLineStippleRepeatFactor()
 
+    @withProperty(
+        DoubleSpinBox("lineStippleRepeatFactorMin", "lineStippleRepeatFactorMax", 0.1)
+    )
     @lineStippleRepeatFactor.setter
     def lineStippleRepeatFactor(self, value):
         self._actor.GetProperty().SetLineStippleRepeatFactor(value)
@@ -472,6 +554,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def pointSize(self):
         return self._actor.GetProperty().GetPointSize()
 
+    @withProperty(DoubleSpinBox("pointSizeMin", "pointSizeMax", 0.1))
     @pointSize.setter
     def pointSize(self, value):
         self._actor.GetProperty().SetPointSize(value)
@@ -498,6 +581,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def opacity(self):
         return self._actor.GetProperty().GetOpacity()
 
+    @withProperty(DoubleSpinBox("opacityMin", "opacityMax", 0.1))
     @opacity.setter
     def opacity(self, value):
         self._actor.GetProperty().SetOpacity(value)
@@ -507,6 +591,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def backFaceCulling(self):
         return self._actor.GetProperty().GetBackfaceCulling()
 
+    @withProperty(CheckBox())
     @backFaceCulling.setter
     def backFaceCulling(self, value):
         self._actor.GetProperty().SetBackfaceCulling(value)
@@ -515,6 +600,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def frontFaceCulling(self):
         return self._actor.GetProperty().GetFrontfaceCulling()
 
+    @withProperty(CheckBox())
     @frontFaceCulling.setter
     def frontFaceCulling(self, value):
         self._actor.GetProperty().SetFrontfaceCulling(value)
@@ -523,55 +609,17 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def showTexturesOnBackface(self):
         return self._actor.GetProperty().GetShowTexturesOnBackface()
 
+    @withProperty(CheckBox())
     @showTexturesOnBackface.setter
     def showTexturesOnBackface(self, value):
         self._actor.GetProperty().SetShowTexturesOnBackface(value)
-
-    # =========== Interpolation ======================================================
-    @property
-    def interpolationMax(self):
-        return self._actor.GetProperty().GetInterpolationMaxValue()
-
-    @property
-    def interpolationMin(self):
-        return self._actor.GetProperty().GetInterpolationMinValue()
-
-    @property
-    def interpolation(self):
-        return self._actor.GetProperty().GetInterpolation()
-
-    def interpolationString(self):
-        return self._actor.GetProperty().GetInterpolationAsString()
-
-    @interpolation.setter
-    def interpolation(self, value):
-        self._actor.GetProperty().SetInterpolation(value)
-
-    # =========== Representation ======================================================
-    @property
-    def representationMax(self):
-        return self._actor.GetProperty().GetRepresentationMaxValue()
-
-    @property
-    def representationMin(self):
-        return self._actor.GetProperty().GetRepresentationMinValue()
-
-    @property
-    def representation(self):
-        return self._actor.GetProperty().GetRepresentation()
-
-    def representationString(self):
-        return self._actor.GetProperty().GetRepresentationAsString()
-
-    @representation.setter
-    def representation(self, value):
-        self._actor.GetProperty().SetRepresentation(value)
 
     # =========== Render Present ======================================================
     @property
     def renderPointsAsSpheres(self):
         return self._actor.GetProperty().GetRenderPointsAsSpheres()
 
+    @withProperty(CheckBox())
     @renderPointsAsSpheres.setter
     def renderPointsAsSpheres(self, value):
         self._actor.GetProperty().SetRenderPointsAsSpheres(value)
@@ -580,6 +628,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def renderLinesAsTubes(self):
         return self._actor.GetProperty().GetRenderLinesAsTubes()
 
+    @withProperty(CheckBox())
     @renderLinesAsTubes.setter
     def renderLinesAsTubes(self, value):
         self._actor.GetProperty().SetRenderLinesAsTubes(value)
