@@ -12,7 +12,7 @@ from functools import partial
 
 class DoubleSpinBox(AbstractWidgetType):
     def __init__(self, minValue: str, maxValue: str, step=0.2):
-        self.property = None
+        super().__init__()
         self.minValue = minValue
         self.maxValue = maxValue
         self.step = step
@@ -27,9 +27,3 @@ class DoubleSpinBox(AbstractWidgetType):
             partial(type(target).__setattr__, target, self.property)
         )
         return value_widget
-
-    def save(self, p, target):
-        p[self.property] = target.__getattribute__(self.property)
-
-    def load(self, p, target):
-        type(target).__setattr__(target, self.property, p[self.property])

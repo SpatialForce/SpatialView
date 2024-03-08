@@ -5,15 +5,17 @@
 #  property of any third parties.
 
 import abc
-import SpatialNode as sNode
 
 
-class AbstractWidgetType(abc.ABC):
+class AbstractWidgetType:
+    def __init__(self):
+        self.property = None
+
     @abc.abstractmethod
     def render(self, target): ...
 
-    @abc.abstractmethod
-    def save(self, p: sNode.QJsonObject, target): ...
+    def save(self, p, target):
+        p[self.property] = target.__getattribute__(self.property)
 
-    @abc.abstractmethod
-    def load(self, p: sNode.QJsonObject, target): ...
+    def load(self, p, target):
+        type(target).__setattr__(target, self.property, p[self.property])

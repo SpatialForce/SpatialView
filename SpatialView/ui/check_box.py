@@ -11,9 +11,6 @@ from functools import partial
 
 
 class CheckBox(AbstractWidgetType):
-    def __init__(self):
-        self.property = None
-
     def render(self, target):
         value_widget = QtWidgets.QCheckBox()
         value_widget.setChecked(target.__getattribute__(self.property))
@@ -21,9 +18,3 @@ class CheckBox(AbstractWidgetType):
             partial(type(target).__setattr__, target, self.property)
         )
         return value_widget
-
-    def save(self, p, target):
-        p[self.property] = target.__getattribute__(self.property)
-
-    def load(self, p, target):
-        type(target).__setattr__(target, self.property, p[self.property])
