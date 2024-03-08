@@ -9,21 +9,21 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindowInteractor
 
-from .filter.vtk_mapper_data import VtkMapperData
-from .vtk_actor import VtkActor
+from .filter.vtk_texture_data import VtkTextureData
+from .vtk_skybox import VtkSkybox
 
 
-class VtkDisplayActorModel(sNode.NodeDelegateModel):
+class VtkSkyboxModel(sNode.NodeDelegateModel):
     def __init__(self, renderer: vtkRenderer, interactor: vtkRenderWindowInteractor):
         super().__init__()
-        self._actor = VtkActor()
+        self._actor = VtkSkybox()
         self._interactor = interactor
         self._renderer = renderer
-        renderer.AddActor(self._actor.actor)
+        renderer.AddActor(self._actor.skybox)
 
     @override
     def caption(self):
-        return "Actor Display"
+        return "Skybox Display"
 
     @override
     def captionVisible(self):
@@ -32,15 +32,15 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
     @staticmethod
     @override
     def name():
-        return "VtkDisplayActorModel"
+        return "VtkSkyboxModel"
 
     @staticmethod
     @override
     def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
         renderer, interactor = args
         registry.registerModel(
-            lambda: VtkDisplayActorModel(renderer, interactor),
-            VtkDisplayActorModel.name(),
+            lambda: VtkSkyboxModel(renderer, interactor),
+            VtkSkyboxModel.name(),
             "Displays",
         )
 
@@ -56,7 +56,7 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
 
     @override
     def dataType(self, portType, portIndex):
-        return VtkMapperData().type()
+        return VtkTextureData().type()
 
     @override
     def outData(self, port):
@@ -64,12 +64,12 @@ class VtkDisplayActorModel(sNode.NodeDelegateModel):
 
     @override
     def setInData(self, nodeData, portIndex):
-        mapper = None
-        if isinstance(nodeData, VtkMapperData):
-            mapper = nodeData.mapper()
+        texture = None
+        if isinstance(nodeData, VtkTextureData):
+            texture = nodeData.texture()
 
-        self._actor.mapper = mapper
-        if mapper is not None:
+        self._actor.texture = texture
+        if texture is not None:
             self._interactor.ReInitialize()
 
     @override

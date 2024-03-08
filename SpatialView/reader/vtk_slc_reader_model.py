@@ -5,34 +5,28 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkIOExodus import vtkExodusIIReader
+from vtkmodules.vtkIOImage import vtkSLCReader
 
 from SpatialView.node_model_template import (
+    NodeModelTemplate,
     withModel,
     withPort,
     withProperty,
-    NodeModelTemplate,
 )
 from SpatialView.ui import FileDialog
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-@withModel(nameStr="VtkExodusIIReader", capStr="Vtk ExodusII Reader", category="Reader")
-class VtkExodusIIReaderModel(NodeModelTemplate):
-
-    @withProperty(FileDialog("*.e *.exo"))
+@withModel(nameStr="VtkSLCReader", capStr="Vtk SLC Reader", category="Reader")
+class VtkSLCReaderModel(NodeModelTemplate):
     @property
     def fileName(self):
         return self._reader.GetFileName()
 
+    @withProperty(FileDialog("*.slc"))
     @fileName.setter
     def fileName(self, value):
         self._reader.SetFileName(value)
-        self._reader.UpdateInformation()
-        self._reader.SetTimeStep(10)
-        self._reader.SetAllArrayStatus(
-            vtkExodusIIReader.NODAL, 1
-        )  # enables all NODAL variables
         self._reader.Update()
         self.dataUpdated.emit(0)
 
@@ -45,4 +39,4 @@ class VtkExodusIIReaderModel(NodeModelTemplate):
         super().__init__()
 
         # Create source
-        self._reader = vtkExodusIIReader()
+        self._reader = vtkSLCReader()

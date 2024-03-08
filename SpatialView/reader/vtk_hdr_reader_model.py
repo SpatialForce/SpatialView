@@ -4,36 +4,32 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
+import os
+
 import SpatialNode as sNode
-from vtkmodules.vtkIOExodus import vtkExodusIIReader
+from PySide6 import QtCore
+from vtkmodules.vtkIOImage import vtkHDRReader
 
 from SpatialView.node_model_template import (
-    withModel,
-    withPort,
-    withProperty,
     NodeModelTemplate,
+    withModel,
+    withProperty,
+    withPort,
 )
 from SpatialView.ui import FileDialog
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-@withModel(nameStr="VtkExodusIIReader", capStr="Vtk ExodusII Reader", category="Reader")
-class VtkExodusIIReaderModel(NodeModelTemplate):
-
-    @withProperty(FileDialog("*.e *.exo"))
+@withModel(nameStr="VtkHDRReader", capStr="Vtk HDR Reader", category="Reader")
+class VtkHDRReaderModel(NodeModelTemplate):
     @property
     def fileName(self):
         return self._reader.GetFileName()
 
+    @withProperty(FileDialog("*.hdr *.pic"))
     @fileName.setter
     def fileName(self, value):
         self._reader.SetFileName(value)
-        self._reader.UpdateInformation()
-        self._reader.SetTimeStep(10)
-        self._reader.SetAllArrayStatus(
-            vtkExodusIIReader.NODAL, 1
-        )  # enables all NODAL variables
-        self._reader.Update()
         self.dataUpdated.emit(0)
 
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
@@ -45,4 +41,9 @@ class VtkExodusIIReaderModel(NodeModelTemplate):
         super().__init__()
 
         # Create source
-        self._reader = vtkExodusIIReader()
+        self._reader = vtkHDRReader()
+
+        # default file
+        self.fileName = QtCore.QDir(os.getcwd()).absoluteFilePath(
+            "SpatialView/resources/meadow_2_1k.hdr"
+        )

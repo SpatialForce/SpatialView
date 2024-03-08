@@ -4,92 +4,116 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
-
 import SpatialNode as sNode
-from PySide6 import QtWidgets, QtCore
+from vtkmodules.vtkFiltersSources import vtkCylinderSource
 
-from SpatialView.source.vtk_cylinder_source import VtkCylinderSource
+from SpatialView.node_model_template import (
+    NodeModelTemplate,
+    withProperty,
+    withPort,
+    withModel,
+)
+from SpatialView.ui import DoubleSpinBox, CheckBox
+from SpatialView.ui.spin_box import SpinBox
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-class VtkCylinderSourceModel(sNode.NodeDelegateModel):
+@withModel(
+    nameStr="VtkCylinderSource", capStr="Vtk Cylinder Source", category="Sources"
+)
+class VtkCylinderSourceModel(NodeModelTemplate):
+    @property
+    def radiusMax(self):
+        return self._source.GetRadiusMaxValue()
+
+    @property
+    def radiusMin(self):
+        return self._source.GetRadiusMinValue()
+
+    @property
+    def radius(self):
+        return self._source.GetRadius()
+
+    @withProperty(DoubleSpinBox("radiusMin", "radiusMax", 0.1))
+    @radius.setter
+    def radius(self, value):
+        self._source.SetRadius(value)
+        self.dataUpdated.emit(0)
+
+    @property
+    def heightMax(self):
+        return self._source.GetHeightMaxValue()
+
+    @property
+    def heightMin(self):
+        return self._source.GetHeightMinValue()
+
+    @property
+    def height(self):
+        return self._source.GetHeight()
+
+    @withProperty(DoubleSpinBox("heightMin", "heightMax", 0.1))
+    @height.setter
+    def height(self, height):
+        self._source.SetHeight(height)
+        self.dataUpdated.emit(0)
+
+    @property
+    def resolutionMax(self):
+        return self._source.GetResolutionMaxValue()
+
+    @property
+    def resolutionMin(self):
+        return self._source.GetResolutionMinValue()
+
+    @property
+    def resolution(self):
+        return self._source.GetResolution()
+
+    @withProperty(SpinBox("resolutionMin", "resolutionMax"))
+    @resolution.setter
+    def resolution(self, value):
+        self._source.SetResolution(value)
+        self.dataUpdated.emit(0)
+
+    @property
+    def capping(self):
+        return self._source.GetCapping()
+
+    @withProperty(CheckBox())
+    @capping.setter
+    def capping(self, value):
+        self._source.SetCapping(value)
+        self.dataUpdated.emit(0)
+
+    @property
+    def capsuleCap(self):
+        return self._source.GetCapsuleCap()
+
+    @withProperty(CheckBox())
+    @capsuleCap.setter
+    def capsuleCap(self, value):
+        self._source.SetCapsuleCap(value)
+        self.dataUpdated.emit(0)
+
+    @property
+    def center(self):
+        return self._source.GetCenter()
+
+    @center.setter
+    def center(self, value):
+        self._source.SetCenter(value)
+        self.dataUpdated.emit(0)
+
+    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @property
+    def outPort(self):
+        return self._source.GetOutputPort()
+
     def __init__(self):
         super().__init__()
 
         # Create source
-        self._source = VtkCylinderSource(self)
-        self._source.center = (0, 0, 0)
-        self._source.radius = 0.5
-
-        self._label = QtWidgets.QLabel("Settings")
-        self._label.installEventFilter(self)
-        self._label.setStyleSheet(
-            "QLabel { background-color : transparent; color : white; }"
-        )
-
-    @override
-    def eventFilter(self, object, event):
-        if object == self._label:
-            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-                # if not self._setting:
-                setting = self._source.dialog()
-                setting.exec()
-                return True
-        return False
-
-    @override
-    def caption(self):
-        return "Vtk Cylinder Source"
-
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkCylinderSource"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        registry.registerModel(
-            VtkCylinderSourceModel, VtkCylinderSourceModel.name(), "Sources"
-        )
-
-    @override
-    def nPorts(self, portType):
-        result = 1
-        match portType:
-            case sNode.PortType.In:
-                result = 0
-            case sNode.PortType.Out:
-                result = 1
-        return result
-
-    @override
-    def dataType(self, portType, portIndex):
-        return VtkAlgoData().type()
-
-    @override
-    def outData(self, port):
-        return VtkAlgoData(self._source.outputPort())
-
-    @override
-    def setInData(self, nodeData, portIndex): ...
-
-    @override
-    def embeddedWidget(self):
-        return self._label
-
-    @override
-    def save(self):
-        modelJson = super().save()
-        modelJson["source"] = self._source.save()
-
-        return modelJson
-
-    @override
-    def load(self, p):
-        self._source.load(p)
+        self._source = vtkCylinderSource()
+        self.center = (0, 0, 0)
+        self.radius = 0.5

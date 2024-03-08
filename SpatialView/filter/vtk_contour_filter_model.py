@@ -5,18 +5,18 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
+from vtkmodules.vtkFiltersCore import vtkContourFilter
 
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    nameStr="VtkCompositeDataGeometryFilter",
-    capStr="Vtk Composite Data Geometry Filter",
+    nameStr="VtkContourFilter",
+    capStr="Vtk Contour Filter",
     category="Operators",
 )
-class VtkCompositeDataGeometryFilterModel(NodeModelTemplate):
+class VtkContourFilterModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
     @property
     def outPort(self):
@@ -29,12 +29,11 @@ class VtkCompositeDataGeometryFilterModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkAlgoData)
     @inPort.setter
     def inPort(self, value):
-        self._mapper.SetInputConnection(0, value.algo())
-        self._mapper.Update(0)
+        self._mapper.SetInputConnection(value.algo())
         self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()
 
         # Create a mapper
-        self._mapper = vtkCompositeDataGeometryFilter()
+        self._mapper = vtkContourFilter()
