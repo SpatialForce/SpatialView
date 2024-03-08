@@ -4,59 +4,36 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
-
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersCore import vtkContourFilter
 
+from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-class VtkContourFilterModel(sNode.NodeDelegateModel):
+@withModel(
+    nameStr="VtkContourFilter",
+    capStr="Vtk Contour Filter",
+    category="Operators",
+)
+class VtkContourFilterModel(NodeModelTemplate):
+    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @property
+    def outPort(self):
+        return self._mapper.GetOutputPort(0)
+
+    @property
+    def inPort(self):
+        return self._mapper.GetInputConnection(0, 0)
+
+    @withPort(0, sNode.PortType.In, VtkAlgoData)
+    @inPort.setter
+    def inPort(self, value):
+        self._mapper.SetInputConnection(value.algo())
+        self.dataUpdated.emit(0)
+
     def __init__(self):
         super().__init__()
 
         # Create a mapper
         self._mapper = vtkContourFilter()
-
-    @override
-    def caption(self):
-        return "Vtk Contour Filter"
-
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkContourFilterModel"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        registry.registerModel(
-            VtkContourFilterModel, VtkContourFilterModel.name(), "Operators"
-        )
-
-    @override
-    def nPorts(self, portType):
-        return 1
-
-    @override
-    def dataType(self, portType, portIndex):
-        return VtkAlgoData().type()
-
-    @override
-    def outData(self, port):
-        return VtkAlgoData(self._mapper.GetOutputPort(0))
-
-    @override
-    def setInData(self, nodeData, portIndex):
-        if isinstance(nodeData, VtkAlgoData):
-            self._mapper.SetInputConnection(nodeData.algo())
-            self.dataUpdated.emit(0)
-
-    @override
-    def embeddedWidget(self):
-        return None

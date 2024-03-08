@@ -8,5 +8,4 @@ from .reader import *
 
 
 def registerAllDataModels():
-    filter.registerDataModels()
     reader.registerDataModels()
