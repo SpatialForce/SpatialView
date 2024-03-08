@@ -4,17 +4,21 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
-
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkSphereSource
 
-from SpatialView.node_model_template import NodeModelTemplate, withProperty, withPort
+from SpatialView.node_model_template import (
+    NodeModelTemplate,
+    withProperty,
+    withPort,
+    withModel,
+)
 from SpatialView.ui import DoubleSpinBox
 from SpatialView.ui.spin_box import SpinBox
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
+@withModel(nameStr="VtkSphereSource", capStr="Vtk Sphere Source", category="Sources")
 class VtkSphereSourceModel(NodeModelTemplate):
     @property
     def radiusMax(self):
@@ -163,23 +167,3 @@ class VtkSphereSourceModel(NodeModelTemplate):
         self._source = vtkSphereSource()
         self.center = (0, 0, 0)
         self.radius = 0.5
-
-    @override
-    def caption(self):
-        return "Vtk Sphere Source"
-
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkSphereSource"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        registry.registerModel(
-            VtkSphereSourceModel, VtkSphereSourceModel.name(), "Sources"
-        )

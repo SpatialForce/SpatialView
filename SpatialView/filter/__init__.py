@@ -6,10 +6,10 @@ from .vtk_contour_filter_model import VtkContourFilterModel
 from .vtk_outline_filter_model import VtkOutlineFilterModel
 from .vtk_texture_model import VtkTextureModel
 
-import SpatialNode as sNode
+from ..node_model_template import ret
 
 
-def registerDataModels(ret: sNode.NodeDelegateModelRegistry):
+def registerDataModels():
     VtkMapperDataModel.register(ret)
     VtkTextureModel.register(ret)
 

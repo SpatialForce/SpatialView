@@ -20,6 +20,7 @@ from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
 import SpatialView as sView
+from SpatialView import ret
 
 
 class VtkView(QtWidgets.QWidget):
@@ -79,11 +80,11 @@ class NodeView(QtWidgets.QMainWindow):
         self.vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
 
         # registry
-        registry = registerDataModels(self.vtkWindow.ren, self.vtkWindow.iren)
+        registerDataModels(self.vtkWindow.ren, self.vtkWindow.iren)
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
-        dataFlowGraphModel = sNode.DataFlowGraphModel(registry)
+        dataFlowGraphModel = sNode.DataFlowGraphModel(ret)
         self.scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
         nodeView = sNode.GraphicsView(self.scene)
         nodeLayout.addWidget(nodeView)
@@ -145,11 +146,9 @@ class NodeView(QtWidgets.QMainWindow):
 
 
 def registerDataModels(renderer, interactor):
-    ret = sView.registerAllDataModels()
+    sView.registerAllDataModels()
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
     sView.VtkSkyboxModel.register(ret, renderer, interactor)
-
-    return ret
 
 
 if __name__ == "__main__":

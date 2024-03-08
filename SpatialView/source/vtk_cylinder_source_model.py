@@ -4,17 +4,23 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
-
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkCylinderSource
 
-from SpatialView.node_model_template import NodeModelTemplate, withProperty, withPort
+from SpatialView.node_model_template import (
+    NodeModelTemplate,
+    withProperty,
+    withPort,
+    withModel,
+)
 from SpatialView.ui import DoubleSpinBox, CheckBox
 from SpatialView.ui.spin_box import SpinBox
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
+@withModel(
+    nameStr="VtkCylinderSource", capStr="Vtk Cylinder Source", category="Sources"
+)
 class VtkCylinderSourceModel(NodeModelTemplate):
     @property
     def radiusMax(self):
@@ -111,23 +117,3 @@ class VtkCylinderSourceModel(NodeModelTemplate):
         self._source = vtkCylinderSource()
         self.center = (0, 0, 0)
         self.radius = 0.5
-
-    @override
-    def caption(self):
-        return "Vtk Cylinder Source"
-
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkCylinderSource"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        registry.registerModel(
-            VtkCylinderSourceModel, VtkCylinderSourceModel.name(), "Sources"
-        )

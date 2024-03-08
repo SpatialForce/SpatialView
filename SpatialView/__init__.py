@@ -8,8 +8,5 @@ from .reader import *
 
 
 def registerAllDataModels():
-    ret = sNode.NodeDelegateModelRegistry()
-    filter.registerDataModels(ret)
-    source.registerDataModels(ret)
-    reader.registerDataModels(ret)
-    return ret
+    filter.registerDataModels()
+    reader.registerDataModels()

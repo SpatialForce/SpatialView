@@ -50,6 +50,28 @@ def withPort(portIndex: int, portType: PortType, dataType):
     return registrar
 
 
+ret = sNode.NodeDelegateModelRegistry()
+
+
+def withModel(nameStr: str, capStr: str = None, category: str = "Nodes"):
+    def caption(self):
+        if capStr:
+            return capStr
+        else:
+            return nameStr
+
+    def name():
+        return nameStr
+
+    def registrar(CLS):
+        CLS.caption = caption
+        CLS.name = name
+        ret.registerModel(CLS, nameStr, category)
+        return CLS
+
+    return registrar
+
+
 class NodeModelTemplate(sNode.NodeDelegateModel):
     def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
         return widgetRegistry[type(self).__name__]
@@ -184,3 +206,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
             info = ports[port]
             if info.portType == sNode.PortType.In and info.portIndex == portIndex:
                 type(self).__setattr__(self, info.property, nodeData)
+
+    @override
+    def captionVisible(self):
+        return True
