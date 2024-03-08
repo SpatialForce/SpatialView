@@ -18,9 +18,7 @@ from SpatialView.ui.spin_box import SpinBox
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-@withModel(
-    nameStr="VtkCylinderSource", capStr="Vtk Cylinder Source", category="Sources"
-)
+@withModel(capStr="Vtk Cylinder Source", category="Sources")
 class VtkCylinderSourceModel(NodeModelTemplate):
     @property
     def radiusMax(self):

@@ -13,7 +13,6 @@ from SpatialView.filter.vtk_mapper_data import VtkMapperData
 
 
 @withModel(
-    nameStr="VtkMapperData",
     capStr="Vtk Mapper Data",
     category="Operators",
 )

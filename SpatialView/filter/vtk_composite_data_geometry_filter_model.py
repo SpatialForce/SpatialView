@@ -12,7 +12,6 @@ from SpatialView.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    nameStr="VtkCompositeDataGeometryFilter",
     capStr="Vtk Composite Data Geometry Filter",
     category="Operators",
 )

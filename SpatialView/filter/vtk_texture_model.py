@@ -13,7 +13,6 @@ from SpatialView.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    nameStr="VtkTexture",
     capStr="Vtk Texture",
     category="Operators",
 )

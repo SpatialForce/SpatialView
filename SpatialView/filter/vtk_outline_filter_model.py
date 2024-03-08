@@ -12,7 +12,6 @@ from SpatialView.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    nameStr="VtkOutlineFilter",
     capStr="Vtk Outline Filter",
     category="Operators",
 )

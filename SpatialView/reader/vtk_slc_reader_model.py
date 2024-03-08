@@ -17,7 +17,7 @@ from SpatialView.ui import FileDialog
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-@withModel(nameStr="VtkSLCReader", capStr="Vtk SLC Reader", category="Reader")
+@withModel(capStr="Vtk SLC Reader", category="Reader")
 class VtkSLCReaderModel(NodeModelTemplate):
     @property
     def fileName(self):

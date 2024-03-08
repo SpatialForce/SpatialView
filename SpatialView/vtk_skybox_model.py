@@ -17,7 +17,6 @@ from .ui.combo_box import ComboBox
 
 
 @withModel(
-    nameStr="VtkSkybox",
     capStr="Vtk Skybox",
     category="Displays",
 )

@@ -9,7 +9,7 @@ from typing import override
 
 import SpatialNode as sNode
 from PySide6 import QtWidgets, QtCore
-from SpatialNode import PortType
+from SpatialNode import PortType, QJsonObject
 
 from SpatialView.ui.abstract_widget_type import AbstractWidgetType
 
@@ -53,20 +53,16 @@ def withPort(portIndex: int, portType: PortType, dataType):
 ret = sNode.NodeDelegateModelRegistry()
 
 
-def withModel(nameStr: str, capStr: str = None, category: str = "Nodes"):
+def withModel(capStr: str = None, category: str = "Nodes"):
     def caption(self):
         if capStr:
             return capStr
         else:
-            return nameStr
-
-    def name():
-        return nameStr
+            return type(self).__name__
 
     def registrar(CLS):
         CLS.caption = caption
-        CLS.name = name
-        ret.registerModel(CLS, nameStr, category)
+        ret.registerModel(CLS, CLS.__name__, category)
         return CLS
 
     return registrar
@@ -151,7 +147,8 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         return self._label
 
     def save(self):
-        modelJson = super().save()
+        modelJson = QJsonObject()
+        modelJson["model-name"] = type(self).__name__
 
         source = sNode.QJsonObject()
         registry = self.getRegistry()

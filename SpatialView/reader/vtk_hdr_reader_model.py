@@ -20,7 +20,7 @@ from SpatialView.ui import FileDialog
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-@withModel(nameStr="VtkHDRReader", capStr="Vtk HDR Reader", category="Reader")
+@withModel(capStr="Vtk HDR Reader", category="Reader")
 class VtkHDRReaderModel(NodeModelTemplate):
     @property
     def fileName(self):
