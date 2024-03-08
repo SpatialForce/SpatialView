@@ -4,87 +4,46 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
+import os
 
 import SpatialNode as sNode
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtCore
+from vtkmodules.vtkIOImage import vtkHDRReader
 
-from SpatialView.reader.vtk_hdr_reader import VtkHDRReader
+from SpatialView.node_model_template import (
+    NodeModelTemplate,
+    withModel,
+    withProperty,
+    withPort,
+)
+from SpatialView.ui import FileDialog
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-class VtkHDRReaderModel(sNode.NodeDelegateModel):
+@withModel(nameStr="VtkHDRReader", capStr="Vtk HDR Reader", category="Reader")
+class VtkHDRReaderModel(NodeModelTemplate):
+    @property
+    def fileName(self):
+        return self._reader.GetFileName()
+
+    @withProperty(FileDialog("*.hdr *.pic"))
+    @fileName.setter
+    def fileName(self, value):
+        self._reader.SetFileName(value)
+        self.dataUpdated.emit(0)
+
+    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @property
+    def outPort(self):
+        return self._reader.GetOutputPort()
+
     def __init__(self):
         super().__init__()
 
         # Create source
-        self._source = VtkHDRReader(self)
+        self._reader = vtkHDRReader()
 
-        self._label = QtWidgets.QLabel("Open")
-        self._label.installEventFilter(self)
-        self._label.setStyleSheet(
-            "QLabel { background-color : transparent; color : white; }"
+        # default file
+        self.fileName = QtCore.QDir(os.getcwd()).absoluteFilePath(
+            "SpatialView/resources/meadow_2_1k.hdr"
         )
-
-    @override
-    def eventFilter(self, object, event):
-        if object == self._label:
-            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-                # if not self._setting:
-                self._source.dialog()
-                return True
-        return False
-
-    @override
-    def caption(self):
-        return "Vtk HDR Reader"
-
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkHDRReader"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        registry.registerModel(VtkHDRReaderModel, VtkHDRReaderModel.name(), "Reader")
-
-    @override
-    def nPorts(self, portType):
-        result = 1
-        match portType:
-            case sNode.PortType.In:
-                result = 0
-            case sNode.PortType.Out:
-                result = 1
-        return result
-
-    @override
-    def dataType(self, portType, portIndex):
-        return VtkAlgoData().type()
-
-    @override
-    def outData(self, port):
-        return VtkAlgoData(self._source.outputPort())
-
-    @override
-    def setInData(self, nodeData, portIndex): ...
-
-    @override
-    def embeddedWidget(self):
-        return self._label
-
-    @override
-    def save(self):
-        modelJson = super().save()
-        modelJson["source"] = self._source.save()
-
-        return modelJson
-
-    @override
-    def load(self, p):
-        self._source.load(p)

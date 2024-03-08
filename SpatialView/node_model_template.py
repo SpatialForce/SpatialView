@@ -80,6 +80,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         return portRegistry[type(self).__name__]
 
     def dialog(self):
+        self._label.setText("settings")
         settings = QtWidgets.QDialog()
         settings.setWindowFlags(
             QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.Popup
@@ -125,8 +126,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
             )
 
             row += 1
-
-        return settings
+        settings.exec()
 
     def __init__(self):
         super().__init__()
@@ -140,8 +140,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
     def eventFilter(self, object, event):
         if object == self._label:
             if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-                setting = self.dialog()
-                setting.exec()
+                self.dialog()
                 return True
         return False
 

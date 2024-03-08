@@ -4,89 +4,45 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
-
 import SpatialNode as sNode
-from PySide6 import QtWidgets, QtCore
+from vtkmodules.vtkIOExodus import vtkExodusIIReader
 
-from SpatialView.reader.vtk_exodusII_reader import VtkExodusIIReader
+from SpatialView.node_model_template import (
+    withModel,
+    withPort,
+    withProperty,
+    NodeModelTemplate,
+)
+from SpatialView.ui import FileDialog
 from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-class VtkExodusIIReaderModel(sNode.NodeDelegateModel):
+@withModel(nameStr="VtkExodusIIReader", capStr="Vtk ExodusII Reader", category="Reader")
+class VtkExodusIIReaderModel(NodeModelTemplate):
+
+    @withProperty(FileDialog("*.e *.exo"))
+    @property
+    def fileName(self):
+        return self._reader.GetFileName()
+
+    @fileName.setter
+    def fileName(self, value):
+        self._reader.SetFileName(value)
+        self._reader.UpdateInformation()
+        self._reader.SetTimeStep(10)
+        self._reader.SetAllArrayStatus(
+            vtkExodusIIReader.NODAL, 1
+        )  # enables all NODAL variables
+        self._reader.Update()
+        self.dataUpdated.emit(0)
+
+    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @property
+    def outPort(self):
+        return self._reader.GetOutputPort()
+
     def __init__(self):
         super().__init__()
 
         # Create source
-        self._source = VtkExodusIIReader(self)
-
-        self._label = QtWidgets.QLabel("Open")
-        self._label.installEventFilter(self)
-        self._label.setStyleSheet(
-            "QLabel { background-color : transparent; color : white; }"
-        )
-
-    @override
-    def eventFilter(self, object, event):
-        if object == self._label:
-            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-                # if not self._setting:
-                self._source.dialog()
-                return True
-        return False
-
-    @override
-    def caption(self):
-        return "Vtk ExodusII Reader"
-
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkExodusIIReader"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        registry.registerModel(
-            VtkExodusIIReaderModel, VtkExodusIIReaderModel.name(), "Reader"
-        )
-
-    @override
-    def nPorts(self, portType):
-        result = 1
-        match portType:
-            case sNode.PortType.In:
-                result = 0
-            case sNode.PortType.Out:
-                result = 1
-        return result
-
-    @override
-    def dataType(self, portType, portIndex):
-        return VtkAlgoData().type()
-
-    @override
-    def outData(self, port):
-        return VtkAlgoData(self._source.outputPort())
-
-    @override
-    def setInData(self, nodeData, portIndex): ...
-
-    @override
-    def embeddedWidget(self):
-        return self._label
-
-    @override
-    def save(self):
-        modelJson = super().save()
-        modelJson["source"] = self._source.save()
-
-        return modelJson
-
-    @override
-    def load(self, p):
-        self._source.load(p)
+        self._reader = vtkExodusIIReader()

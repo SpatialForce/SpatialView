@@ -5,7 +5,3 @@ from .vtk_skybox_model import VtkSkyboxModel
 from .filter import *
 from .source import *
 from .reader import *
-
-
-def registerAllDataModels():
-    reader.registerDataModels()

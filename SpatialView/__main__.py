@@ -20,7 +20,7 @@ from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
 import SpatialView as sView
-from SpatialView import ret
+from SpatialView.node_model_template import ret
 
 
 class VtkView(QtWidgets.QWidget):
@@ -146,7 +146,6 @@ class NodeView(QtWidgets.QMainWindow):
 
 
 def registerDataModels(renderer, interactor):
-    sView.registerAllDataModels()
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
     sView.VtkSkyboxModel.register(ret, renderer, interactor)
 
