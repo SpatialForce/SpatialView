@@ -4,74 +4,102 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-from typing import override
-
 import SpatialNode as sNode
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindowInteractor
+from vtkmodules.vtkRenderingCore import (
+    vtkSkybox,
+)
+from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
 from .filter.vtk_texture_data import VtkTextureData
-from .vtk_skybox import VtkSkybox
+from .node_model_template import withModel, NodeModelTemplate, withProperty, withPort
+from .ui import CheckBox
+from .ui.combo_box import ComboBox
 
 
-class VtkSkyboxModel(sNode.NodeDelegateModel):
-    def __init__(self, renderer: vtkRenderer, interactor: vtkRenderWindowInteractor):
+@withModel(
+    nameStr="VtkSkybox",
+    capStr="Vtk Skybox",
+    category="Displays",
+)
+class VtkSkyboxModel(NodeModelTemplate):
+    @property
+    def texture(self):
+        return self._skybox.GetTexture()
+
+    @texture.setter
+    def texture(self, value):
+        self._skybox.SetTexture(value)
+
+    @property
+    def inPort(self):
+        return self.texture
+
+    @withPort(0, sNode.PortType.In, VtkTextureData)
+    @inPort.setter
+    def inPort(self, value):
+        self.texture = value.texture()
+
+    @staticmethod
+    def projectionName(value):
+        match value:
+            case 0:
+                return "Cube"
+            case 1:
+                return "Sphere"
+            case 2:
+                return "Floor"
+            case 3:
+                return "StereoSphere"
+
+    @property
+    def projectionMax(self):
+        return 3
+
+    @property
+    def projectionMin(self):
+        return 0
+
+    @property
+    def projection(self):
+        return self._skybox.GetProjection()
+
+    @withProperty(ComboBox("projectionMin", "projectionMax", projectionName))
+    @projection.setter
+    def projection(self, value):
+        self._skybox.SetProjection(value)
+
+    @property
+    def floorPlane(self):
+        return self._skybox.GetFloorPlane()
+
+    @floorPlane.setter
+    def floorPlane(self, value):
+        self._skybox.SetFloorPlane(value)
+
+    @property
+    def floorRight(self):
+        return self._skybox.GetFloorRight()
+
+    @floorRight.setter
+    def floorRight(self, value):
+        self._skybox.SetFloorRight(value)
+
+    @property
+    def gammaCorrect(self):
+        return self._skybox.GetGammaCorrect()
+
+    @withProperty(CheckBox())
+    @gammaCorrect.setter
+    def gammaCorrect(self, value):
+        self._skybox.SetGammaCorrect(value)
+
+    def __init__(self):
         super().__init__()
-        self._actor = VtkSkybox()
-        self._interactor = interactor
-        self._renderer = renderer
-        renderer.AddActor(self._actor.skybox)
+        self._skybox = vtkOpenGLSkybox()
+        self._skybox.SetFloorRight(0, 0, 1)
+        self._skybox.SetProjection(vtkSkybox.Sphere)
+        self._skybox.GammaCorrectOn()
 
-    @override
-    def caption(self):
-        return "Skybox Display"
+        from .__main__ import renderer
 
-    @override
-    def captionVisible(self):
-        return True
-
-    @staticmethod
-    @override
-    def name():
-        return "VtkSkyboxModel"
-
-    @staticmethod
-    @override
-    def register(registry: sNode.NodeDelegateModelRegistry, *args, **kwargs):
-        renderer, interactor = args
-        registry.registerModel(
-            lambda: VtkSkyboxModel(renderer, interactor),
-            VtkSkyboxModel.name(),
-            "Displays",
-        )
-
-    @override
-    def nPorts(self, portType):
-        result = 1
-        match portType:
-            case sNode.PortType.In:
-                result = 1
-            case sNode.PortType.Out:
-                result = 0
-        return result
-
-    @override
-    def dataType(self, portType, portIndex):
-        return VtkTextureData().type()
-
-    @override
-    def outData(self, port):
-        return None
-
-    @override
-    def setInData(self, nodeData, portIndex):
-        texture = None
-        if isinstance(nodeData, VtkTextureData):
-            texture = nodeData.texture()
-
-        self._actor.texture = texture
-        if texture is not None:
-            self._interactor.ReInitialize()
-
-    @override
-    def embeddedWidget(self):
-        return None
+        renderer.AddActor(self._skybox)

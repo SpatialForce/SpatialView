@@ -22,6 +22,8 @@ import SpatialNode as sNode
 import SpatialView as sView
 from SpatialView.node_model_template import ret
 
+renderer = vtkRenderer()
+
 
 class VtkView(QtWidgets.QWidget):
     def __init__(self):
@@ -41,10 +43,9 @@ class VtkView(QtWidgets.QWidget):
         self.gridlayout.addWidget(vtkWidget)
         self.gridlayout.setContentsMargins(0, 0, 0, 0)
         self.gridlayout.setSpacing(0)
-        self.ren = vtkRenderer()
-        self.ren.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
+        renderer.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
 
-        vtkWidget.GetRenderWindow().AddRenderer(self.ren)
+        vtkWidget.GetRenderWindow().AddRenderer(renderer)
         self.iren = vtkWidget.GetRenderWindow().GetInteractor()
         self.iren.SetInteractorStyle(vtkInteractorStyleTerrain())
 
@@ -56,8 +57,8 @@ class VtkView(QtWidgets.QWidget):
         action = QtGui.QAction("Reset Cam", self)
 
         def reset():
-            self.ren.ResetCamera()
-            self.ren.ResetCameraClippingRange()
+            renderer.ResetCamera()
+            renderer.ResetCameraClippingRange()
             self.iren.ReInitialize()
 
         action.triggered.connect(self, reset)
@@ -80,7 +81,7 @@ class NodeView(QtWidgets.QMainWindow):
         self.vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
 
         # registry
-        registerDataModels(self.vtkWindow.ren, self.vtkWindow.iren)
+        registerDataModels(self.vtkWindow.iren)
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
@@ -145,9 +146,8 @@ class NodeView(QtWidgets.QMainWindow):
         sys.exit(0)
 
 
-def registerDataModels(renderer, interactor):
+def registerDataModels(interactor):
     sView.VtkDisplayActorModel.register(ret, renderer, interactor)
-    sView.VtkSkyboxModel.register(ret, renderer, interactor)
 
 
 if __name__ == "__main__":
