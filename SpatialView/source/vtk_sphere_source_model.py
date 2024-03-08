@@ -9,7 +9,7 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkSphereSource
 
-from SpatialView.node_model_template import NodeModelTemplate, withProperty
+from SpatialView.node_model_template import NodeModelTemplate, withProperty, withPort
 from SpatialView.ui import DoubleSpinBox
 from SpatialView.ui.spin_box import SpinBox
 from SpatialView.vtk_algo_data import VtkAlgoData
@@ -151,6 +151,11 @@ class VtkSphereSourceModel(NodeModelTemplate):
         self._source.SetCenter(value)
         self.dataUpdated.emit(0)
 
+    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @property
+    def outPort(self):
+        return self._source.GetOutputPort()
+
     def __init__(self):
         super().__init__()
 
@@ -178,24 +183,3 @@ class VtkSphereSourceModel(NodeModelTemplate):
         registry.registerModel(
             VtkSphereSourceModel, VtkSphereSourceModel.name(), "Sources"
         )
-
-    @override
-    def nPorts(self, portType):
-        result = 1
-        match portType:
-            case sNode.PortType.In:
-                result = 0
-            case sNode.PortType.Out:
-                result = 1
-        return result
-
-    @override
-    def dataType(self, portType, portIndex):
-        return VtkAlgoData().type()
-
-    @override
-    def outData(self, port):
-        return VtkAlgoData(self._source.GetOutputPort())
-
-    @override
-    def setInData(self, nodeData, portIndex): ...

@@ -9,11 +9,12 @@ from typing import override
 
 import SpatialNode as sNode
 from PySide6 import QtWidgets, QtCore
+from SpatialNode import PortType
 
 from SpatialView.ui.abstract_widget_type import AbstractWidgetType
 
 
-registry: defaultdict[str, defaultdict[str, AbstractWidgetType]] = defaultdict(
+widgetRegistry: defaultdict[str, defaultdict[str, AbstractWidgetType]] = defaultdict(
     defaultdict
 )
 
@@ -22,7 +23,28 @@ def withProperty(widgetType: AbstractWidgetType):
     def registrar(func):
         className = func.fget.__qualname__.split(".")
         widgetType.property = func.fget.__name__
-        registry[className[0]][func.fget.__name__] = widgetType
+        widgetRegistry[className[0]][func.fget.__name__] = widgetType
+        return func
+
+    return registrar
+
+
+class PortInfo:
+    def __init__(self, property: str, portIndex: int, portType: PortType, dataType):
+        self.property = property
+        self.portIndex = portIndex
+        self.portType = portType
+        self.dataType = dataType
+
+
+portRegistry: defaultdict[str, defaultdict[str, PortInfo]] = defaultdict(defaultdict)
+
+
+def withPort(portIndex: int, portType: PortType, dataType):
+    def registrar(func):
+        className = func.fget.__qualname__.split(".")
+        info = PortInfo(func.fget.__name__, portIndex, portType, dataType)
+        portRegistry[className[0]][func.fget.__name__] = info
         return func
 
     return registrar
@@ -30,7 +52,10 @@ def withProperty(widgetType: AbstractWidgetType):
 
 class NodeModelTemplate(sNode.NodeDelegateModel):
     def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
-        return registry[type(self).__name__]
+        return widgetRegistry[type(self).__name__]
+
+    def getPorts(self):
+        return portRegistry[type(self).__name__]
 
     def dialog(self):
         settings = QtWidgets.QDialog()
@@ -118,3 +143,44 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         registry = self.getRegistry()
         for name in registry:
             registry[name].load(source, self)
+
+    @override
+    def nPorts(self, portType):
+        ports = self.getPorts()
+        outResult = 0
+        inResult = 0
+        for port in ports:
+            if ports[port].portType == sNode.PortType.In:
+                inResult += 1
+            else:
+                outResult += 1
+
+        match portType:
+            case sNode.PortType.In:
+                return inResult
+            case sNode.PortType.Out:
+                return outResult
+
+    @override
+    def dataType(self, portType, portIndex):
+        ports = self.getPorts()
+        for port in ports:
+            info = ports[port]
+            if info.portType == portType and info.portIndex == portIndex:
+                return info.dataType().type()
+
+    @override
+    def outData(self, portIndex):
+        ports = self.getPorts()
+        for port in ports:
+            info = ports[port]
+            if info.portType == sNode.PortType.Out and info.portIndex == portIndex:
+                return info.dataType(self.__getattribute__(info.property))
+
+    @override
+    def setInData(self, nodeData, portIndex):
+        ports = self.getPorts()
+        for port in ports:
+            info = ports[port]
+            if info.portType == sNode.PortType.In and info.portIndex == portIndex:
+                type(self).__setattr__(self, info.property, nodeData)
