@@ -701,13 +701,15 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def inPort(self, value):
         if value:
             self.mapper = value.mapper()
-            if value:
+            if not self._isAdded:
                 self._renderer.handle.AddActor(self._actor)
-                self._renderer.modified()
+                self._isAdded = True
             else:
                 self._renderer.handle.RemoveActor(self._actor)
+                self._isAdded = False
 
     def __init__(self):
         super().__init__()
         self._actor = vtkActor()
         self._renderer: Renderer = Renderer()
+        self._isAdded = False

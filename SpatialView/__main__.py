@@ -53,6 +53,10 @@ class VtkView(QtWidgets.QWidget):
         action.triggered.connect(self, renderer.reset)
         toolbar.addAction(action)
 
+        action = QtGui.QAction("Reset Interactor", self)
+        action.triggered.connect(self, renderer.reinitializeInteractor)
+        toolbar.addAction(action)
+
 
 class NodeView(QtWidgets.QMainWindow):
     def __init__(self):
