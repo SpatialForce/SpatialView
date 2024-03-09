@@ -11,15 +11,21 @@ from functools import partial
 
 
 class SpinBox(AbstractWidgetType):
-    def __init__(self, minValue: str, maxValue: str):
+    def __init__(self, minValue: str | int, maxValue: str | int):
         super().__init__()
         self.minValue = minValue
         self.maxValue = maxValue
 
     def render(self, target):
         value_widget = QtWidgets.QSpinBox()
-        value_widget.setMaximum(target.__getattribute__(self.maxValue))
-        value_widget.setMinimum(target.__getattribute__(self.minValue))
+        if isinstance(self.maxValue, str):
+            value_widget.setMaximum(target.__getattribute__(self.maxValue))
+        else:
+            value_widget.setMaximum(self.maxValue)
+        if isinstance(self.minValue, str):
+            value_widget.setMinimum(target.__getattribute__(self.minValue))
+        else:
+            value_widget.setMinimum(self.minValue)
         value_widget.setValue(target.__getattribute__(self.property))
         value_widget.valueChanged.connect(
             partial(type(target).__setattr__, target, self.property)

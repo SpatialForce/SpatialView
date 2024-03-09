@@ -11,7 +11,7 @@ from functools import partial
 
 
 class DoubleSpinBox(AbstractWidgetType):
-    def __init__(self, minValue: str, maxValue: str, step=0.2):
+    def __init__(self, minValue: str | float, maxValue: str | float, step=0.2):
         super().__init__()
         self.minValue = minValue
         self.maxValue = maxValue
@@ -20,8 +20,14 @@ class DoubleSpinBox(AbstractWidgetType):
     def render(self, target):
         value_widget = QtWidgets.QDoubleSpinBox()
         value_widget.setSingleStep(self.step)
-        value_widget.setMaximum(target.__getattribute__(self.maxValue))
-        value_widget.setMinimum(target.__getattribute__(self.minValue))
+        if isinstance(self.maxValue, str):
+            value_widget.setMaximum(target.__getattribute__(self.maxValue))
+        else:
+            value_widget.setMaximum(self.maxValue)
+        if isinstance(self.minValue, str):
+            value_widget.setMinimum(target.__getattribute__(self.minValue))
+        else:
+            value_widget.setMinimum(self.minValue)
         value_widget.setValue(target.__getattribute__(self.property))
         value_widget.valueChanged.connect(
             partial(type(target).__setattr__, target, self.property)
