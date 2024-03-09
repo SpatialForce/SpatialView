@@ -9,7 +9,9 @@ import os
 import SpatialNode as sNode
 from PySide6 import QtCore
 from vtkmodules.vtkIOImage import vtkHDRReader
+from vtkmodules.vtkRenderingCore import vtkTexture
 
+from SpatialView.node_data import VtkTextureData
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withModel,
@@ -17,10 +19,9 @@ from SpatialView.node_model_template import (
     withPort,
 )
 from SpatialView.ui import FileDialog
-from SpatialView.vtk_algo_data import VtkAlgoData
 
 
-@withModel(nameStr="VtkHDRReader", capStr="Vtk HDR Reader", category="Reader")
+@withModel(capStr="Vtk HDR Reader", category="Reader")
 class VtkHDRReaderModel(NodeModelTemplate):
     @property
     def fileName(self):
@@ -32,18 +33,24 @@ class VtkHDRReaderModel(NodeModelTemplate):
         self._reader.SetFileName(value)
         self.dataUpdated.emit(0)
 
-    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @withPort(0, sNode.PortType.Out, VtkTextureData)
     @property
     def outPort(self):
-        return self._reader.GetOutputPort()
+        return self._texture
 
     def __init__(self):
         super().__init__()
 
         # Create source
         self._reader = vtkHDRReader()
+        self._texture = vtkTexture()
+        self._texture.SetColorModeToDirectScalars()
 
         # default file
         self.fileName = QtCore.QDir(os.getcwd()).absoluteFilePath(
             "SpatialView/resources/meadow_2_1k.hdr"
         )
+
+        self._texture.SetInputConnection(self._reader.GetOutputPort())
+        self._texture.MipmapOn()
+        self._texture.InterpolateOn()

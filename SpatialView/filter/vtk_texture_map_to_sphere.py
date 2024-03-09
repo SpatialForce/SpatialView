@@ -5,17 +5,17 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
+from vtkmodules.vtkFiltersTexture import vtkTextureMapToSphere
 
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
 from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    capStr="Vtk Outline Filter",
+    capStr="Vtk TextureMap To Sphere",
     category="Operators",
 )
-class VtkOutlineFilterModel(NodeModelTemplate):
+class VtkTextureMapToSphereModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
     @property
     def outPort(self):
@@ -30,11 +30,11 @@ class VtkOutlineFilterModel(NodeModelTemplate):
     def inPort(self, value):
         if value:
             self._mapper.SetInputConnection(0, value.algo())
-            self._mapper.Update(0)
             self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()
 
         # Create a mapper
-        self._mapper = vtkOutlineFilter()
+        self._mapper = vtkTextureMapToSphere()
+        self._mapper.PreventSeamOff()

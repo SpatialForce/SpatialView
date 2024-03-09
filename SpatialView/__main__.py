@@ -13,9 +13,6 @@ import vtkmodules.vtkInteractionStyle
 # noinspection PyUnresolvedReferences
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkRenderingCore import vtkRenderer
-from vtkmodules.vtkInteractionStyle import *
 from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
@@ -24,12 +21,14 @@ from SpatialView.node_model_template import ret
 
 
 class VtkView(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Viewer")
         self.setGeometry(0, 0, 800, 600)
 
+        renderer = sView.Renderer()
         self.gridlayout = QtWidgets.QGridLayout(self)
 
         # toolbar
@@ -41,12 +40,9 @@ class VtkView(QtWidgets.QWidget):
         self.gridlayout.addWidget(vtkWidget)
         self.gridlayout.setContentsMargins(0, 0, 0, 0)
         self.gridlayout.setSpacing(0)
-        self.ren = vtkRenderer()
-        self.ren.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
 
-        vtkWidget.GetRenderWindow().AddRenderer(self.ren)
-        self.iren = vtkWidget.GetRenderWindow().GetInteractor()
-        self.iren.SetInteractorStyle(vtkInteractorStyleTerrain())
+        vtkWidget.GetRenderWindow().AddRenderer(renderer.handle)
+        renderer.interactor = vtkWidget.GetRenderWindow().GetInteractor()
 
         # status bar
         statusbar = QtWidgets.QStatusBar()
@@ -54,13 +50,7 @@ class VtkView(QtWidgets.QWidget):
 
         # action
         action = QtGui.QAction("Reset Cam", self)
-
-        def reset():
-            self.ren.ResetCamera()
-            self.ren.ResetCameraClippingRange()
-            self.iren.ReInitialize()
-
-        action.triggered.connect(self, reset)
+        action.triggered.connect(self, renderer.reset)
         toolbar.addAction(action)
 
 
@@ -77,10 +67,8 @@ class NodeView(QtWidgets.QMainWindow):
             | QtCore.Qt.WindowType.WindowMinMaxButtonsHint
         )
         self.vtkWindow.show()
-        self.vtkWindow.iren.Initialize()  # Need this line to actually show the render inside Qt
-
-        # registry
-        registerDataModels(self.vtkWindow.ren, self.vtkWindow.iren)
+        self.renderer: sView.Renderer = sView.Renderer()
+        self.renderer.interactor.Initialize()  # Need this line to actually show the render inside Qt
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
@@ -114,7 +102,12 @@ class NodeView(QtWidgets.QMainWindow):
         saveAction = file_menu.addAction("Save Scene")
         saveAction.triggered.connect(self.scene.save)
         loadAction = file_menu.addAction("Load Scene")
-        loadAction.triggered.connect(self.scene.load)
+
+        def sceneLoad():
+            self.scene.load()
+            self.renderer.reset()
+
+        loadAction.triggered.connect(sceneLoad)
 
         # Help
         help_menu = menuBar.addMenu("&Help")
@@ -143,11 +136,6 @@ class NodeView(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         sys.exit(0)
-
-
-def registerDataModels(renderer, interactor):
-    sView.VtkDisplayActorModel.register(ret, renderer, interactor)
-    sView.VtkSkyboxModel.register(ret, renderer, interactor)
 
 
 if __name__ == "__main__":

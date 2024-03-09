@@ -8,11 +8,10 @@ import SpatialNode as sNode
 from vtkmodules.vtkFiltersCore import vtkContourFilter
 
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
-from SpatialView.vtk_algo_data import VtkAlgoData
+from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    nameStr="VtkContourFilter",
     capStr="Vtk Contour Filter",
     category="Operators",
 )
@@ -29,8 +28,9 @@ class VtkContourFilterModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkAlgoData)
     @inPort.setter
     def inPort(self, value):
-        self._mapper.SetInputConnection(value.algo())
-        self.dataUpdated.emit(0)
+        if value:
+            self._mapper.SetInputConnection(value.algo())
+            self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()

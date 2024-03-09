@@ -8,11 +8,10 @@ import SpatialNode as sNode
 from vtkmodules.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
 
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
-from SpatialView.vtk_algo_data import VtkAlgoData
+from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    nameStr="VtkCompositeDataGeometryFilter",
     capStr="Vtk Composite Data Geometry Filter",
     category="Operators",
 )
@@ -29,9 +28,10 @@ class VtkCompositeDataGeometryFilterModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkAlgoData)
     @inPort.setter
     def inPort(self, value):
-        self._mapper.SetInputConnection(0, value.algo())
-        self._mapper.Update(0)
-        self.dataUpdated.emit(0)
+        if value:
+            self._mapper.SetInputConnection(0, value.algo())
+            self._mapper.Update(0)
+            self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()

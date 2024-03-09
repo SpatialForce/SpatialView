@@ -15,12 +15,10 @@ from SpatialView.node_model_template import (
 )
 from SpatialView.ui import DoubleSpinBox, CheckBox
 from SpatialView.ui.spin_box import SpinBox
-from SpatialView.vtk_algo_data import VtkAlgoData
+from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
-@withModel(
-    nameStr="VtkCylinderSource", capStr="Vtk Cylinder Source", category="Sources"
-)
+@withModel(capStr="Vtk Cylinder Source", category="Sources")
 class VtkCylinderSourceModel(NodeModelTemplate):
     @property
     def radiusMax(self):

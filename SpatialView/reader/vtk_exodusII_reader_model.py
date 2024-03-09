@@ -14,10 +14,10 @@ from SpatialView.node_model_template import (
     NodeModelTemplate,
 )
 from SpatialView.ui import FileDialog
-from SpatialView.vtk_algo_data import VtkAlgoData
+from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
-@withModel(nameStr="VtkExodusIIReader", capStr="Vtk ExodusII Reader", category="Reader")
+@withModel(capStr="Vtk ExodusII Reader", category="Reader")
 class VtkExodusIIReaderModel(NodeModelTemplate):
 
     @withProperty(FileDialog("*.e *.exo"))

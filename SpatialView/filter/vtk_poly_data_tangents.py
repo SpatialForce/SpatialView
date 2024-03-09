@@ -5,17 +5,17 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
+from vtkmodules.vtkFiltersCore import vtkPolyDataTangents
 
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
 from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(
-    capStr="Vtk Outline Filter",
+    capStr="Vtk PolyData Tangents",
     category="Operators",
 )
-class VtkOutlineFilterModel(NodeModelTemplate):
+class VtkPolyDataTangentsModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
     @property
     def outPort(self):
@@ -29,12 +29,11 @@ class VtkOutlineFilterModel(NodeModelTemplate):
     @inPort.setter
     def inPort(self, value):
         if value:
-            self._mapper.SetInputConnection(0, value.algo())
-            self._mapper.Update(0)
+            self._mapper.SetInputConnection(value.algo())
             self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()
 
         # Create a mapper
-        self._mapper = vtkOutlineFilter()
+        self._mapper = vtkPolyDataTangents()
