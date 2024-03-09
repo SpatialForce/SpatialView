@@ -67,7 +67,8 @@ class NodeView(QtWidgets.QMainWindow):
             | QtCore.Qt.WindowType.WindowMinMaxButtonsHint
         )
         self.vtkWindow.show()
-        sView.Renderer().interactor.Initialize()  # Need this line to actually show the render inside Qt
+        self.renderer: sView.Renderer = sView.Renderer()
+        self.renderer.interactor.Initialize()  # Need this line to actually show the render inside Qt
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
@@ -101,7 +102,12 @@ class NodeView(QtWidgets.QMainWindow):
         saveAction = file_menu.addAction("Save Scene")
         saveAction.triggered.connect(self.scene.save)
         loadAction = file_menu.addAction("Load Scene")
-        loadAction.triggered.connect(self.scene.load)
+
+        def sceneLoad():
+            self.scene.load()
+            self.renderer.reset()
+
+        loadAction.triggered.connect(sceneLoad)
 
         # Help
         help_menu = menuBar.addMenu("&Help")

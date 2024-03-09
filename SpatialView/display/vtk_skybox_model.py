@@ -43,12 +43,13 @@ class VtkSkyboxModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkTextureData)
     @inPort.setter
     def inPort(self, value):
-        self.texture = value.texture()
         if value:
-            self._renderer.handle.AddActor(self._skybox)
-            self._renderer.reset()
-        else:
-            self._renderer.handle.RemoveActor(self._skybox)
+            self.texture = value.texture()
+            if value:
+                self._renderer.handle.AddActor(self._skybox)
+                self._renderer.reset()
+            else:
+                self._renderer.handle.RemoveActor(self._skybox)
 
     @staticmethod
     def projectionName(value):

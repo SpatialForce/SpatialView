@@ -28,9 +28,10 @@ class VtkOutlineFilterModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkAlgoData)
     @inPort.setter
     def inPort(self, value):
-        self._mapper.SetInputConnection(0, value.algo())
-        self._mapper.Update(0)
-        self.dataUpdated.emit(0)
+        if value:
+            self._mapper.SetInputConnection(0, value.algo())
+            self._mapper.Update(0)
+            self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()

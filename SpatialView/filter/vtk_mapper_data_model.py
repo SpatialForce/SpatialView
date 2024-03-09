@@ -29,8 +29,9 @@ class VtkMapperDataModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkAlgoData)
     @inPort.setter
     def inPort(self, value):
-        self._mapper.SetInputConnection(value.algo())
-        self.dataUpdated.emit(0)
+        if value:
+            self._mapper.SetInputConnection(value.algo())
+            self.dataUpdated.emit(0)
 
     def __init__(self):
         super().__init__()

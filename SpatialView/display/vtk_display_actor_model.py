@@ -699,12 +699,13 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.In, VtkMapperData)
     @inPort.setter
     def inPort(self, value):
-        self.mapper = value.mapper()
         if value:
-            self._renderer.handle.AddActor(self._actor)
-            self._renderer.modified()
-        else:
-            self._renderer.handle.RemoveActor(self._actor)
+            self.mapper = value.mapper()
+            if value:
+                self._renderer.handle.AddActor(self._actor)
+                self._renderer.modified()
+            else:
+                self._renderer.handle.RemoveActor(self._actor)
 
     def __init__(self):
         super().__init__()
