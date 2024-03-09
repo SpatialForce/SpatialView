@@ -53,16 +53,13 @@ def withPort(portIndex: int, portType: PortType, dataType):
 ret = sNode.NodeDelegateModelRegistry()
 
 
-def withModel(capStr: str = None, category: str = "Nodes"):
+def withModel(capStr: str, category: str = "Nodes"):
     def caption(self):
-        if capStr:
-            return capStr
-        else:
-            return type(self).__name__
+        return capStr
 
     def registrar(CLS):
         CLS.caption = caption
-        ret.registerModel(CLS, CLS.__name__, category)
+        ret.registerModel(CLS, capStr, category)
         return CLS
 
     return registrar
@@ -148,7 +145,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
 
     def save(self):
         modelJson = QJsonObject()
-        modelJson["model-name"] = type(self).__name__
+        modelJson["model-name"] = self.caption()
 
         source = sNode.QJsonObject()
         registry = self.getRegistry()
