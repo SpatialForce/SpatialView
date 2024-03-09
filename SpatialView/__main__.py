@@ -17,7 +17,6 @@ from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
 import SpatialView as sView
-from SpatialView.node_model_template import ret
 
 
 class VtkView(QtWidgets.QWidget):
@@ -54,6 +53,12 @@ class VtkView(QtWidgets.QWidget):
         toolbar.addAction(action)
 
 
+class GraphicsView(sNode.GraphicsView):
+    def dropEvent(self, event):
+        super().dropEvent(event)
+        sView.Renderer().interactorRender()
+
+
 class NodeView(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -72,9 +77,9 @@ class NodeView(QtWidgets.QMainWindow):
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
-        dataFlowGraphModel = sNode.DataFlowGraphModel(ret)
+        dataFlowGraphModel = sNode.DataFlowGraphModel(sView.modelRegistry)
         self.scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
-        nodeView = sNode.GraphicsView(self.scene)
+        nodeView = GraphicsView(self.scene)
         nodeLayout.addWidget(nodeView)
         nodeLayout.setContentsMargins(0, 0, 0, 0)
         nodeLayout.setSpacing(0)

@@ -50,7 +50,7 @@ def withPort(portIndex: int, portType: PortType, dataType):
     return registrar
 
 
-ret = sNode.NodeDelegateModelRegistry()
+modelRegistry = sNode.NodeDelegateModelRegistry()
 
 
 def withModel(capStr: str, category: str = "Nodes"):
@@ -59,7 +59,7 @@ def withModel(capStr: str, category: str = "Nodes"):
 
     def registrar(CLS):
         CLS.caption = caption
-        ret.registerModel(CLS, capStr, category)
+        modelRegistry.registerModel(CLS, capStr, category)
         return CLS
 
     return registrar
