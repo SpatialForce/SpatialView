@@ -45,11 +45,13 @@ class VtkSkyboxModel(NodeModelTemplate):
     def inPort(self, value):
         if value:
             self.texture = value.texture()
-            if value:
+            if not self._isAdded:
                 self._renderer.handle.AddActor(self._skybox)
-                self._renderer.reset()
-            else:
-                self._renderer.handle.RemoveActor(self._skybox)
+                self._isAdded = True
+        else:
+            self.texture = None
+            self._renderer.handle.RemoveActor(self._skybox)
+            self._isAdded = False
 
     @staticmethod
     def projectionName(value):
@@ -79,7 +81,7 @@ class VtkSkyboxModel(NodeModelTemplate):
     @projection.setter
     def projection(self, value):
         self._skybox.SetProjection(value)
-        self._renderer.reset()
+        self._renderer.interactorRender()
 
     @property
     def floorPlane(self):
@@ -105,7 +107,7 @@ class VtkSkyboxModel(NodeModelTemplate):
     @gammaCorrect.setter
     def gammaCorrect(self, value):
         self._skybox.SetGammaCorrect(value)
-        self._renderer.reset()
+        self._renderer.interactorRender()
 
     def __init__(self):
         super().__init__()
@@ -113,5 +115,5 @@ class VtkSkyboxModel(NodeModelTemplate):
         self._skybox.SetFloorRight(0, 0, 1)
         self._skybox.SetProjection(vtkSkybox.Sphere)
         self._skybox.GammaCorrectOn()
-
-        self._renderer = Renderer()
+        self._isAdded = False
+        self._renderer: Renderer = Renderer()

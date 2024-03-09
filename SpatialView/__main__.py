@@ -50,11 +50,7 @@ class VtkView(QtWidgets.QWidget):
 
         # action
         action = QtGui.QAction("Reset Cam", self)
-        action.triggered.connect(self, renderer.reset)
-        toolbar.addAction(action)
-
-        action = QtGui.QAction("Reset Interactor", self)
-        action.triggered.connect(self, renderer.reinitializeInteractor)
+        action.triggered.connect(self, renderer.resetCamera)
         toolbar.addAction(action)
 
 
@@ -109,7 +105,7 @@ class NodeView(QtWidgets.QMainWindow):
 
         def sceneLoad():
             self.scene.load()
-            self.renderer.reset()
+            self.renderer.interactorRender()
 
         loadAction.triggered.connect(sceneLoad)
 

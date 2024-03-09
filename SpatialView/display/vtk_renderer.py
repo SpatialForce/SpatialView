@@ -37,12 +37,10 @@ class Renderer:
         self._interactor = value
         self._interactor.SetInteractorStyle(vtkInteractorStyleTerrain())
 
-    def reset(self):
-        self.resetCamera()
-        self.reinitializeInteractor()
+    def interactorRender(self):
+        self._interactor.Render()
 
-    def reinitializeInteractor(self):
-        self._interactor.ReInitialize()
+    # ================== Renderer =============================================
 
     def resetCamera(self):
         self.handle.ResetCamera()
@@ -56,6 +54,7 @@ class Renderer:
     def useImageBasedLighting(self, value):
         self.handle.SetUseImageBasedLighting(value)
         self.resetCamera()
+        # self.interactorRender() will be black
 
     @property
     def useSphericalHarmonics(self):
@@ -64,7 +63,7 @@ class Renderer:
     @useSphericalHarmonics.setter
     def useSphericalHarmonics(self, value):
         self.handle.SetUseSphericalHarmonics(value)
-        self.resetCamera()
+        # self.interactorRender() will be black
 
     @property
     def environmentTexture(self):
@@ -75,7 +74,7 @@ class Renderer:
         self.useImageBasedLighting = True
         self.useSphericalHarmonics = True
         self.handle.SetEnvironmentTexture(value, False)
-        self.resetCamera()
+        # self.interactorRender() will be black
 
     @property
     def useFXAA(self):
@@ -84,7 +83,7 @@ class Renderer:
     @useFXAA.setter
     def useFXAA(self, value):
         self.handle.SetUseFXAA(value)
-        self.resetCamera()
+        self.interactorRender()
 
     @property
     def useShadows(self):
@@ -93,7 +92,7 @@ class Renderer:
     @useShadows.setter
     def useShadows(self, value):
         self.handle.SetUseShadows(value)
-        self.resetCamera()
+        self.interactorRender()
 
     # =========== SSAO ======================================================
 
@@ -104,7 +103,7 @@ class Renderer:
     @useSSAO.setter
     def useSSAO(self, value):
         self.handle.SetUseSSAO(value)
-        self.resetCamera()
+        self.interactorRender()
 
     @property
     def ssaoBlur(self):
@@ -113,7 +112,7 @@ class Renderer:
     @ssaoBlur.setter
     def ssaoBlur(self, value):
         self.handle.SetSSAOBlur(value)
-        self.resetCamera()
+        self.interactorRender()
 
     @property
     def ssaoBias(self):
@@ -122,7 +121,7 @@ class Renderer:
     @ssaoBias.setter
     def ssaoBias(self, value):
         self.handle.SetSSAOBias(value)
-        self.resetCamera()
+        self.interactorRender()
 
     @property
     def ssaoRadius(self):
@@ -131,7 +130,7 @@ class Renderer:
     @ssaoRadius.setter
     def ssaoRadius(self, value):
         self.handle.SetSSAORadius(value)
-        self.resetCamera()
+        self.interactorRender()
 
     @property
     def ssaoKernelSize(self):
@@ -140,7 +139,7 @@ class Renderer:
     @ssaoKernelSize.setter
     def ssaoKernelSize(self, value):
         self.handle.SetSSAOKernelSize(value)
-        self.resetCamera()
+        self.interactorRender()
 
     # =========== Irradiance ======================================================
 
@@ -151,7 +150,7 @@ class Renderer:
     @irradianceSize.setter
     def irradianceSize(self, value):
         self.handle.GetEnvMapIrradiance().SetIrradianceSize(value)
-        self.resetCamera()
+        self.interactorRender()
 
     @property
     def irradianceStep(self):
@@ -160,4 +159,4 @@ class Renderer:
     @irradianceStep.setter
     def irradianceStep(self, value):
         self.handle.GetEnvMapIrradiance().SetIrradianceStep(value)
-        self.resetCamera()
+        self.interactorRender()
