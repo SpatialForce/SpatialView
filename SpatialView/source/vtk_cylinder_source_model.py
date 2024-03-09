@@ -7,6 +7,7 @@
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkCylinderSource
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withProperty,
@@ -36,7 +37,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @radius.setter
     def radius(self, value):
         self._source.SetRadius(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def heightMax(self):
@@ -54,7 +55,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @height.setter
     def height(self, height):
         self._source.SetHeight(height)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def resolutionMax(self):
@@ -72,7 +73,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @resolution.setter
     def resolution(self, value):
         self._source.SetResolution(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def capping(self):
@@ -82,7 +83,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @capping.setter
     def capping(self, value):
         self._source.SetCapping(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def capsuleCap(self):
@@ -92,7 +93,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @capsuleCap.setter
     def capsuleCap(self, value):
         self._source.SetCapsuleCap(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def center(self):
@@ -101,7 +102,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
     @property
@@ -111,6 +112,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create source
         self._source = vtkCylinderSource()
         self.center = (0, 0, 0)

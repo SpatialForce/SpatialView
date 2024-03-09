@@ -7,6 +7,7 @@
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersCore import vtkPolyDataTangents
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
 from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
@@ -30,10 +31,11 @@ class VtkPolyDataTangentsModel(NodeModelTemplate):
     def inPort(self, value):
         if value:
             self._mapper.SetInputConnection(value.algo())
-            self.dataUpdated.emit(0)
+            self._renderer.interactorRender()
 
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create a mapper
         self._mapper = vtkPolyDataTangents()

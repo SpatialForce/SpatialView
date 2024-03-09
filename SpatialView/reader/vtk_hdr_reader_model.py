@@ -11,6 +11,7 @@ from PySide6 import QtCore
 from vtkmodules.vtkIOImage import vtkHDRReader
 from vtkmodules.vtkRenderingCore import vtkTexture
 
+from SpatialView import Renderer
 from SpatialView.node_data import VtkTextureData
 from SpatialView.node_model_template import (
     NodeModelTemplate,
@@ -31,7 +32,7 @@ class VtkHDRReaderModel(NodeModelTemplate):
     @fileName.setter
     def fileName(self, value):
         self._reader.SetFileName(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @withPort(0, sNode.PortType.Out, VtkTextureData)
     @property
@@ -41,6 +42,7 @@ class VtkHDRReaderModel(NodeModelTemplate):
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create source
         self._reader = vtkHDRReader()
         self._texture = vtkTexture()

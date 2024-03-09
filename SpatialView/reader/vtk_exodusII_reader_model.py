@@ -7,6 +7,7 @@
 import SpatialNode as sNode
 from vtkmodules.vtkIOExodus import vtkExodusIIReader
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import (
     withModel,
     withPort,
@@ -34,7 +35,7 @@ class VtkExodusIIReaderModel(NodeModelTemplate):
             vtkExodusIIReader.NODAL, 1
         )  # enables all NODAL variables
         self._reader.Update()
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
     @property
@@ -44,5 +45,6 @@ class VtkExodusIIReaderModel(NodeModelTemplate):
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create source
         self._reader = vtkExodusIIReader()

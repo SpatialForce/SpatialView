@@ -7,6 +7,7 @@
 import SpatialNode as sNode
 from vtkmodules.vtkIOImage import vtkSLCReader
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withModel,
@@ -28,7 +29,7 @@ class VtkSLCReaderModel(NodeModelTemplate):
     def fileName(self, value):
         self._reader.SetFileName(value)
         self._reader.Update()
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @withPort(0, sNode.PortType.Out, VtkAlgoData)
     @property
@@ -38,5 +39,6 @@ class VtkSLCReaderModel(NodeModelTemplate):
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create source
         self._reader = vtkSLCReader()

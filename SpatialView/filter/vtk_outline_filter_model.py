@@ -7,6 +7,7 @@
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
 from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
@@ -31,10 +32,11 @@ class VtkOutlineFilterModel(NodeModelTemplate):
         if value:
             self._mapper.SetInputConnection(0, value.algo())
             self._mapper.Update(0)
-            self.dataUpdated.emit(0)
+            self._renderer.interactorRender()
 
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create a mapper
         self._mapper = vtkOutlineFilter()
