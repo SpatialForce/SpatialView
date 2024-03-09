@@ -42,6 +42,9 @@ class Renderer:
         self.handle.ResetCameraClippingRange()
         self._interactor.ReInitialize()
 
+    def modified(self):
+        self.handle.Modified()
+
     @property
     def useImageBasedLighting(self):
         return self.handle.GetUseImageBasedLighting()
@@ -49,7 +52,7 @@ class Renderer:
     @useImageBasedLighting.setter
     def useImageBasedLighting(self, value):
         self.handle.SetUseImageBasedLighting(value)
-        self.reset()
+        self.modified()
 
     @property
     def useSphericalHarmonics(self):
@@ -58,7 +61,7 @@ class Renderer:
     @useSphericalHarmonics.setter
     def useSphericalHarmonics(self, value):
         self.handle.SetUseSphericalHarmonics(value)
-        self.reset()
+        self.modified()
 
     @property
     def environmentTexture(self):
@@ -69,7 +72,7 @@ class Renderer:
         self.useImageBasedLighting = True
         self.useSphericalHarmonics = True
         self.handle.SetEnvironmentTexture(value, False)
-        self.reset()
+        self.modified()
 
     @property
     def useFXAA(self):
@@ -78,7 +81,7 @@ class Renderer:
     @useFXAA.setter
     def useFXAA(self, value):
         self.handle.SetUseFXAA(value)
-        self.reset()
+        self.modified()
 
     @property
     def useShadows(self):
@@ -87,7 +90,7 @@ class Renderer:
     @useShadows.setter
     def useShadows(self, value):
         self.handle.SetUseShadows(value)
-        self.reset()
+        self.modified()
 
     # =========== SSAO ======================================================
 
@@ -98,7 +101,7 @@ class Renderer:
     @useSSAO.setter
     def useSSAO(self, value):
         self.handle.SetUseSSAO(value)
-        self.reset()
+        self.modified()
 
     @property
     def ssaoBlur(self):
@@ -107,7 +110,7 @@ class Renderer:
     @ssaoBlur.setter
     def ssaoBlur(self, value):
         self.handle.SetSSAOBlur(value)
-        self.reset()
+        self.modified()
 
     @property
     def ssaoBias(self):
@@ -116,7 +119,7 @@ class Renderer:
     @ssaoBias.setter
     def ssaoBias(self, value):
         self.handle.SetSSAOBias(value)
-        self.reset()
+        self.modified()
 
     @property
     def ssaoRadius(self):
@@ -125,7 +128,7 @@ class Renderer:
     @ssaoRadius.setter
     def ssaoRadius(self, value):
         self.handle.SetSSAORadius(value)
-        self.reset()
+        self.modified()
 
     @property
     def ssaoKernelSize(self):
@@ -134,7 +137,7 @@ class Renderer:
     @ssaoKernelSize.setter
     def ssaoKernelSize(self, value):
         self.handle.SetSSAOKernelSize(value)
-        self.reset()
+        self.modified()
 
     # =========== Irradiance ======================================================
 
@@ -145,7 +148,7 @@ class Renderer:
     @irradianceSize.setter
     def irradianceSize(self, value):
         self.handle.GetEnvMapIrradiance().SetIrradianceSize(value)
-        self.reset()
+        self.modified()
 
     @property
     def irradianceStep(self):
@@ -154,4 +157,4 @@ class Renderer:
     @irradianceStep.setter
     def irradianceStep(self, value):
         self.handle.GetEnvMapIrradiance().SetIrradianceStep(value)
-        self.reset()
+        self.modified()

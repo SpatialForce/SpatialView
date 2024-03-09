@@ -78,11 +78,9 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
             return
 
         settings = QtWidgets.QDialog()
-        settings.setWindowFlags(
-            QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.Popup
-        )
+        settings.setWindowFlags(QtCore.Qt.WindowType.Tool)
         settings.setWindowModality(QtCore.Qt.WindowModality.WindowModal)
-        settings.setWindowTitle(f"{type(self).__name__} Settings")
+        settings.setWindowTitle(f"{self.caption()} Settings")
 
         layout_root = QtWidgets.QHBoxLayout(settings)
         layout_root.setContentsMargins(0, 0, 0, 0)
