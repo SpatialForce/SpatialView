@@ -158,7 +158,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
 
     @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
-    def outPort(self):
+    def geo(self):
         return self._source.GetOutputPort()
 
     def __init__(self):
