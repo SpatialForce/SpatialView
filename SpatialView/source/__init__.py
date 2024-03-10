@@ -11,3 +11,4 @@ from .vtk_plane_source_model import VtkPlaneSourceModel
 from .vtk_arc_source_model import VtkArcSourceModel
 from .vtk_arrow_source_model import VtkArrowSourceModel
 from .vtk_text_source_model import VtkTextSourceModel
+from .vtk_diagonal_matrix_source_model import VtkDiagonalMatrixSourceModel
