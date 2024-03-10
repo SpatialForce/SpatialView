@@ -5,6 +5,7 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
+from vtkmodules.vtkCommonDataModel import vtkUnstructuredGrid
 from vtkmodules.vtkIOXML import vtkXMLDataSetWriter
 
 from SpatialView import Renderer
@@ -35,7 +36,7 @@ class VtkXMLDataSetWriterModel(NodeModelTemplate):
     def inPort(self):
         return self._writer.GetInputDataObject(0, 0)
 
-    @withPort(0, sNode.PortType.In, TypeID.ALGORITHM)
+    @withPort(0, sNode.PortType.In, TypeID.DataObject)
     @inPort.setter
     def inPort(self, value):
         self._writer.SetInputData(value)
@@ -46,3 +47,5 @@ class VtkXMLDataSetWriterModel(NodeModelTemplate):
         self._renderer: Renderer = Renderer()
         # Create source
         self._writer = vtkXMLDataSetWriter()
+
+        vtkUnstructuredGrid()

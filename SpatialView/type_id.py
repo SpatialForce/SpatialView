@@ -5,3 +5,4 @@ class TypeID(Enum):
     ALGORITHM = "algorithm"
     TEXTURE = "texture"
     MAPPER = "mapper"
+    DataObject = "data_object"
