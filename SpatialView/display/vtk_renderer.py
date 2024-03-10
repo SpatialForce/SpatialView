@@ -5,9 +5,22 @@
 #  property of any third parties.
 
 from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTerrain
+from vtkmodules.vtkInteractionStyle import (
+    vtkInteractorStyleTerrain,
+    vtkInteractorStyleDrawPolygon,
+    vtkInteractorStyleFlight,
+    vtkInteractorStyleJoystickActor,
+    vtkInteractorStyleJoystickCamera,
+    vtkInteractorStyleRubberBand2D,
+    vtkInteractorStyleRubberBandZoom,
+    vtkInteractorStyleTrackballActor,
+)
+from vtkmodules.vtkInteractionWidgets import vtkCameraOrientationWidget
 from vtkmodules.vtkRenderingCore import vtkRenderWindowInteractor
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLRenderer
+
+from SpatialView.node_model_template import withProperty
+from SpatialView.ui.combo_box import ComboBox
 
 
 class Singleton(object):
@@ -27,6 +40,8 @@ class Renderer:
         self.handle = vtkOpenGLRenderer()
         self.handle.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
         self._interactor: vtkRenderWindowInteractor | None = None
+        self._cameraOrientationWidget: vtkCameraOrientationWidget | None = None
+        self._interactorStyle = 0
 
     @property
     def interactor(self) -> vtkRenderWindowInteractor:
@@ -35,10 +50,44 @@ class Renderer:
     @interactor.setter
     def interactor(self, value: vtkRenderWindowInteractor):
         self._interactor = value
-        self._interactor.SetInteractorStyle(vtkInteractorStyleTerrain())
+        self.interactorStyle = 6
+
+        self._cameraOrientationWidget = vtkCameraOrientationWidget()
+        self._cameraOrientationWidget.SetParentRenderer(self.handle)
+        # Enable the widget.
+        self._cameraOrientationWidget.On()
 
     def interactorRender(self):
         self._interactor.Render()
+
+    @staticmethod
+    def interactorStyleObj(value):
+        match value:
+            case 0:
+                return vtkInteractorStyleDrawPolygon()
+            case 1:
+                return vtkInteractorStyleFlight()
+            case 2:
+                return vtkInteractorStyleJoystickActor()
+            case 3:
+                return vtkInteractorStyleJoystickCamera()
+            case 4:
+                return vtkInteractorStyleRubberBand2D()
+            case 5:
+                return vtkInteractorStyleRubberBandZoom()
+            case 6:
+                return vtkInteractorStyleTerrain()
+            case 7:
+                return vtkInteractorStyleTrackballActor()
+
+    @property
+    def interactorStyle(self):
+        return self._interactorStyle
+
+    @interactorStyle.setter
+    def interactorStyle(self, value):
+        self._interactorStyle = value
+        self._interactor.SetInteractorStyle(self.interactorStyleObj(value))
 
     # ================== Renderer =============================================
 

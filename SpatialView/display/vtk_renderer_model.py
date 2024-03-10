@@ -11,6 +11,7 @@ from SpatialView.node_model_template import (
 )
 from SpatialView.ui import CheckBox, DoubleSpinBox, SpinBox
 from SpatialView.display.vtk_renderer import Renderer
+from SpatialView.ui.combo_box import ComboBox
 
 
 @withModel(
@@ -18,6 +19,36 @@ from SpatialView.display.vtk_renderer import Renderer
     category="Displays",
 )
 class VtkRendererSettingsModel(NodeModelTemplate):
+    @staticmethod
+    def interactorStyleName(value):
+        match value:
+            case 0:
+                return "DrawPolygon"
+            case 1:
+                return "Flight"
+            case 2:
+                return "JoystickActor"
+            case 3:
+                return "JoystickCamera"
+            case 4:
+                return "RubberBand2D"
+            case 5:
+                return "RubberBandZoom"
+            case 6:
+                return "Terrain"
+            case 7:
+                return "TrackballActor"
+
+    @property
+    def interactorStyle(self):
+        return self._renderer.interactorStyle
+
+    @withProperty(ComboBox(0, 7, interactorStyleName))
+    @interactorStyle.setter
+    def interactorStyle(self, value):
+        self._renderer.interactorStyle = value
+
+    # =========== Renderer ======================================================
     @property
     def useImageBasedLighting(self):
         return self._renderer.useImageBasedLighting
