@@ -110,6 +110,15 @@ class VtkArrowSourceModel(NodeModelTemplate):
         self._source.SetShaftResolution(value)
         self._renderer.interactorRender()
 
+    @property
+    def center(self):
+        return self._source.GetCenter()
+
+    @center.setter
+    def center(self, value):
+        self._source.SetCenter(value)
+        self._renderer.interactorRender()
+
     @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
     def geo(self):

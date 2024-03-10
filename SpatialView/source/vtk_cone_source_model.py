@@ -5,7 +5,7 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersSources import vtkArcSource
+from vtkmodules.vtkFiltersSources import vtkConeSource
 
 from SpatialView import Renderer
 from SpatialView.node_model_template import (
@@ -18,24 +18,42 @@ from SpatialView.type_id import TypeID
 from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox
 
 
-@withModel(capStr="Vtk Arc Source", category="Sources")
-class VtkArcSourceModel(NodeModelTemplate):
+@withModel(capStr="Vtk Cone Source", category="Sources")
+class VtkConeSourceModel(NodeModelTemplate):
     @property
-    def angleMax(self):
-        return self._source.GetAngleMaxValue()
+    def radiusMax(self):
+        return self._source.GetRadiusMaxValue()
 
     @property
-    def angleMin(self):
-        return self._source.GetAngleMinValue()
+    def radiusMin(self):
+        return self._source.GetRadiusMinValue()
 
     @property
-    def angle(self):
-        return self._source.GetAngle()
+    def radius(self):
+        return self._source.GetRadius()
 
-    @withProperty(DoubleSpinBox("angleMin", "angleMax", 0.1))
-    @angle.setter
-    def angle(self, value):
-        self._source.SetAngle(value)
+    @withProperty(DoubleSpinBox("radiusMin", "radiusMax", 0.1))
+    @radius.setter
+    def radius(self, value):
+        self._source.SetRadius(value)
+        self._renderer.interactorRender()
+
+    @property
+    def heightMax(self):
+        return self._source.GetHeightMaxValue()
+
+    @property
+    def heightMin(self):
+        return self._source.GetHeightMinValue()
+
+    @property
+    def height(self):
+        return self._source.GetHeight()
+
+    @withProperty(DoubleSpinBox("heightMin", "heightMax", 0.1))
+    @height.setter
+    def height(self, value):
+        self._source.SetHeight(value)
         self._renderer.interactorRender()
 
     @property
@@ -75,4 +93,4 @@ class VtkArcSourceModel(NodeModelTemplate):
 
         self._renderer: Renderer = Renderer()
         # Create source
-        self._source = vtkArcSource()
+        self._source = vtkConeSource()
