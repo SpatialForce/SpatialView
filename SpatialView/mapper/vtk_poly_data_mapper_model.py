@@ -13,10 +13,10 @@ from SpatialView.type_id import TypeID
 
 
 @withModel(
-    capStr="Vtk Mapper Data",
-    category="Operators",
+    capStr="Vtk Poly Data Mapper",
+    category="Mappers",
 )
-class VtkMapperDataModel(NodeModelTemplate):
+class VtkPolyDataMapperModel(NodeModelTemplate):
     @withPort(0, sNode.PortType.Out, TypeID.MAPPER)
     @property
     def outPort(self):
