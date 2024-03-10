@@ -118,6 +118,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @ambientColor.setter
     def ambientColor(self, value):
         self._actor.GetProperty().SetAmbientColor(value)
+        self._renderer.interactorRender()
 
     # =========== Diffuse ======================================================
     @property
@@ -146,6 +147,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @diffuseColor.setter
     def diffuseColor(self, value):
         self._actor.GetProperty().SetDiffuseColor(value)
+        self._renderer.interactorRender()
 
     # =========== Specular ======================================================
     @property
@@ -174,6 +176,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @specularColor.setter
     def specularColor(self, value):
         self._actor.GetProperty().SetSpecularColor(value)
+        self._renderer.interactorRender()
 
     # =========== Specular Power ======================================================
     @property
@@ -204,6 +207,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @color.setter
     def color(self, value):
         self._actor.GetProperty().SetColor(value)
+        self._renderer.interactorRender()
 
     @property
     def baseColorTexture(self):
@@ -309,6 +313,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @coatColor.setter
     def coatColor(self, value):
         self._actor.GetProperty().SetCoatColor(value)
+        self._renderer.interactorRender()
 
     @property
     def coatStrengthMax(self):
@@ -480,6 +485,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @edgeColor.setter
     def edgeColor(self, value):
         self._actor.GetProperty().SetEdgeColor(value)
+        self._renderer.interactorRender()
 
     @property
     def edgeOpacityMax(self):
@@ -561,6 +567,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @vertexColor.setter
     def vertexColor(self, value):
         self._actor.GetProperty().SetVertexColor(value)
+        self._renderer.interactorRender()
 
     @property
     def vertexVisibility(self):
@@ -673,6 +680,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @selectionColor.setter
     def selectionColor(self, value):
         self._actor.GetProperty().SetSelectionColor(value)
+        self._renderer.interactorRender()
 
     @property
     def selectionLineWidth(self):

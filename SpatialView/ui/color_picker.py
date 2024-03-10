@@ -4,7 +4,7 @@
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
 
-import os
+import json
 from PySide6 import QtWidgets, QtCore, QtGui
 
 from SpatialView.ui.abstract_widget_type import AbstractWidgetType
@@ -53,3 +53,11 @@ class ColorPickerWidget(QtWidgets.QLabel):
 class ColorPicker(AbstractWidgetType):
     def render(self, target):
         return ColorPickerWidget(target, self.property)
+
+    def save(self, p, target):
+        p[self.property] = json.dumps(target.__getattribute__(self.property))
+
+    def load(self, p, target):
+        data = p.get(self.property)
+        if data:
+            type(target).__setattr__(target, self.property, json.loads(data))
