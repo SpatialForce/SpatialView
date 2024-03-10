@@ -5,7 +5,9 @@ from .vtk_capsule_source_model import VtkCapsuleSourceModel
 from .vtk_cone_source_model import VtkConeSourceModel
 from .vtk_cube_source_model import VtkCubeSourceModel
 from .vtk_disk_source_model import VtkDiskSourceModel
+from .vtk_plane_source_model import VtkPlaneSourceModel
 
 # 2D
 from .vtk_arc_source_model import VtkArcSourceModel
 from .vtk_arrow_source_model import VtkArrowSourceModel
+from .vtk_text_source_model import VtkTextSourceModel

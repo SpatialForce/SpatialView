@@ -15,7 +15,7 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox
 
 
 @withModel(capStr="Vtk Disk Source", category="Sources")

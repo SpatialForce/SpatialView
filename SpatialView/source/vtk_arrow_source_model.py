@@ -15,10 +15,10 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox
 
 
-@withModel(capStr="Vtk Arrow Source", category="Sources")
+@withModel(capStr="Vtk Arrow Source", category="Sources2D")
 class VtkArrowSourceModel(NodeModelTemplate):
     @property
     def tipLengthMax(self):

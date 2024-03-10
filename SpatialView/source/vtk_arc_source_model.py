@@ -15,10 +15,10 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox
 
 
-@withModel(capStr="Vtk Arc Source", category="Sources")
+@withModel(capStr="Vtk Arc Source", category="Sources2D")
 class VtkArcSourceModel(NodeModelTemplate):
     @property
     def angleMax(self):
