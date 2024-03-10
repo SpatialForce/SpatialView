@@ -15,7 +15,7 @@ from SpatialView.node_model_template import (
     withProperty,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import FileDialog
+from SpatialView.ui import FileLoadDialog
 
 
 @withModel(capStr="Vtk SLC Reader", category="Reader")
@@ -24,7 +24,7 @@ class VtkSLCReaderModel(NodeModelTemplate):
     def fileName(self):
         return self._reader.GetFileName()
 
-    @withProperty(FileDialog("*.slc"))
+    @withProperty(FileLoadDialog("*.slc"))
     @fileName.setter
     def fileName(self, value):
         self._reader.SetFileName(value)

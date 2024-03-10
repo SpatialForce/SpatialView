@@ -5,7 +5,7 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkIOXML import vtkXMLPolyDataReader
+from vtkmodules.vtkIOXML import vtkXMLDataSetWriter
 
 from SpatialView import Renderer
 from SpatialView.node_model_template import (
@@ -15,30 +15,34 @@ from SpatialView.node_model_template import (
     withProperty,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import FileLoadDialog
+from SpatialView.ui import FileWriteDialog
 
 
-@withModel(capStr="Vtk XML Poly Data Reader", category="Reader")
-class VtkXMLPolyDataReaderModel(NodeModelTemplate):
+@withModel(capStr="Vtk XML Data Set Writer", category="Writer")
+class VtkXMLDataSetWriterModel(NodeModelTemplate):
     @property
     def fileName(self):
-        return self._reader.GetFileName()
+        return self._writer.GetFileName()
 
-    @withProperty(FileLoadDialog("*.vtp"))
+    @withProperty(FileWriteDialog("vtu"))
     @fileName.setter
     def fileName(self, value):
-        self._reader.SetFileName(value)
-        self._reader.Update()
+        self._writer.SetFileName(value)
+        self._writer.Write()
         self._renderer.interactorRender()
 
-    @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
-    def outPort(self):
-        return self._reader.GetOutputPort()
+    def inPort(self):
+        return self._writer.GetInputDataObject(0, 0)
+
+    @withPort(0, sNode.PortType.In, TypeID.ALGORITHM)
+    @inPort.setter
+    def inPort(self, value):
+        self._writer.SetInputData(value)
 
     def __init__(self):
         super().__init__()
 
         self._renderer: Renderer = Renderer()
         # Create source
-        self._reader = vtkXMLPolyDataReader()
+        self._writer = vtkXMLDataSetWriter()

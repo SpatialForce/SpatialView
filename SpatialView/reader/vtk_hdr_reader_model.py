@@ -19,7 +19,7 @@ from SpatialView.node_model_template import (
     withPort,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import FileDialog
+from SpatialView.ui import FileLoadDialog
 
 
 @withModel(capStr="Vtk HDR Reader", category="Reader")
@@ -28,7 +28,7 @@ class VtkHDRReaderModel(NodeModelTemplate):
     def fileName(self):
         return self._reader.GetFileName()
 
-    @withProperty(FileDialog("*.hdr *.pic"))
+    @withProperty(FileLoadDialog("*.hdr *.pic"))
     @fileName.setter
     def fileName(self, value):
         self._reader.SetFileName(value)

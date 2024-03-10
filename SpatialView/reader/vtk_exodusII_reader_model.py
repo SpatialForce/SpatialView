@@ -15,13 +15,13 @@ from SpatialView.node_model_template import (
     NodeModelTemplate,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import FileDialog
+from SpatialView.ui import FileLoadDialog
 
 
 @withModel(capStr="Vtk ExodusII Reader", category="Reader")
 class VtkExodusIIReaderModel(NodeModelTemplate):
 
-    @withProperty(FileDialog("*.e *.exo"))
+    @withProperty(FileLoadDialog("*.e *.exo"))
     @property
     def fileName(self):
         return self._reader.GetFileName()
