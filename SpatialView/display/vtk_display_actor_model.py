@@ -13,10 +13,11 @@ from SpatialView.node_model_template import (
     withPort,
     withProperty,
 )
-from SpatialView.ui import DoubleSpinBox, CheckBox
+from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox
 from SpatialView.ui.combo_box import ComboBox
 from .vtk_renderer import Renderer
 from ..type_id import TypeID
+from ..ui.color_picker import ColorPicker
 
 
 @withModel(
@@ -113,6 +114,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def ambientColor(self):
         return self._actor.GetProperty().GetAmbientColor()
 
+    @withProperty(ColorPicker())
     @ambientColor.setter
     def ambientColor(self, value):
         self._actor.GetProperty().SetAmbientColor(value)
@@ -140,6 +142,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def diffuseColor(self):
         return self._actor.GetProperty().GetDiffuseColor()
 
+    @withProperty(ColorPicker())
     @diffuseColor.setter
     def diffuseColor(self, value):
         self._actor.GetProperty().SetDiffuseColor(value)
@@ -167,6 +170,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def specularColor(self):
         return self._actor.GetProperty().GetSpecularColor()
 
+    @withProperty(ColorPicker())
     @specularColor.setter
     def specularColor(self, value):
         self._actor.GetProperty().SetSpecularColor(value)
@@ -196,6 +200,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def color(self):
         return self._actor.GetProperty().GetColor()
 
+    @withProperty(ColorPicker())
     @color.setter
     def color(self, value):
         self._actor.GetProperty().SetColor(value)
@@ -300,6 +305,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def coatColor(self):
         return self._actor.GetProperty().GetCoatColor()
 
+    @withProperty(ColorPicker())
     @coatColor.setter
     def coatColor(self, value):
         self._actor.GetProperty().SetCoatColor(value)
@@ -470,6 +476,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def edgeColor(self):
         return self._actor.GetProperty().GetEdgeColor()
 
+    @withProperty(ColorPicker())
     @edgeColor.setter
     def edgeColor(self, value):
         self._actor.GetProperty().SetEdgeColor(value)
@@ -531,9 +538,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def lineStippleRepeatFactor(self):
         return self._actor.GetProperty().GetLineStippleRepeatFactor()
 
-    @withProperty(
-        DoubleSpinBox("lineStippleRepeatFactorMin", "lineStippleRepeatFactorMax", 0.1)
-    )
+    @withProperty(SpinBox("lineStippleRepeatFactorMin", "lineStippleRepeatFactorMax"))
     @lineStippleRepeatFactor.setter
     def lineStippleRepeatFactor(self, value):
         self._actor.GetProperty().SetLineStippleRepeatFactor(value)
@@ -552,6 +557,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def vertexColor(self):
         return self._actor.GetProperty().GetVertexColor()
 
+    @withProperty(ColorPicker())
     @vertexColor.setter
     def vertexColor(self, value):
         self._actor.GetProperty().SetVertexColor(value)
@@ -663,6 +669,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def selectionColor(self):
         return self._actor.GetProperty().GetSelectionColor()
 
+    @withProperty(ColorPicker())
     @selectionColor.setter
     def selectionColor(self, value):
         self._actor.GetProperty().SetSelectionColor(value)

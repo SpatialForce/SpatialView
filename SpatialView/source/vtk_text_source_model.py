@@ -15,10 +15,12 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
+from SpatialView.ui.line_edit import LineEdit
 
 
 @withModel(capStr="Vtk Text Source", category="Sources2D")
 class VtkTextSourceModel(NodeModelTemplate):
+    @withProperty(LineEdit())
     @property
     def text(self):
         return self._source.GetText()
