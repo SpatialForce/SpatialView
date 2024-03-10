@@ -9,6 +9,8 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkTexture
 
+from SpatialView.node_data.type_id import TypeID
+
 
 class VtkTextureData(sNode.NodeData):
     def __init__(self, texture: vtkTexture | None = None):
@@ -17,7 +19,7 @@ class VtkTextureData(sNode.NodeData):
 
     @override
     def type(self):
-        return sNode.NodeDataType("texture", "Texture")
+        return sNode.NodeDataType(TypeID.ALGORITHM.value, "Texture")
 
     def texture(self):
         return self._texture

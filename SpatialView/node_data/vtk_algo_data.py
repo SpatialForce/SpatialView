@@ -7,7 +7,7 @@
 from typing import override
 
 import SpatialNode as sNode
-from vtkmodules.vtkRenderingCore import vtkMapper
+from SpatialView.node_data.type_id import TypeID
 
 
 class VtkAlgoData(sNode.NodeData):
@@ -17,7 +17,7 @@ class VtkAlgoData(sNode.NodeData):
 
     @override
     def type(self):
-        return sNode.NodeDataType("algo", "Algo")
+        return sNode.NodeDataType(TypeID.ALGORITHM.value, "Algo")
 
     def algo(self):
         return self._algo

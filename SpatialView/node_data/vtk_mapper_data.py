@@ -9,6 +9,8 @@ from typing import override
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkMapper
 
+from SpatialView.node_data.type_id import TypeID
+
 
 class VtkMapperData(sNode.NodeData):
     def __init__(self, mapper: vtkMapper | None = None):
@@ -17,7 +19,7 @@ class VtkMapperData(sNode.NodeData):
 
     @override
     def type(self):
-        return sNode.NodeDataType("mapper", "Mapper")
+        return sNode.NodeDataType(TypeID.ALGORITHM.value, "Mapper")
 
     def mapper(self):
         return self._mapper
