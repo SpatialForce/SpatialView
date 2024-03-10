@@ -7,7 +7,6 @@
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkActor
 
-from SpatialView.node_data.vtk_mapper_data import VtkMapperData
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withModel,
@@ -17,6 +16,7 @@ from SpatialView.node_model_template import (
 from SpatialView.ui import DoubleSpinBox, CheckBox
 from SpatialView.ui.combo_box import ComboBox
 from .vtk_renderer import Renderer
+from ..type_id import TypeID
 
 
 @withModel(
@@ -696,11 +696,11 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def inPort(self):
         return self.mapper
 
-    @withPort(0, sNode.PortType.In, VtkMapperData)
+    @withPort(0, sNode.PortType.In, TypeID.MAPPER)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self.mapper = value.mapper()
+            self.mapper = value
             if not self._isAdded:
                 self._renderer.handle.AddActor(self._actor)
                 self._isAdded = True

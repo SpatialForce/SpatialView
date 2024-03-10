@@ -9,8 +9,7 @@ from vtkmodules.vtkRenderingCore import vtkPolyDataMapper
 
 from SpatialView import Renderer
 from SpatialView.node_model_template import withModel, withPort, NodeModelTemplate
-from SpatialView.node_data.vtk_algo_data import VtkAlgoData
-from SpatialView.node_data.vtk_mapper_data import VtkMapperData
+from SpatialView.type_id import TypeID
 
 
 @withModel(
@@ -18,7 +17,7 @@ from SpatialView.node_data.vtk_mapper_data import VtkMapperData
     category="Operators",
 )
 class VtkMapperDataModel(NodeModelTemplate):
-    @withPort(0, sNode.PortType.Out, VtkMapperData)
+    @withPort(0, sNode.PortType.Out, TypeID.MAPPER)
     @property
     def outPort(self):
         return self._mapper
@@ -27,11 +26,11 @@ class VtkMapperDataModel(NodeModelTemplate):
     def inPort(self):
         return self._mapper.GetInputConnection(0, 0)
 
-    @withPort(0, sNode.PortType.In, VtkAlgoData)
+    @withPort(0, sNode.PortType.In, TypeID.ALGORITHM)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self._mapper.SetInputConnection(value.algo())
+            self._mapper.SetInputConnection(value)
             self._renderer.interactorRender()
 
     def __init__(self):

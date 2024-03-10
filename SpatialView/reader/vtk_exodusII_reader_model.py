@@ -14,8 +14,8 @@ from SpatialView.node_model_template import (
     withProperty,
     NodeModelTemplate,
 )
+from SpatialView.type_id import TypeID
 from SpatialView.ui import FileDialog
-from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(capStr="Vtk ExodusII Reader", category="Reader")
@@ -37,7 +37,7 @@ class VtkExodusIIReaderModel(NodeModelTemplate):
         self._reader.Update()
         self._renderer.interactorRender()
 
-    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
     def outPort(self):
         return self._reader.GetOutputPort()

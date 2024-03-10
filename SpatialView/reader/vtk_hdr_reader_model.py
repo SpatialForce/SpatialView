@@ -12,13 +12,13 @@ from vtkmodules.vtkIOImage import vtkHDRReader
 from vtkmodules.vtkRenderingCore import vtkTexture
 
 from SpatialView import Renderer
-from SpatialView.node_data import VtkTextureData
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withModel,
     withProperty,
     withPort,
 )
+from SpatialView.type_id import TypeID
 from SpatialView.ui import FileDialog
 
 
@@ -34,7 +34,7 @@ class VtkHDRReaderModel(NodeModelTemplate):
         self._reader.SetFileName(value)
         self._renderer.interactorRender()
 
-    @withPort(0, sNode.PortType.Out, VtkTextureData)
+    @withPort(0, sNode.PortType.Out, TypeID.TEXTURE)
     @property
     def outPort(self):
         return self._texture

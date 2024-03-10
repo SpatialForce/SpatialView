@@ -10,7 +10,6 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
-from SpatialView.node_data.vtk_texture_data import VtkTextureData
 from SpatialView.node_model_template import (
     withModel,
     NodeModelTemplate,
@@ -20,6 +19,7 @@ from SpatialView.node_model_template import (
 from .vtk_renderer import Renderer
 from SpatialView.ui import CheckBox
 from SpatialView.ui.combo_box import ComboBox
+from ..type_id import TypeID
 
 
 @withModel(
@@ -40,11 +40,11 @@ class VtkSkyboxModel(NodeModelTemplate):
     def inPort(self):
         return self.texture
 
-    @withPort(0, sNode.PortType.In, VtkTextureData)
+    @withPort(0, sNode.PortType.In, TypeID.TEXTURE)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self.texture = value.texture()
+            self.texture = value
             if not self._isAdded:
                 self._renderer.handle.AddActor(self._skybox)
                 self._isAdded = True

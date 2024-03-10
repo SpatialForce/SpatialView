@@ -14,9 +14,9 @@ from SpatialView.node_model_template import (
     withPort,
     withModel,
 )
+from SpatialView.type_id import TypeID
 from SpatialView.ui import DoubleSpinBox
 from SpatialView.ui.spin_box import SpinBox
-from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(capStr="Vtk Sphere Source", category="Sources")
@@ -156,7 +156,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
         self._source.SetCenter(value)
         self._renderer.interactorRender()
 
-    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
     def outPort(self):
         return self._source.GetOutputPort()
