@@ -5,7 +5,7 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkCommonDataModel import vtkCone
+from vtkmodules.vtkCommonDataModel import vtkPolyPlane
 
 from SpatialView import Renderer
 from SpatialView.node_model_template import (
@@ -18,24 +18,15 @@ from SpatialView.type_id import TypeID
 from SpatialView.ui import DoubleSpinBox
 
 
-@withModel(capStr="Vtk SDF Cone", category="SDF/geometries")
-class VtkConeModel(NodeModelTemplate):
+@withModel(capStr="Vtk SDF Poly Plane", category="SDF/geometries")
+class VtkPolyPlaneModel(NodeModelTemplate):
     @property
-    def angleMax(self):
-        return self._source.GetAngleMaxValue()
+    def polyLine(self):
+        return self._source.GetPolyLine()
 
-    @property
-    def angleMin(self):
-        return self._source.GetAngleMinValue()
-
-    @property
-    def angle(self):
-        return self._source.GetAngle()
-
-    @withProperty(DoubleSpinBox("angleMin", "angleMax", 0.1))
-    @angle.setter
-    def angle(self, value):
-        self._source.SetAngle(value)
+    @polyLine.setter
+    def polyLine(self, value):
+        self._source.SetPolyLine(value)
 
     @withPort(0, sNode.PortType.Out, TypeID.ImplicitFunction)
     @property
@@ -47,4 +38,4 @@ class VtkConeModel(NodeModelTemplate):
 
         self._renderer: Renderer = Renderer()
         # Create source
-        self._source = vtkCone()
+        self._source = vtkPolyPlane()
