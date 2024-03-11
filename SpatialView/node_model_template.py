@@ -3,7 +3,7 @@
 #  I am making my contributions/submissions to this project solely in my
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
-
+import copy
 from collections import defaultdict
 from typing import override
 
@@ -69,10 +69,18 @@ def withModel(capStr: str, category: str = "Nodes"):
 
 class NodeModelTemplate(sNode.NodeDelegateModel):
     def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
-        return widgetRegistry[type(self).__name__]
+        d = copy.deepcopy(widgetRegistry[type(self).__name__])
+        targets = type(self).__bases__
+        for target in targets:
+            d.update(widgetRegistry[target.__name__])
+        return d
 
     def getPorts(self):
-        return portRegistry[type(self).__name__]
+        d = copy.deepcopy(portRegistry[type(self).__name__])
+        targets = type(self).__bases__
+        for target in targets:
+            d.update(portRegistry[target.__name__])
+        return d
 
     def dialog(self):
         registry = self.getRegistry()

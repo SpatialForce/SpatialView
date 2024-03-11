@@ -135,6 +135,17 @@ class VtkParametricFunctionSourceModel(NodeModelTemplate):
     def geo(self):
         return self._source.GetOutputPort()
 
+    @property
+    def func(self):
+        return self._source.GetParametricFunction()
+
+    @withPort(0, sNode.PortType.In, TypeID.ParametricFunction)
+    @func.setter
+    def func(self, value):
+        if value:
+            self._source.SetParametricFunction(value)
+            self._renderer.interactorRender()
+
     def __init__(self):
         super().__init__()
 

@@ -5,29 +5,33 @@
 #  property of any third parties.
 
 from vtkmodules.vtkCommonComputationalGeometry import (
-    vtkParametricFunction,
     vtkParametricKuen,
 )
 
-from SpatialView import Renderer
 from SpatialView.node_model_template import (
-    NodeModelTemplate,
     withProperty,
-    withPort,
     withModel,
 )
 from SpatialView.parametrics.vtk_parametric_function_model import (
     VtkParametricFunctionModel,
 )
-from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, SpinBox
+from SpatialView.ui import DoubleSpinBox
 
 
 @withModel(capStr="Vtk Parametric Kuen", category="Parametrics")
 class VtkParametricKuenModel(VtkParametricFunctionModel):
+    @property
+    def deltaV0(self):
+        return self._source.GetDeltaV0()
+
+    @withProperty(DoubleSpinBox(0, 10, 0.1))
+    @deltaV0.setter
+    def deltaV0(self, value):
+        self._source.SetDeltaV0(value)
+        self._renderer.interactorRender()
+
     def __init__(self):
         super().__init__()
 
-        self._renderer: Renderer = Renderer()
         # Create source
         self._source = vtkParametricKuen()

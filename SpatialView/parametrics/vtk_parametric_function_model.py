@@ -14,10 +14,9 @@ from SpatialView.node_model_template import (
     NodeModelTemplate,
     withProperty,
     withPort,
-    withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, SpinBox
+from SpatialView.ui import SpinBox
 
 
 class VtkParametricFunctionModel(NodeModelTemplate):
@@ -175,4 +174,4 @@ class VtkParametricFunctionModel(NodeModelTemplate):
 
         self._renderer: Renderer = Renderer()
         # Create source
-        self._source = vtkParametricFunction()
+        self._source: vtkParametricFunction | None = None
