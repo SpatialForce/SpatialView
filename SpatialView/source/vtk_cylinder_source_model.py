@@ -15,8 +15,7 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, CheckBox
-from SpatialView.ui.spin_box import SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox, CheckBox, MultiDoubleLineEdit
 
 
 @withModel(capStr="Vtk Cylinder Source", category="Sources")
@@ -99,6 +98,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)

@@ -15,7 +15,7 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox, MultiDoubleLineEdit
 
 
 @withModel(capStr="Vtk Arrow Source", category="Sources2D")
@@ -114,6 +114,7 @@ class VtkArrowSourceModel(NodeModelTemplate):
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)

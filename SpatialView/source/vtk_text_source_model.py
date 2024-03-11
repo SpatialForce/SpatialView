@@ -15,16 +15,16 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui.line_edit import LineEdit
+from SpatialView.ui.line_edit import LineEdit, MultiDoubleLineEdit
 
 
 @withModel(capStr="Vtk Text Source", category="Sources2D")
 class VtkTextSourceModel(NodeModelTemplate):
-    @withProperty(LineEdit())
     @property
     def text(self):
         return self._source.GetText()
 
+    @withProperty(LineEdit())
     @text.setter
     def text(self, value):
         self._source.SetText(value)
@@ -34,6 +34,7 @@ class VtkTextSourceModel(NodeModelTemplate):
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)

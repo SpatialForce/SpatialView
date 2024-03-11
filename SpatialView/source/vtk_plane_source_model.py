@@ -15,7 +15,7 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import SpinBox
+from SpatialView.ui import MultiDoubleLineEdit, IntLineEdit
 
 
 @withModel(capStr="Vtk Plane Source", category="Sources")
@@ -24,7 +24,7 @@ class VtkPlaneSourceModel(NodeModelTemplate):
     def xResolution(self):
         return self._source.GetXResolution()
 
-    @withProperty(SpinBox(0, 100))
+    @withProperty(IntLineEdit())
     @xResolution.setter
     def xResolution(self, value):
         self._source.SetXResolution(value)
@@ -34,7 +34,7 @@ class VtkPlaneSourceModel(NodeModelTemplate):
     def yResolution(self):
         return self._source.GetYResolution()
 
-    @withProperty(SpinBox(0, 100))
+    @withProperty(IntLineEdit())
     @yResolution.setter
     def yResolution(self, value):
         self._source.SetYResolution(value)
@@ -44,6 +44,7 @@ class VtkPlaneSourceModel(NodeModelTemplate):
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)

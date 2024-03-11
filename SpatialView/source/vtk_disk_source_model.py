@@ -15,7 +15,7 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox, SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox, MultiDoubleLineEdit
 
 
 @withModel(capStr="Vtk Disk Source", category="Sources")
@@ -92,6 +92,16 @@ class VtkDiskSourceModel(NodeModelTemplate):
     @radialResolution.setter
     def radialResolution(self, value):
         self._source.SetRadialResolution(value)
+        self._renderer.interactorRender()
+
+    @property
+    def center(self):
+        return self._source.GetCenter()
+
+    @withProperty(MultiDoubleLineEdit())
+    @center.setter
+    def center(self, value):
+        self._source.SetCenter(value)
         self._renderer.interactorRender()
 
     @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)

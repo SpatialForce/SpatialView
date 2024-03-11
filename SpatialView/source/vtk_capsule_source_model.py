@@ -15,8 +15,7 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBox
-from SpatialView.ui.spin_box import SpinBox
+from SpatialView.ui import DoubleSpinBox, SpinBox, MultiDoubleLineEdit
 
 
 @withModel(capStr="Vtk Capsule Source", category="Sources")
@@ -97,6 +96,7 @@ class VtkCapsuleSourceModel(NodeModelTemplate):
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)
