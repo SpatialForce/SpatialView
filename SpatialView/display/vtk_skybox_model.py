@@ -10,7 +10,6 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLSkybox
 
-from SpatialView.node_data.vtk_texture_data import VtkTextureData
 from SpatialView.node_model_template import (
     withModel,
     NodeModelTemplate,
@@ -18,8 +17,9 @@ from SpatialView.node_model_template import (
     withPort,
 )
 from .vtk_renderer import Renderer
-from SpatialView.ui import CheckBox
+from SpatialView.ui import CheckBox, MultiDoubleLineEdit
 from SpatialView.ui.combo_box import ComboBox
+from ..type_id import TypeID
 
 
 @withModel(
@@ -40,16 +40,18 @@ class VtkSkyboxModel(NodeModelTemplate):
     def inPort(self):
         return self.texture
 
-    @withPort(0, sNode.PortType.In, VtkTextureData)
+    @withPort(0, sNode.PortType.In, TypeID.TEXTURE)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self.texture = value.texture()
-            if value:
+            self.texture = value
+            if not self._isAdded:
                 self._renderer.handle.AddActor(self._skybox)
-                self._renderer.reset()
-            else:
-                self._renderer.handle.RemoveActor(self._skybox)
+                self._isAdded = True
+        else:
+            self.texture = None
+            self._renderer.handle.RemoveActor(self._skybox)
+            self._isAdded = False
 
     @staticmethod
     def projectionName(value):
@@ -79,12 +81,13 @@ class VtkSkyboxModel(NodeModelTemplate):
     @projection.setter
     def projection(self, value):
         self._skybox.SetProjection(value)
-        self._renderer.reset()
+        self._renderer.interactorRender()
 
     @property
     def floorPlane(self):
         return self._skybox.GetFloorPlane()
 
+    @withProperty(MultiDoubleLineEdit())
     @floorPlane.setter
     def floorPlane(self, value):
         self._skybox.SetFloorPlane(value)
@@ -93,6 +96,7 @@ class VtkSkyboxModel(NodeModelTemplate):
     def floorRight(self):
         return self._skybox.GetFloorRight()
 
+    @withProperty(MultiDoubleLineEdit())
     @floorRight.setter
     def floorRight(self, value):
         self._skybox.SetFloorRight(value)
@@ -105,7 +109,7 @@ class VtkSkyboxModel(NodeModelTemplate):
     @gammaCorrect.setter
     def gammaCorrect(self, value):
         self._skybox.SetGammaCorrect(value)
-        self._renderer.reset()
+        self._renderer.interactorRender()
 
     def __init__(self):
         super().__init__()
@@ -113,5 +117,5 @@ class VtkSkyboxModel(NodeModelTemplate):
         self._skybox.SetFloorRight(0, 0, 1)
         self._skybox.SetProjection(vtkSkybox.Sphere)
         self._skybox.GammaCorrectOn()
-
-        self._renderer = Renderer()
+        self._isAdded = False
+        self._renderer: Renderer = Renderer()

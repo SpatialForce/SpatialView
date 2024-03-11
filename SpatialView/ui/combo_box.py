@@ -11,7 +11,7 @@ from functools import partial
 
 
 class ComboBox(AbstractWidgetType):
-    def __init__(self, minValue: str, maxValue: str, description):
+    def __init__(self, minValue: str | int, maxValue: str | int, description):
         super().__init__()
         self.minValue = minValue
         self.maxValue = maxValue
@@ -19,10 +19,17 @@ class ComboBox(AbstractWidgetType):
 
     def render(self, target):
         value_widget = QtWidgets.QComboBox()
-        for index in range(
-            target.__getattribute__(self.minValue),
-            target.__getattribute__(self.maxValue) + 1,
-        ):
+        if isinstance(self.minValue, str):
+            start = target.__getattribute__(self.minValue)
+        else:
+            start = self.minValue
+
+        if isinstance(self.maxValue, str):
+            end = target.__getattribute__(self.maxValue)
+        else:
+            end = self.maxValue
+
+        for index in range(start, end + 1):
             value_widget.addItem(self.description(index))
 
         value_widget.setCurrentIndex(target.__getattribute__(self.property))

@@ -16,8 +16,17 @@ from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from PySide6 import QtWidgets, QtGui, QtCore
 
 import SpatialNode as sNode
+from vtkmodules.vtkIOImage import (
+    vtkBMPWriter,
+    vtkPNMWriter,
+    vtkPostScriptWriter,
+    vtkTIFFWriter,
+    vtkPNGWriter,
+    vtkJPEGWriter,
+)
+from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
+
 import SpatialView as sView
-from SpatialView.node_model_template import ret
 
 
 class VtkView(QtWidgets.QWidget):
@@ -43,6 +52,7 @@ class VtkView(QtWidgets.QWidget):
 
         vtkWidget.GetRenderWindow().AddRenderer(renderer.handle)
         renderer.interactor = vtkWidget.GetRenderWindow().GetInteractor()
+        self.renWin = vtkWidget.GetRenderWindow()
 
         # status bar
         statusbar = QtWidgets.QStatusBar()
@@ -50,8 +60,14 @@ class VtkView(QtWidgets.QWidget):
 
         # action
         action = QtGui.QAction("Reset Cam", self)
-        action.triggered.connect(self, renderer.reset)
+        action.triggered.connect(self, renderer.resetCamera)
         toolbar.addAction(action)
+
+
+class GraphicsView(sNode.GraphicsView):
+    def dropEvent(self, event):
+        super().dropEvent(event)
+        sView.Renderer().interactorRender()
 
 
 class NodeView(QtWidgets.QMainWindow):
@@ -72,9 +88,9 @@ class NodeView(QtWidgets.QMainWindow):
 
         centralWidget = QtWidgets.QWidget(self)
         nodeLayout = QtWidgets.QGridLayout(centralWidget)
-        dataFlowGraphModel = sNode.DataFlowGraphModel(ret)
+        dataFlowGraphModel = sNode.DataFlowGraphModel(sView.modelRegistry)
         self.scene = sNode.DataFlowGraphicsScene(dataFlowGraphModel)
-        nodeView = sNode.GraphicsView(self.scene)
+        nodeView = GraphicsView(self.scene)
         nodeLayout.addWidget(nodeView)
         nodeLayout.setContentsMargins(0, 0, 0, 0)
         nodeLayout.setSpacing(0)
@@ -93,21 +109,90 @@ class NodeView(QtWidgets.QMainWindow):
         statusbar = QtWidgets.QStatusBar()
         self.setStatusBar(statusbar)
 
+    def _writeImage(self, fileName, rgba=True):
+        """
+        Write the render window view to an image file.
+
+        Image types supported are:
+         BMP, JPEG, PNM, PNG, PostScript, TIFF.
+        The default parameters are used for all writers, change as needed.
+
+        :param fileName: The file name, if no extension then PNG is assumed.
+        :param rgba: Used to set the buffer type.
+        :return:
+        """
+
+        import os
+
+        if fileName:
+            # Select the writer to use.
+            path, ext = os.path.splitext(fileName)
+            ext = ext.lower()
+            if not ext:
+                ext = ".png"
+                fileName = fileName + ext
+            if ext == ".bmp":
+                writer = vtkBMPWriter()
+            elif ext == ".jpg":
+                writer = vtkJPEGWriter()
+            elif ext == ".pnm":
+                writer = vtkPNMWriter()
+            elif ext == ".ps":
+                if rgba:
+                    rgba = False
+                writer = vtkPostScriptWriter()
+            elif ext == ".tiff":
+                writer = vtkTIFFWriter()
+            else:
+                writer = vtkPNGWriter()
+
+            windowto_image_filter = vtkWindowToImageFilter()
+            windowto_image_filter.SetInput(self.vtkWindow.renWin)
+            windowto_image_filter.SetScale(1)  # image quality
+            if rgba:
+                windowto_image_filter.SetInputBufferTypeToRGBA()
+            else:
+                windowto_image_filter.SetInputBufferTypeToRGB()
+                # Read from the front buffer.
+                windowto_image_filter.ReadFrontBufferOff()
+                windowto_image_filter.Update()
+
+            writer.SetFileName(fileName)
+            writer.SetInputConnection(windowto_image_filter.GetOutputPort())
+            writer.Write()
+        else:
+            raise RuntimeError("Need a filename.")
+
     def _createMenu(self):
         menuBar = QtWidgets.QMenuBar()
         self.setMenuBar(menuBar)
 
         # File
         file_menu = menuBar.addMenu("&File")
-        saveAction = file_menu.addAction("Save Scene")
-        saveAction.triggered.connect(self.scene.save)
-        loadAction = file_menu.addAction("Load Scene")
 
         def sceneLoad():
             self.scene.load()
-            self.renderer.reset()
+            self.renderer.interactorRender()
 
+        loadAction = file_menu.addAction("Load Scene")
         loadAction.triggered.connect(sceneLoad)
+
+        saveAction = file_menu.addAction("Save Scene")
+        saveAction.triggered.connect(self.scene.save)
+
+        def saveImage():
+            fileName, _ = QtWidgets.QFileDialog.getSaveFileName(
+                None,
+                "Open Flow Scene",
+                QtCore.QDir.homePath(),
+                "Files (*)",
+            )
+
+            if len(fileName) > 0:
+                self._writeImage(fileName)
+
+        saveAction = file_menu.addAction("Save Image")
+        saveAction.triggered.connect(saveImage)
 
         # Help
         help_menu = menuBar.addMenu("&Help")

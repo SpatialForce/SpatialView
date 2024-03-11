@@ -7,15 +7,15 @@
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkCylinderSource
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withProperty,
     withPort,
     withModel,
 )
-from SpatialView.ui import DoubleSpinBox, CheckBox
-from SpatialView.ui.spin_box import SpinBox
-from SpatialView.node_data.vtk_algo_data import VtkAlgoData
+from SpatialView.type_id import TypeID
+from SpatialView.ui import DoubleSpinBox, SpinBox, CheckBox, MultiDoubleLineEdit
 
 
 @withModel(capStr="Vtk Cylinder Source", category="Sources")
@@ -36,7 +36,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @radius.setter
     def radius(self, value):
         self._source.SetRadius(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def heightMax(self):
@@ -54,7 +54,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @height.setter
     def height(self, height):
         self._source.SetHeight(height)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def resolutionMax(self):
@@ -72,7 +72,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @resolution.setter
     def resolution(self, value):
         self._source.SetResolution(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def capping(self):
@@ -82,7 +82,7 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @capping.setter
     def capping(self, value):
         self._source.SetCapping(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def capsuleCap(self):
@@ -92,25 +92,27 @@ class VtkCylinderSourceModel(NodeModelTemplate):
     @capsuleCap.setter
     def capsuleCap(self, value):
         self._source.SetCapsuleCap(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
-    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
-    def outPort(self):
+    def geo(self):
         return self._source.GetOutputPort()
 
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create source
         self._source = vtkCylinderSource()
         self.center = (0, 0, 0)

@@ -7,16 +7,17 @@
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkActor
 
-from SpatialView.node_data.vtk_mapper_data import VtkMapperData
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withModel,
     withPort,
     withProperty,
 )
-from SpatialView.ui import DoubleSpinBox, CheckBox
+from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox, DoubleLineEdit
 from SpatialView.ui.combo_box import ComboBox
 from .vtk_renderer import Renderer
+from ..type_id import TypeID
+from ..ui.color_picker import ColorPicker
 
 
 @withModel(
@@ -53,7 +54,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @interpolation.setter
     def interpolation(self, value):
         self._actor.GetProperty().SetInterpolation(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Representation ======================================================
     @property
@@ -84,7 +85,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @representation.setter
     def representation(self, value):
         self._actor.GetProperty().SetRepresentation(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # ==========================================================================
     # =========== Blinn-Phong ==================================================
@@ -107,15 +108,17 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @ambient.setter
     def ambient(self, value):
         self._actor.GetProperty().SetAmbient(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def ambientColor(self):
         return self._actor.GetProperty().GetAmbientColor()
 
+    @withProperty(ColorPicker())
     @ambientColor.setter
     def ambientColor(self, value):
         self._actor.GetProperty().SetAmbientColor(value)
+        self._renderer.interactorRender()
 
     # =========== Diffuse ======================================================
     @property
@@ -134,15 +137,17 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @diffuse.setter
     def diffuse(self, value):
         self._actor.GetProperty().SetDiffuse(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def diffuseColor(self):
         return self._actor.GetProperty().GetDiffuseColor()
 
+    @withProperty(ColorPicker())
     @diffuseColor.setter
     def diffuseColor(self, value):
         self._actor.GetProperty().SetDiffuseColor(value)
+        self._renderer.interactorRender()
 
     # =========== Specular ======================================================
     @property
@@ -161,15 +166,17 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @specular.setter
     def specular(self, value):
         self._actor.GetProperty().SetSpecular(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def specularColor(self):
         return self._actor.GetProperty().GetSpecularColor()
 
+    @withProperty(ColorPicker())
     @specularColor.setter
     def specularColor(self, value):
         self._actor.GetProperty().SetSpecularColor(value)
+        self._renderer.interactorRender()
 
     # =========== Specular Power ======================================================
     @property
@@ -188,7 +195,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @specularPower.setter
     def specularPower(self, value):
         self._actor.GetProperty().SetSpecularPower(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Color ======================================================
 
@@ -196,9 +203,11 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def color(self):
         return self._actor.GetProperty().GetColor()
 
+    @withProperty(ColorPicker())
     @color.setter
     def color(self, value):
         self._actor.GetProperty().SetColor(value)
+        self._renderer.interactorRender()
 
     @property
     def baseColorTexture(self):
@@ -207,7 +216,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @baseColorTexture.setter
     def baseColorTexture(self, value):
         self._actor.GetProperty().SetBaseColorTexture(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # ============================================================================
     # =========== PBR =============================================================
@@ -230,7 +239,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @anisotropy.setter
     def anisotropy(self, value):
         self._actor.GetProperty().SetAnisotropy(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def anisotropyRotationMax(self):
@@ -248,7 +257,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @anisotropyRotation.setter
     def anisotropyRotation(self, value):
         self._actor.GetProperty().SetAnisotropyRotation(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def anisotropyTexture(self):
@@ -275,7 +284,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @baseIOR.setter
     def baseIOR(self, value):
         self._actor.GetProperty().SetBaseIOR(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def coatIORMax(self):
@@ -293,16 +302,18 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @coatIOR.setter
     def coatIOR(self, value):
         self._actor.GetProperty().SetCoatIOR(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Coat ======================================================
     @property
     def coatColor(self):
         return self._actor.GetProperty().GetCoatColor()
 
+    @withProperty(ColorPicker())
     @coatColor.setter
     def coatColor(self, value):
         self._actor.GetProperty().SetCoatColor(value)
+        self._renderer.interactorRender()
 
     @property
     def coatStrengthMax(self):
@@ -320,7 +331,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @coatStrength.setter
     def coatStrength(self, value):
         self._actor.GetProperty().SetCoatStrength(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def coatNormalTexture(self):
@@ -346,7 +357,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @coatNormalScale.setter
     def coatNormalScale(self, value):
         self._actor.GetProperty().SetCoatNormalScale(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def coatRoughnessMax(self):
@@ -364,7 +375,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @coatRoughness.setter
     def coatRoughness(self, value):
         self._actor.GetProperty().SetCoatRoughness(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Emissive ======================================================
     @property
@@ -417,7 +428,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @metallic.setter
     def metallic(self, value):
         self._actor.GetProperty().SetMetallic(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Roughness ======================================================
     @property
@@ -436,7 +447,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @roughness.setter
     def roughness(self, value):
         self._actor.GetProperty().SetRoughness(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== OcclusionStrength ======================================================
     @property
@@ -455,7 +466,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @occlusionStrength.setter
     def occlusionStrength(self, value):
         self._actor.GetProperty().SetOcclusionStrength(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Edge ======================================================
     @property
@@ -470,9 +481,11 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def edgeColor(self):
         return self._actor.GetProperty().GetEdgeColor()
 
+    @withProperty(ColorPicker())
     @edgeColor.setter
     def edgeColor(self, value):
         self._actor.GetProperty().SetEdgeColor(value)
+        self._renderer.interactorRender()
 
     @property
     def edgeOpacityMax(self):
@@ -490,12 +503,13 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @edgeOpacity.setter
     def edgeOpacity(self, value):
         self._actor.GetProperty().SetEdgeOpacity(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def edgeVisibility(self):
         return self._actor.GetProperty().GetEdgeVisibility()
 
+    @withProperty(CheckBox())
     @edgeVisibility.setter
     def edgeVisibility(self, value):
         self._actor.GetProperty().SetEdgeVisible(value)
@@ -517,7 +531,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @lineWidth.setter
     def lineWidth(self, value):
         self._actor.GetProperty().SetLineWidth(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def lineStippleRepeatFactorMax(self):
@@ -531,13 +545,11 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def lineStippleRepeatFactor(self):
         return self._actor.GetProperty().GetLineStippleRepeatFactor()
 
-    @withProperty(
-        DoubleSpinBox("lineStippleRepeatFactorMin", "lineStippleRepeatFactorMax", 0.1)
-    )
+    @withProperty(SpinBox("lineStippleRepeatFactorMin", "lineStippleRepeatFactorMax"))
     @lineStippleRepeatFactor.setter
     def lineStippleRepeatFactor(self, value):
         self._actor.GetProperty().SetLineStippleRepeatFactor(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     @property
     def lineStipplePattern(self):
@@ -552,14 +564,17 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def vertexColor(self):
         return self._actor.GetProperty().GetVertexColor()
 
+    @withProperty(ColorPicker())
     @vertexColor.setter
     def vertexColor(self, value):
         self._actor.GetProperty().SetVertexColor(value)
+        self._renderer.interactorRender()
 
     @property
     def vertexVisibility(self):
         return self._actor.GetProperty().GetVertexVisibility()
 
+    @withProperty(CheckBox())
     @vertexVisibility.setter
     def vertexVisibility(self, value):
         self._actor.GetProperty().SetVertexVisibility(value)
@@ -581,7 +596,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @pointSize.setter
     def pointSize(self, value):
         self._actor.GetProperty().SetPointSize(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== ORM ======================================================
     @property
@@ -609,7 +624,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     @opacity.setter
     def opacity(self, value):
         self._actor.GetProperty().SetOpacity(value)
-        self._renderer.modified()
+        self._renderer.interactorRender()
 
     # =========== Culling ======================================================
     @property
@@ -663,14 +678,17 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def selectionColor(self):
         return self._actor.GetProperty().GetSelectionColor()
 
+    @withProperty(ColorPicker())
     @selectionColor.setter
     def selectionColor(self, value):
         self._actor.GetProperty().SetSelectionColor(value)
+        self._renderer.interactorRender()
 
     @property
     def selectionLineWidth(self):
         return self._actor.GetProperty().GetSelectionLineWidth()
 
+    @withProperty(DoubleLineEdit())
     @selectionLineWidth.setter
     def selectionLineWidth(self, value):
         self._actor.GetProperty().SetSelectionLineWidth(value)
@@ -679,6 +697,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def selectionPointSize(self):
         return self._actor.GetProperty().GetSelectionPointSize()
 
+    @withProperty(DoubleLineEdit())
     @selectionPointSize.setter
     def selectionPointSize(self, value):
         self._actor.GetProperty().SetSelectionPointSize(value)
@@ -696,18 +715,21 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def inPort(self):
         return self.mapper
 
-    @withPort(0, sNode.PortType.In, VtkMapperData)
+    @withPort(0, sNode.PortType.In, TypeID.MAPPER)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self.mapper = value.mapper()
-            if value:
+            self.mapper = value
+            if not self._isAdded:
                 self._renderer.handle.AddActor(self._actor)
-                self._renderer.modified()
-            else:
-                self._renderer.handle.RemoveActor(self._actor)
+                self._isAdded = True
+        else:
+            self.mapper = None
+            self._renderer.handle.RemoveActor(self._actor)
+            self._isAdded = False
 
     def __init__(self):
         super().__init__()
         self._actor = vtkActor()
         self._renderer: Renderer = Renderer()
+        self._isAdded = False

@@ -7,17 +7,17 @@
 import SpatialNode as sNode
 from vtkmodules.vtkRenderingCore import vtkPolyDataMapper
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import withModel, withPort, NodeModelTemplate
-from SpatialView.node_data.vtk_algo_data import VtkAlgoData
-from SpatialView.node_data.vtk_mapper_data import VtkMapperData
+from SpatialView.type_id import TypeID
 
 
 @withModel(
-    capStr="Vtk Mapper Data",
-    category="Operators",
+    capStr="Vtk Poly Data Mapper",
+    category="Mappers",
 )
-class VtkMapperDataModel(NodeModelTemplate):
-    @withPort(0, sNode.PortType.Out, VtkMapperData)
+class VtkPolyDataMapperModel(NodeModelTemplate):
+    @withPort(0, sNode.PortType.Out, TypeID.MAPPER)
     @property
     def outPort(self):
         return self._mapper
@@ -26,15 +26,16 @@ class VtkMapperDataModel(NodeModelTemplate):
     def inPort(self):
         return self._mapper.GetInputConnection(0, 0)
 
-    @withPort(0, sNode.PortType.In, VtkAlgoData)
+    @withPort(0, sNode.PortType.In, TypeID.ALGORITHM)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self._mapper.SetInputConnection(value.algo())
-            self.dataUpdated.emit(0)
+            self._mapper.SetInputConnection(value)
+            self._renderer.interactorRender()
 
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create a mapper
         self._mapper = vtkPolyDataMapper()

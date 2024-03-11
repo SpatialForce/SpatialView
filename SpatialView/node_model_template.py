@@ -3,14 +3,14 @@
 #  I am making my contributions/submissions to this project solely in my
 #  personal capacity and am not conveying any rights to any intellectual
 #  property of any third parties.
-
+import copy
 from collections import defaultdict
 from typing import override
 
 import SpatialNode as sNode
 from PySide6 import QtWidgets, QtCore
-from SpatialNode import PortType, QJsonObject
 
+from SpatialView.type_id import TypeID
 from SpatialView.ui.abstract_widget_type import AbstractWidgetType
 
 
@@ -30,7 +30,9 @@ def withProperty(widgetType: AbstractWidgetType):
 
 
 class PortInfo:
-    def __init__(self, property: str, portIndex: int, portType: PortType, dataType):
+    def __init__(
+        self, property: str, portIndex: int, portType: sNode.PortType, dataType: TypeID
+    ):
         self.property = property
         self.portIndex = portIndex
         self.portType = portType
@@ -40,7 +42,7 @@ class PortInfo:
 portRegistry: defaultdict[str, defaultdict[str, PortInfo]] = defaultdict(defaultdict)
 
 
-def withPort(portIndex: int, portType: PortType, dataType):
+def withPort(portIndex: int, portType: sNode.PortType, dataType: TypeID):
     def registrar(func):
         className = func.fget.__qualname__.split(".")
         info = PortInfo(func.fget.__name__, portIndex, portType, dataType)
@@ -50,7 +52,7 @@ def withPort(portIndex: int, portType: PortType, dataType):
     return registrar
 
 
-ret = sNode.NodeDelegateModelRegistry()
+modelRegistry = sNode.NodeDelegateModelRegistry()
 
 
 def withModel(capStr: str, category: str = "Nodes"):
@@ -59,7 +61,7 @@ def withModel(capStr: str, category: str = "Nodes"):
 
     def registrar(CLS):
         CLS.caption = caption
-        ret.registerModel(CLS, capStr, category)
+        modelRegistry.registerModel(CLS, capStr, category)
         return CLS
 
     return registrar
@@ -67,10 +69,18 @@ def withModel(capStr: str, category: str = "Nodes"):
 
 class NodeModelTemplate(sNode.NodeDelegateModel):
     def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
-        return widgetRegistry[type(self).__name__]
+        d = widgetRegistry[type(self).__name__]
+        targets = type(self).__bases__
+        for target in targets:
+            d.update(widgetRegistry[target.__name__])
+        return d
 
     def getPorts(self):
-        return portRegistry[type(self).__name__]
+        d = portRegistry[type(self).__name__]
+        targets = type(self).__bases__
+        for target in targets:
+            d.update(portRegistry[target.__name__])
+        return d
 
     def dialog(self):
         registry = self.getRegistry()
@@ -142,7 +152,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         return self._label
 
     def save(self):
-        modelJson = QJsonObject()
+        modelJson = sNode.QJsonObject()
         modelJson["model-name"] = self.caption()
 
         source = sNode.QJsonObject()
@@ -182,7 +192,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         for port in ports:
             info = ports[port]
             if info.portType == portType and info.portIndex == portIndex:
-                return info.dataType().type()
+                return sNode.NodeDataType(info.dataType.value, info.property)
 
     @override
     def outData(self, portIndex):
@@ -190,7 +200,7 @@ class NodeModelTemplate(sNode.NodeDelegateModel):
         for port in ports:
             info = ports[port]
             if info.portType == sNode.PortType.Out and info.portIndex == portIndex:
-                return info.dataType(self.__getattribute__(info.property))
+                return self.__getattribute__(info.property)
 
     @override
     def setInData(self, nodeData, portIndex):

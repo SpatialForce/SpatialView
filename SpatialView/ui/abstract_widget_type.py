@@ -18,4 +18,6 @@ class AbstractWidgetType:
         p[self.property] = target.__getattribute__(self.property)
 
     def load(self, p, target):
-        type(target).__setattr__(target, self.property, p[self.property])
+        data = p.get(self.property)
+        if data:
+            type(target).__setattr__(target, self.property, data)

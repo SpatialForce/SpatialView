@@ -9,8 +9,9 @@ from SpatialView.node_model_template import (
     NodeModelTemplate,
     withProperty,
 )
-from SpatialView.ui import CheckBox, DoubleSpinBox, SpinBox
+from SpatialView.ui import CheckBox, DoubleLineEdit, IntLineEdit
 from SpatialView.display.vtk_renderer import Renderer
+from SpatialView.ui.combo_box import ComboBox
 
 
 @withModel(
@@ -18,6 +19,36 @@ from SpatialView.display.vtk_renderer import Renderer
     category="Displays",
 )
 class VtkRendererSettingsModel(NodeModelTemplate):
+    @staticmethod
+    def interactorStyleName(value):
+        match value:
+            case 0:
+                return "DrawPolygon"
+            case 1:
+                return "Flight"
+            case 2:
+                return "JoystickActor"
+            case 3:
+                return "JoystickCamera"
+            case 4:
+                return "RubberBand2D"
+            case 5:
+                return "RubberBandZoom"
+            case 6:
+                return "Terrain"
+            case 7:
+                return "TrackballActor"
+
+    @property
+    def interactorStyle(self):
+        return self._renderer.interactorStyle
+
+    @withProperty(ComboBox(0, 7, interactorStyleName))
+    @interactorStyle.setter
+    def interactorStyle(self, value):
+        self._renderer.interactorStyle = value
+
+    # =========== Renderer ======================================================
     @property
     def useImageBasedLighting(self):
         return self._renderer.useImageBasedLighting
@@ -78,7 +109,7 @@ class VtkRendererSettingsModel(NodeModelTemplate):
     def ssaoBias(self):
         return self._renderer.ssaoBias
 
-    @withProperty(DoubleSpinBox(0.0, 10.0, 0.1))
+    @withProperty(DoubleLineEdit())
     @ssaoBias.setter
     def ssaoBias(self, value):
         self._renderer.ssaoBias = value
@@ -87,7 +118,7 @@ class VtkRendererSettingsModel(NodeModelTemplate):
     def ssaoRadius(self):
         return self._renderer.ssaoRadius
 
-    @withProperty(DoubleSpinBox(0.0, 10.0, 0.1))
+    @withProperty(DoubleLineEdit())
     @ssaoRadius.setter
     def ssaoRadius(self, value):
         self._renderer.ssaoRadius = value
@@ -96,7 +127,7 @@ class VtkRendererSettingsModel(NodeModelTemplate):
     def ssaoKernelSize(self):
         return self._renderer.ssaoKernelSize
 
-    @withProperty(SpinBox(0, 10))
+    @withProperty(IntLineEdit())
     @ssaoKernelSize.setter
     def ssaoKernelSize(self, value):
         self._renderer.ssaoKernelSize = value
@@ -107,7 +138,7 @@ class VtkRendererSettingsModel(NodeModelTemplate):
     def irradianceSize(self):
         return self._renderer.irradianceSize
 
-    @withProperty(SpinBox(0, 10))
+    @withProperty(IntLineEdit())
     @irradianceSize.setter
     def irradianceSize(self, value):
         self._renderer.irradianceSize = value
@@ -116,7 +147,7 @@ class VtkRendererSettingsModel(NodeModelTemplate):
     def irradianceStep(self):
         return self._renderer.irradianceStep
 
-    @withProperty(DoubleSpinBox(0.0, 1.0, 0.1))
+    @withProperty(DoubleLineEdit())
     @irradianceStep.setter
     def irradianceStep(self, value):
         self._renderer.irradianceStep = value

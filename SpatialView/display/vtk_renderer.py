@@ -5,9 +5,22 @@
 #  property of any third parties.
 
 from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTerrain
+from vtkmodules.vtkInteractionStyle import (
+    vtkInteractorStyleTerrain,
+    vtkInteractorStyleDrawPolygon,
+    vtkInteractorStyleFlight,
+    vtkInteractorStyleJoystickActor,
+    vtkInteractorStyleJoystickCamera,
+    vtkInteractorStyleRubberBand2D,
+    vtkInteractorStyleRubberBandZoom,
+    vtkInteractorStyleTrackballActor,
+)
+from vtkmodules.vtkInteractionWidgets import vtkCameraOrientationWidget
 from vtkmodules.vtkRenderingCore import vtkRenderWindowInteractor
 from vtkmodules.vtkRenderingOpenGL2 import vtkOpenGLRenderer
+
+from SpatialView.node_model_template import withProperty
+from SpatialView.ui.combo_box import ComboBox
 
 
 class Singleton(object):
@@ -27,6 +40,8 @@ class Renderer:
         self.handle = vtkOpenGLRenderer()
         self.handle.SetBackground(vtkNamedColors().GetColor3d("DimGray"))
         self._interactor: vtkRenderWindowInteractor | None = None
+        self._cameraOrientationWidget: vtkCameraOrientationWidget | None = None
+        self._interactorStyle = 0
 
     @property
     def interactor(self) -> vtkRenderWindowInteractor:
@@ -35,15 +50,50 @@ class Renderer:
     @interactor.setter
     def interactor(self, value: vtkRenderWindowInteractor):
         self._interactor = value
-        self._interactor.SetInteractorStyle(vtkInteractorStyleTerrain())
+        self.interactorStyle = 6
 
-    def reset(self):
+        self._cameraOrientationWidget = vtkCameraOrientationWidget()
+        self._cameraOrientationWidget.SetParentRenderer(self.handle)
+        # Enable the widget.
+        self._cameraOrientationWidget.On()
+
+    def interactorRender(self):
+        self._interactor.Render()
+
+    @staticmethod
+    def interactorStyleObj(value):
+        match value:
+            case 0:
+                return vtkInteractorStyleDrawPolygon()
+            case 1:
+                return vtkInteractorStyleFlight()
+            case 2:
+                return vtkInteractorStyleJoystickActor()
+            case 3:
+                return vtkInteractorStyleJoystickCamera()
+            case 4:
+                return vtkInteractorStyleRubberBand2D()
+            case 5:
+                return vtkInteractorStyleRubberBandZoom()
+            case 6:
+                return vtkInteractorStyleTerrain()
+            case 7:
+                return vtkInteractorStyleTrackballActor()
+
+    @property
+    def interactorStyle(self):
+        return self._interactorStyle
+
+    @interactorStyle.setter
+    def interactorStyle(self, value):
+        self._interactorStyle = value
+        self._interactor.SetInteractorStyle(self.interactorStyleObj(value))
+
+    # ================== Renderer =============================================
+
+    def resetCamera(self):
         self.handle.ResetCamera()
         self.handle.ResetCameraClippingRange()
-        self._interactor.ReInitialize()
-
-    def modified(self):
-        self.handle.Modified()
 
     @property
     def useImageBasedLighting(self):
@@ -52,7 +102,8 @@ class Renderer:
     @useImageBasedLighting.setter
     def useImageBasedLighting(self, value):
         self.handle.SetUseImageBasedLighting(value)
-        self.modified()
+        self.resetCamera()
+        # self.interactorRender() will be black
 
     @property
     def useSphericalHarmonics(self):
@@ -61,7 +112,7 @@ class Renderer:
     @useSphericalHarmonics.setter
     def useSphericalHarmonics(self, value):
         self.handle.SetUseSphericalHarmonics(value)
-        self.modified()
+        # self.interactorRender() will be black
 
     @property
     def environmentTexture(self):
@@ -72,7 +123,7 @@ class Renderer:
         self.useImageBasedLighting = True
         self.useSphericalHarmonics = True
         self.handle.SetEnvironmentTexture(value, False)
-        self.modified()
+        # self.interactorRender() will be black
 
     @property
     def useFXAA(self):
@@ -81,7 +132,7 @@ class Renderer:
     @useFXAA.setter
     def useFXAA(self, value):
         self.handle.SetUseFXAA(value)
-        self.modified()
+        self.interactorRender()
 
     @property
     def useShadows(self):
@@ -90,7 +141,7 @@ class Renderer:
     @useShadows.setter
     def useShadows(self, value):
         self.handle.SetUseShadows(value)
-        self.modified()
+        self.interactorRender()
 
     # =========== SSAO ======================================================
 
@@ -101,7 +152,7 @@ class Renderer:
     @useSSAO.setter
     def useSSAO(self, value):
         self.handle.SetUseSSAO(value)
-        self.modified()
+        self.interactorRender()
 
     @property
     def ssaoBlur(self):
@@ -110,7 +161,7 @@ class Renderer:
     @ssaoBlur.setter
     def ssaoBlur(self, value):
         self.handle.SetSSAOBlur(value)
-        self.modified()
+        self.interactorRender()
 
     @property
     def ssaoBias(self):
@@ -119,7 +170,7 @@ class Renderer:
     @ssaoBias.setter
     def ssaoBias(self, value):
         self.handle.SetSSAOBias(value)
-        self.modified()
+        self.interactorRender()
 
     @property
     def ssaoRadius(self):
@@ -128,7 +179,7 @@ class Renderer:
     @ssaoRadius.setter
     def ssaoRadius(self, value):
         self.handle.SetSSAORadius(value)
-        self.modified()
+        self.interactorRender()
 
     @property
     def ssaoKernelSize(self):
@@ -137,7 +188,7 @@ class Renderer:
     @ssaoKernelSize.setter
     def ssaoKernelSize(self, value):
         self.handle.SetSSAOKernelSize(value)
-        self.modified()
+        self.interactorRender()
 
     # =========== Irradiance ======================================================
 
@@ -148,7 +199,7 @@ class Renderer:
     @irradianceSize.setter
     def irradianceSize(self, value):
         self.handle.GetEnvMapIrradiance().SetIrradianceSize(value)
-        self.modified()
+        self.interactorRender()
 
     @property
     def irradianceStep(self):
@@ -157,4 +208,4 @@ class Renderer:
     @irradianceStep.setter
     def irradianceStep(self, value):
         self.handle.GetEnvMapIrradiance().SetIrradianceStep(value)
-        self.modified()
+        self.interactorRender()

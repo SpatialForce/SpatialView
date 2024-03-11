@@ -7,15 +7,17 @@
 import SpatialNode as sNode
 from vtkmodules.vtkFiltersSources import vtkSphereSource
 
+from SpatialView import Renderer
 from SpatialView.node_model_template import (
     NodeModelTemplate,
     withProperty,
     withPort,
     withModel,
 )
+from SpatialView.type_id import TypeID
 from SpatialView.ui import DoubleSpinBox
+from SpatialView.ui.line_edit import MultiDoubleLineEdit
 from SpatialView.ui.spin_box import SpinBox
-from SpatialView.node_data.vtk_algo_data import VtkAlgoData
 
 
 @withModel(capStr="Vtk Sphere Source", category="Sources")
@@ -36,7 +38,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @radius.setter
     def radius(self, value):
         self._source.SetRadius(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def endPhiMax(self):
@@ -54,7 +56,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @endPhi.setter
     def endPhi(self, value):
         self._source.SetEndPhi(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def endThetaMax(self):
@@ -72,7 +74,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @endTheta.setter
     def endTheta(self, value):
         self._source.SetEndTheta(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def startPhiMax(self):
@@ -90,7 +92,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @startPhi.setter
     def startPhi(self, value):
         self._source.SetStartPhi(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def startThetaMax(self):
@@ -108,7 +110,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @startTheta.setter
     def startTheta(self, value):
         self._source.SetStartTheta(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def phiResolutionMax(self):
@@ -126,7 +128,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @phiResolution.setter
     def phiResolution(self, value):
         self._source.SetPhiResolution(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def thetaResolutionMax(self):
@@ -144,25 +146,27 @@ class VtkSphereSourceModel(NodeModelTemplate):
     @thetaResolution.setter
     def thetaResolution(self, value):
         self._source.SetThetaResolution(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
     @property
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)
-        self.dataUpdated.emit(0)
+        self._renderer.interactorRender()
 
-    @withPort(0, sNode.PortType.Out, VtkAlgoData)
+    @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
     @property
-    def outPort(self):
+    def geo(self):
         return self._source.GetOutputPort()
 
     def __init__(self):
         super().__init__()
 
+        self._renderer: Renderer = Renderer()
         # Create source
         self._source = vtkSphereSource()
         self.center = (0, 0, 0)
