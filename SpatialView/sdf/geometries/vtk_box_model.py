@@ -15,7 +15,6 @@ from SpatialView.node_model_template import (
     withModel,
 )
 from SpatialView.type_id import TypeID
-from SpatialView.ui import DoubleSpinBoxn
 
 
 @withModel(capStr="Vtk SDF Box", category="SDF/geometries")

@@ -5,7 +5,7 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkCommonDataModel import vtkQuadric, vtkSuperquadric
+from vtkmodules.vtkCommonDataModel import vtkSuperquadric
 
 from SpatialView import Renderer
 from SpatialView.node_model_template import (
