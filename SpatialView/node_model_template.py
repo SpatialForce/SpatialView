@@ -69,14 +69,14 @@ def withModel(capStr: str, category: str = "Nodes"):
 
 class NodeModelTemplate(sNode.NodeDelegateModel):
     def getRegistry(self) -> defaultdict[str, AbstractWidgetType]:
-        d = copy.deepcopy(widgetRegistry[type(self).__name__])
+        d = widgetRegistry[type(self).__name__]
         targets = type(self).__bases__
         for target in targets:
             d.update(widgetRegistry[target.__name__])
         return d
 
     def getPorts(self):
-        d = copy.deepcopy(portRegistry[type(self).__name__])
+        d = portRegistry[type(self).__name__]
         targets = type(self).__bases__
         for target in targets:
             d.update(portRegistry[target.__name__])
