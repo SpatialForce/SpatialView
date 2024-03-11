@@ -16,6 +16,7 @@ from SpatialView.node_model_template import (
 )
 from SpatialView.type_id import TypeID
 from SpatialView.ui import DoubleSpinBox
+from SpatialView.ui.line_edit import MultiDoubleLineEdit
 from SpatialView.ui.spin_box import SpinBox
 
 
@@ -151,6 +152,7 @@ class VtkSphereSourceModel(NodeModelTemplate):
     def center(self):
         return self._source.GetCenter()
 
+    @withProperty(MultiDoubleLineEdit())
     @center.setter
     def center(self, value):
         self._source.SetCenter(value)
