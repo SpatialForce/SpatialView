@@ -6,3 +6,4 @@ class TypeID(Enum):
     TEXTURE = "texture"
     MAPPER = "mapper"
     DataObject = "data_object"
+    ParametricFunction = "parametric_function"

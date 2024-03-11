@@ -1,1 +1,4 @@
 from .vtk_parametric_function_source_model import VtkParametricFunctionSourceModel
+
+# function
+from .vtk_parametric_kuen_model import VtkParametricKuenModel
