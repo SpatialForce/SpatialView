@@ -17,7 +17,7 @@ from SpatialView.node_model_template import (
     withPort,
 )
 from .vtk_renderer import Renderer
-from SpatialView.ui import CheckBox
+from SpatialView.ui import CheckBox, MultiDoubleLineEdit
 from SpatialView.ui.combo_box import ComboBox
 from ..type_id import TypeID
 
@@ -87,6 +87,7 @@ class VtkSkyboxModel(NodeModelTemplate):
     def floorPlane(self):
         return self._skybox.GetFloorPlane()
 
+    @withProperty(MultiDoubleLineEdit())
     @floorPlane.setter
     def floorPlane(self, value):
         self._skybox.SetFloorPlane(value)
@@ -95,6 +96,7 @@ class VtkSkyboxModel(NodeModelTemplate):
     def floorRight(self):
         return self._skybox.GetFloorRight()
 
+    @withProperty(MultiDoubleLineEdit())
     @floorRight.setter
     def floorRight(self, value):
         self._skybox.SetFloorRight(value)

@@ -13,7 +13,7 @@ from SpatialView.node_model_template import (
     withPort,
     withProperty,
 )
-from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox
+from SpatialView.ui import DoubleSpinBox, CheckBox, SpinBox, DoubleLineEdit
 from SpatialView.ui.combo_box import ComboBox
 from .vtk_renderer import Renderer
 from ..type_id import TypeID
@@ -509,6 +509,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def edgeVisibility(self):
         return self._actor.GetProperty().GetEdgeVisibility()
 
+    @withProperty(CheckBox())
     @edgeVisibility.setter
     def edgeVisibility(self, value):
         self._actor.GetProperty().SetEdgeVisible(value)
@@ -573,6 +574,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def vertexVisibility(self):
         return self._actor.GetProperty().GetVertexVisibility()
 
+    @withProperty(CheckBox())
     @vertexVisibility.setter
     def vertexVisibility(self, value):
         self._actor.GetProperty().SetVertexVisibility(value)
@@ -686,6 +688,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def selectionLineWidth(self):
         return self._actor.GetProperty().GetSelectionLineWidth()
 
+    @withProperty(DoubleLineEdit())
     @selectionLineWidth.setter
     def selectionLineWidth(self, value):
         self._actor.GetProperty().SetSelectionLineWidth(value)
@@ -694,6 +697,7 @@ class VtkDisplayActorModel(NodeModelTemplate):
     def selectionPointSize(self):
         return self._actor.GetProperty().GetSelectionPointSize()
 
+    @withProperty(DoubleLineEdit())
     @selectionPointSize.setter
     def selectionPointSize(self, value):
         self._actor.GetProperty().SetSelectionPointSize(value)
