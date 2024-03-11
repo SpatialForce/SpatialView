@@ -5,7 +5,7 @@
 #  property of any third parties.
 
 import SpatialNode as sNode
-from vtkmodules.vtkFiltersCore import vtkContourFilter
+from vtkmodules.vtkCommonDataModel import vtkImplicitDataSet
 
 from SpatialView import Renderer
 from SpatialView.node_model_template import withModel, NodeModelTemplate, withPort
@@ -13,24 +13,33 @@ from SpatialView.type_id import TypeID
 
 
 @withModel(
-    capStr="Vtk Contour Filter",
-    category="Operators",
+    capStr="Vtk Implicit DataSet",
+    category="SDF/Ops",
 )
-class VtkContourFilterModel(NodeModelTemplate):
-    @withPort(0, sNode.PortType.Out, TypeID.ALGORITHM)
+class VtkImplicitDataSetModel(NodeModelTemplate):
+    @property
+    def outGradient(self):
+        return self._ops.GetOutGradient()
+
+    @outGradient.setter
+    def outGradient(self, value):
+        self._ops.SetOutGradient(value)
+        self._renderer.interactorRender()
+
+    @withPort(0, sNode.PortType.Out, TypeID.ImplicitFunction)
     @property
     def outPort(self):
-        return self._mapper.GetOutputPort(0)
+        return self._ops
 
     @property
     def inPort(self):
-        return self._mapper.GetInputConnection(0, 0)
+        return self._ops.GetFunction()
 
     @withPort(0, sNode.PortType.In, TypeID.ALGORITHM)
     @inPort.setter
     def inPort(self, value):
         if value:
-            self._mapper.SetInputConnection(value)
+            self._ops.AddFunction(value)
             self._renderer.interactorRender()
 
     def __init__(self):
@@ -38,4 +47,4 @@ class VtkContourFilterModel(NodeModelTemplate):
 
         self._renderer: Renderer = Renderer()
         # Create a mapper
-        self._mapper = vtkContourFilter()
+        self._ops = vtkImplicitDataSet()
