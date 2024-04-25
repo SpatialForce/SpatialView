@@ -14,7 +14,7 @@ import json
 class LineEdit(AbstractWidgetType):
     def render(self, target):
         value_widget = QtWidgets.QLineEdit()
-        value_widget.setText(target.__getattribute__(self.property))
+        value_widget.setText(str(target.__getattribute__(self.property)))
         value_widget.textChanged.connect(
             partial(type(target).__setattr__, target, self.property)
         )
@@ -25,7 +25,7 @@ class IntLineEdit(AbstractWidgetType):
     def render(self, target):
         value_widget = QtWidgets.QLineEdit()
         value_widget.setValidator(QtGui.QIntValidator())
-        value_widget.setText(target.__getattribute__(self.property))
+        value_widget.setText(str(target.__getattribute__(self.property)))
         value_widget.textChanged.connect(
             partial(type(target).__setattr__, target, self.property)
         )
@@ -71,7 +71,7 @@ class DoubleLineEdit(AbstractWidgetType):
     def render(self, target):
         value_widget = QtWidgets.QLineEdit()
         value_widget.setValidator(QtGui.QDoubleValidator())
-        value_widget.setText(target.__getattribute__(self.property))
+        value_widget.setText(str(target.__getattribute__(self.property)))
         value_widget.textChanged.connect(
             partial(type(target).__setattr__, target, self.property)
         )
